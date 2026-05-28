@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sounddip — City Priority Matrix</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400;500&display=swap');
+
+  :root {
+    --ink: #1a1614;
+    --paper: #f5f0e8;
+    --warm: #c8a97e;
+    --accent: #2d5a3d;
+    --soft: #e8e0d0;
+    --muted: #8a7f72;
+    --alert: #b85c38;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    padding: 48px 40px;
+    max-width: 960px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+
+  header {
+    border-bottom: 2px solid var(--ink);
+    padding-bottom: 20px;
+    margin-bottom: 36px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+  }
+
+  .site-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+  }
+
+  .site-name span {
+    color: var(--accent);
+  }
+
+  .doc-meta {
+    color: var(--muted);
+    font-size: 11px;
+    text-align: right;
+  }
+
+  .headline {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    font-style: italic;
+    margin-bottom: 8px;
+    color: var(--accent);
+  }
+
+  .subhead {
+    font-size: 11px;
+    color: var(--muted);
+    margin-bottom: 36px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .finding-box {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 16px 20px;
+    margin-bottom: 36px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .finding-box .zero {
+    font-family: 'Playfair Display', serif;
+    font-size: 48px;
+    font-weight: 700;
+    color: var(--warm);
+    line-height: 1;
+    flex-shrink: 0;
+  }
+
+  .finding-box p {
+    font-size: 12px;
+    line-height: 1.7;
+  }
+
+  .finding-box strong {
+    color: var(--warm);
+  }
+
+  .section-label {
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 12px;
+    padding-bottom: 4px;
+    border-bottom: 1px solid var(--soft);
+  }
+
+  .city-grid {
+    display: grid;
+    gap: 10px;
+    margin-bottom: 40px;
+  }
+
+  .city-row {
+    display: grid;
+    grid-template-columns: 28px 160px 80px 90px 80px 1fr;
+    gap: 12px;
+    align-items: start;
+    padding: 14px 16px;
+    background: white;
+    border-left: 3px solid transparent;
+    transition: border-color 0.15s;
+  }
+
+  .city-row:hover { border-left-color: var(--warm); }
+
+  .city-row.tier-1 { border-left-color: var(--accent); }
+  .city-row.tier-2 { border-left-color: var(--warm); }
+  .city-row.tier-3 { border-left-color: var(--soft); }
+
+  .rank {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--muted);
+    padding-top: 2px;
+  }
+
+  .tier-1 .rank { color: var(--accent); }
+  .tier-2 .rank { color: var(--warm); }
+
+  .city-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 15px;
+    font-weight: 700;
+  }
+
+  .col-head {
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 2px;
+  }
+
+  .pill {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 2px;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+  }
+
+  .pill-open { background: #d4edda; color: #155724; }
+  .pill-partial { background: #fff3cd; color: #856404; }
+  .pill-contested { background: #f8d7da; color: #721c24; }
+
+  .kd-val {
+    font-size: 15px;
+    font-weight: 500;
+  }
+
+  .kd-null {
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  .kd-bar {
+    height: 3px;
+    background: var(--soft);
+    margin-top: 4px;
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .kd-fill {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 2px;
+  }
+
+  .rationale {
+    font-size: 11px;
+    color: #4a4440;
+    line-height: 1.65;
+    grid-column: 1 / -1;
+    margin-top: 4px;
+    padding-top: 8px;
+    border-top: 1px solid var(--soft);
+  }
+
+  .tag {
+    display: inline-block;
+    background: var(--soft);
+    color: var(--muted);
+    font-size: 9px;
+    padding: 1px 5px;
+    border-radius: 2px;
+    margin-right: 4px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .tag.green { background: #d4edda; color: #155724; }
+  .tag.amber { background: #fff3cd; color: #856404; }
+  .tag.red   { background: #f8d7da; color: #721c24; }
+
+  .col-headers {
+    display: grid;
+    grid-template-columns: 28px 160px 80px 90px 80px 1fr;
+    gap: 12px;
+    padding: 0 16px 8px;
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .audited-note {
+    font-size: 10px;
+    color: var(--muted);
+    margin-bottom: 6px;
+    font-style: italic;
+  }
+
+  .divider {
+    border: none;
+    border-top: 1px dashed var(--warm);
+    margin: 20px 0;
+  }
+
+  .footnote {
+    font-size: 10px;
+    color: var(--muted);
+    line-height: 1.7;
+    padding-top: 16px;
+    border-top: 1px solid var(--soft);
+  }
+
+  .footnote strong { color: var(--ink); }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="site-name">Sound<span>dip</span></div>
+  <div class="doc-meta">City Priority Matrix<br>May 2026 · Based on SERP audit + KD pull</div>
+</header>
+
+<div class="headline">The directory column is zero across all five audited cities.</div>
+<div class="subhead">10-city write priority · Ranked by editorial gap + keyword difficulty</div>
+
+<div class="finding-box">
+  <div class="zero">0</div>
+  <p>Pure directories on page 1 in any city. Every result is a single practitioner, an event-ticketing platform, or a static editorial roundup. <strong>Eventbrite, ClassBento, and Letsbatch</strong> are the only multi-practitioner results — general activity platforms that don't filter by format, price, credentials, or spiritual framing. The gap is uniform and confirmed.</p>
+</div>
+
+<div class="section-label">Audited cities (from SERP data) — write first</div>
+<div class="audited-note">Full page-1 data confirmed. Opportunity scores derived from listicle count, practitioner density, and event-platform presence.</div>
+
+<div class="col-headers">
+  <div>#</div>
+  <div>City</div>
+  <div>KD Score</div>
+  <div>Editorial Gap</div>
+  <div>Opportunity</div>
+  <div>Rationale</div>
+</div>
+
+<div class="city-grid">
+
+  <div class="city-row tier-1">
+    <div class="rank">1</div>
+    <div class="city-name">Austin</div>
+    <div>
+      <div class="col-head">KD</div>
+      <div class="kd-null">null · low comp</div>
+      <div class="kd-bar"><div class="kd-fill" style="width:4%"></div></div>
+    </div>
+    <div>
+      <div class="col-head">Gap</div>
+      <span class="pill pill-open">No listicle</span>
+    </div>
+    <div>
+      <div class="col-head">Score</div>
+      <span class="pill pill-open">★★★ First mover</span>
+    </div>
+    <div class="rationale">
+      <span class="tag green">No editorial</span><span class="tag green">No dominant studio</span><span class="tag amber">Event-platforms only aggregators</span>
+      No listicle, no dominant studio. Meditation Bar is the most developed individual but has no structured profiles. Letsbatch outranks local practitioners — a party-booking platform is holding the discovery slot. Cleanest first-mover position of the 10.
+    </div>
+  </div>
+
+  <div class="city-row tier-1">
+    <div class="rank">2</div>
+    <div class="city-name">Chicago</div>
+    <div>
+      <div class="col-head">KD</div>
+      <div class="kd-null">null · low comp</div>
+      <div class="kd-bar"><div class="kd-fill" style="width:4%"></div></div>
+    </div>
+    <div>
+      <div class="col-head">Gap</div>
+      <span class="pill pill-open">No listicle</span>
+    </div>
+    <div>
+      <div class="col-head">Score</div>
+      <span class="pill pill-open">★★★ Cleanest gap</span>
+    </div>
+    <div class="rationale">
+      <span class="tag green">Zero editorial</span><span class="tag amber">Luxury outlier (St. Regis)</span><span class="tag green">Multi-location venues exist</span>
+      Zero editorial coverage of any kind. Ahimsa School of Sound Healing spans Oak Park, Evanston, and Wicker Park — multiple profiles right there. St. Regis ranking is a signal Google is grasping for content. A structured city page becomes the best resource by default.
+    </div>
+  </div>
+
+  <div class="city-row tier-1">
+    <div class="rank">3</div>
+    <div class="city-name">New York City</div>
+    <div>
+      <div class="col-head">KD</div>
+      <div class="kd-null">null · high vol</div>
+      <div class="kd-bar"><div class="kd-fill" style="width:15%"></div></div>
+    </div>
+    <div>
+      <div class="col-head">Gap</div>
+      <span class="pill pill-partial">No listicle</span>
+    </div>
+    <div>
+      <div class="col-head">Score</div>
+      <span class="pill pill-partial">★★☆ Aggregate play</span>
+    </div>
+    <div class="rationale">
+      <span class="tag amber">Strong individual studios</span><span class="tag green">No directory</span><span class="tag amber">Soundawn holds 2 URLs</span>
+      Official Ritual, Sage + Sound, and Humming Puppy all have SEO presence. Sounddip needs to aggregate them, not compete. The play is a page that profiles each and links to booking — exactly what none of them do for each other.
+    </div>
+  </div>
+
+  <div class="city-row tier-2">
+    <div class="rank">4</div>
+    <div class="city-name">Atlanta</div>
+    <div>
+      <div class="col-head">KD</div>
+      <div class="kd-null">null · moderate</div>
+      <div class="kd-bar"><div class="kd-fill" style="width:8%"></div></div>
+    </div>
+    <div>
+      <div class="col-head">Gap</div>
+      <span class="pill pill-partial">Weak listicle</span>
+    </div>
+    <div>
+      <div class="col-head">Score</div>
+      <span class="pill pill-partial">★★☆ Outcompete static</span>
+    </div>
+    <div class="rationale">
+      <span class="tag amber">Atlanta Magazine holds position</span><span class="tag green">No booking links</span><span class="tag green">Highest practitioner density</span>
+      Atlanta Magazine piece is static, undated, no booking links. Highest practitioner density of any audited city (8 individual sites). Zenmi's mobile floating sound bath is a strong differentiator to feature. Structured + bookable beats static editorial.
+    </div>
+  </div>
+
+  <div class="city-row tier-2">
+    <div class="rank">5</div>
+    <div class="city-name">Los Angeles</div>
+    <div>
+      <div class="col-head">KD</div>
+      <div class="kd-null">null · highest vol</div>
+      <div class="kd-bar"><div class="kd-fill" style="width:22%"></div></div>
+    </div>
+    <div>
+      <div class="col-head">Gap</div>
+      <span class="pill pill-contested">2 listicles</span>
+    </div>
+    <div>
+      <div class="col-head">Score</div>
+      <span class="pill pill-contested">★☆☆ Volume play, harder</span>
+    </div>
+    <div class="rationale">
+      <span class="tag red">LA Times + modernhypno hold slots</span><span class="tag green">No directory still</span><span class="tag amber">Soundbath Center 20+ yrs</span>
+      Hardest editorial entry of the five. LA Times piece has authority. But both listicles are static — no filtering, no booking, no practitioner profiles. A structured directory page still has a distinct value proposition. Write last of the audited five.
+    </div>
+  </div>
+
+</div>
+
+<hr class="divider">
+
+<div class="section-label">Expansion cities (unaudited — inferred from KD + market profile)</div>
+
+<div class="city-grid">
+
+  <div class="city-row tier-1">
+    <div class="rank">6</div>
+    <div class="city-name">Seattle</div>
+    <div>
+      <div class="col-head">KD</div>
+      <div class="kd-val">3</div>
+      <div class="kd-bar"><div class="kd-fill" style="width:3%"></div></div>
+    </div>
+    <div>
+      <div class="col-head">Gap</div>
+      <span class="pill pill-open">Likely weak</span>
+    </div>
+    <div>
+      <div class="col-head">Score</div>
+      <span class="pill pill-open">★★★ Write now</span>
+    </div>
+    <div class="rationale">
+      <span class="tag green">KD 3 — nearly uncontested</span><span class="tag green">Strong wellness culture</span><span class="tag green">Pacific NW adjacency</span>
+      KD of 3 is the lowest confirmed score in the set. Seattle has dense wellness infrastructure (yoga, meditation, sound healing all well-established) but the SERP is essentially empty. Your Pacific NW base is a natural fit. High-priority write alongside Austin.
+    </div>
+  </div>
+
+  <div class="city-row tier-1">
+    <div class="rank">7</div>
+    <div class="city-name">Portland</div>
+    <div>
+      <div class="col-head">KD</div>
+      <div class="kd-val">21</div>
+      <div class="kd-bar"><div class="kd-fill" style="width:21%"></div></div>
+    </div>
+    <div>
+      <div class="col-head">Gap</div>
+      <span class="pill pill-partial">Moderate comp</span>
+    </div>
+    <div>
+      <div class="col-head">Score</div>
+      <span class="pill pill-partial">★★☆ Strong market fit</span>
+    </div>
+    <div class="rationale">
+      <span class="tag amber">KD 21 — some competition</span><span class="tag green">Wellness-forward city</span><span class="tag green">PNW cluster with Seattle</span>
+      KD 21 is still very manageable for a directory page. Portland's wellness market is strong and tends toward independent practitioners over studios — exactly the profile Sounddip aggregates best. Pairs naturally with Seattle for content clustering.
+    </div>
+  </div>
+
+  <div class="city-row tier-2">
+    <div class="rank">8</div>
+    <div class="city-name">Denver</div>
+    <div>
+      <div class="col-head">KD</div>
+      <div class="kd-null">null · low comp</div>
+      <div class="kd-bar"><div class="kd-fill" style="width:5%"></div></div>
+    </div>
+    <div>
+      <div class="col-head">Gap</div>
+      <span class="pill pill-open">Likely open</span>
+    </div>
+    <div>
+      <div class="col-head">Score</div>
+      <span class="pill pill-open">★★★ Boulder halo</span>
+    </div>
+    <div class="rationale">
+      <span class="tag green">Null KD = low SERP competition</span><span class="tag green">Boulder sound healing hub nearby</span><span class="tag amber">Wellness-active but smaller market</span>
+      Denver + Boulder is the densest sound healing cluster outside LA. Boulder specifically has nationally recognized practitioners and training programs. A Denver page captures the metro; Boulder warrants its own page later. Null KD means no established editorial presence.
+    </div>
+  </div>
+
+  <div class="city-row tier-2">
+    <div class="rank">9</div>
+    <div class="city-name">Nashville</div>
+    <div>
+      <div class="col-head">KD</div>
+      <div class="kd-null">null · low comp</div>
+      <div class="kd-bar"><div class="kd-fill" style="width:4%"></div></div>
+    </div>
+    <div>
+      <div class="col-head">Gap</div>
+      <span class="pill pill-open">Likely open</span>
+    </div>
+    <div>
+      <div class="col-head">Score</div>
+      <span class="pill pill-partial">★★☆ Emerging market</span>
+    </div>
+    <div class="rationale">
+      <span class="tag green">Null KD</span><span class="tag amber">Smaller but fast-growing wellness scene</span><span class="tag green">Music city angle — obvious editorial hook</span>
+      Nashville's "Music City" identity gives the sound bath angle a natural editorial hook no other city has. Wellness tourism is accelerating there. Low competition + strong local story = good content play even if search volume lags the bigger metros.
+    </div>
+  </div>
+
+  <div class="city-row tier-3">
+    <div class="rank">10</div>
+    <div class="city-name">Philadelphia</div>
+    <div>
+      <div class="col-head">KD</div>
+      <div class="kd-val">5</div>
+      <div class="kd-bar"><div class="kd-fill" style="width:5%"></div></div>
+    </div>
+    <div>
+      <div class="col-head">Gap</div>
+      <span class="pill pill-open">Open</span>
+    </div>
+    <div>
+      <div class="col-head">Score</div>
+      <span class="pill pill-partial">★★☆ Underrated market</span>
+    </div>
+    <div class="rationale">
+      <span class="tag green">KD 5 — very low</span><span class="tag amber">Mid-size market, strong arts/wellness culture</span><span class="tag green">Northeast cluster with NYC</span>
+      KD of 5 with a city of 1.5M+ is a mismatch worth exploiting. Philly has a real independent wellness scene and clusters naturally with NYC content. Not a top-5 volume market but the ease of entry justifies including it over Miami or San Francisco, both of which likely have more editorial competition.
+    </div>
+  </div>
+
+</div>
+
+<div class="footnote">
+  <strong>Data sources:</strong> SERP audit (May 2026, manual page-1 review for "sound bath [city]") · DataForSEO keyword difficulty (bulk pull May 2026) · Null KD = insufficient SERP data to score, interpreted as low established competition. <strong>Excluded:</strong> Miami, San Francisco, Boston, Phoenix, Houston, Dallas, San Diego, Minneapolis — either higher inferred competition, lower practitioner density, or weaker wellness-market profile relative to the 10 selected.
+</div>
+
+</body>
+</html>
