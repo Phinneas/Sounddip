@@ -1,0 +1,49 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Topbar from '../components/Topbar.astro';
+import Hero from '../components/Hero.astro';
+import DipBar from '../components/DipBar.astro';
+import MapSection from '../components/MapSection.astro';
+import FeaturedSection from '../components/FeaturedSection.astro';
+import CitiesSection from '../components/CitiesSection.astro';
+import FirstDip from '../components/FirstDip.astro';
+import Currents from '../components/Currents.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<Layout
+  title="Sound Dip — Find a Sound Bath Near You"
+  description="Discover curated sound bath sessions in your city. Browse practitioners, book your next immersion, and explore the world of sound healing."
+>
+  <Topbar />
+  <main>
+    <Hero />
+    <DipBar />
+    <div class="page-sections">
+      <MapSection />
+      <FeaturedSection />
+      <CitiesSection />
+      <FirstDip />
+    </div>
+    <Currents />
+  </main>
+  <Footer />
+</Layout>
+
+<style is:global>
+  .page-sections {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 6vw;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+  /* Each section inside page-sections gets vertical spacing */
+  .page-sections .section {
+    padding-top: 120px;
+    padding-bottom: 120px;
+    border-bottom: 1px solid var(--rule-soft);
+  }
+  .page-sections .section:last-child { border-bottom: none; }
+</style>

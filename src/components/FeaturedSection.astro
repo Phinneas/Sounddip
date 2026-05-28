@@ -1,0 +1,148 @@
+---
+// FeaturedSection — "Now Bathing" editorial picks
+// Improvement: added translateY(-6px) card lift on hover (V2), plus subtle clay border reveal
+
+const features = [
+  {
+    img: "https://www.koselig-nook.com/cdn/shop/files/Gong_d6bd7060-ba3e-40ca-991d-7b6b88c9868d.jpg?v=1776105833&width=1445",
+    alt: "Gong on warm wood floor",
+    modality: "Gong & Tea · Long-form",
+    title: "A three-hour tea ceremony",
+    titleItalic: "three-hour",
+    practitioner: "Wren Caelis",
+    location: "Sausalito, CA",
+    time: "SUN · 4:00 PM · $85",
+  },
+  {
+    img: "https://media.aspennature.org/assets/2022/05/28195434/megansummer-1024x768.jpg",
+    alt: "Outdoor sound bath at lake",
+    modality: "Outdoor · Bowls",
+    title: "By the lake, at dusk",
+    titleItalic: "lake",
+    practitioner: "Lila Bex",
+    location: "Hudson Valley, NY",
+    time: "FRI · 7:30 PM · $60",
+  },
+  {
+    img: "https://konacloudforest.com/wp-content/uploads/sites/7497/2024/08/Sound-Bath-Meditation-Journey-image-1.jpg?w=700&h=700&zoom=2",
+    alt: "Cloud forest sanctuary sound meditation",
+    modality: "Forest · 1-on-1",
+    title: "A private journey",
+    titleItalic: "private",
+    practitioner: "Indra Vale",
+    location: "Kona, HI",
+    time: "TUE · By appt · $120",
+  },
+];
+---
+
+<section class="section">
+  <div class="section-head">
+    <div class="section-num">ii.</div>
+    <div class="section-title">Now <em>bathing.</em></div>
+    <div class="section-meta">
+      <strong>Curated weekly</strong>
+      by the Sound Dip editors
+    </div>
+  </div>
+  <p class="section-lede">Three sessions this week we think are worth the trip — chosen by ear, vetted in person, written about with care.</p>
+
+  <div class="featured-grid">
+    {features.map((f) => (
+      <a class="feature" href="#">
+        <div class="feature-img-wrap">
+          <img src={f.img} alt={f.alt} loading="lazy" />
+        </div>
+        <div class="feature-modality">{f.modality}</div>
+        <div class="feature-title">
+          {f.title.split(f.titleItalic).map((part, i, arr) => (
+            i < arr.length - 1 ? <>{part}<em>{f.titleItalic}</em></> : part
+          ))}
+        </div>
+        <div class="feature-by">with {f.practitioner}</div>
+        <div class="feature-foot">
+          <span>{f.location}</span>
+          <strong>{f.time}</strong>
+        </div>
+      </a>
+    ))}
+  </div>
+</section>
+
+<style>
+  .featured-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 36px;
+  }
+  .feature {
+    cursor: pointer;
+    display: block;
+    text-decoration: none;
+    /* V2 lift on hover */
+    transition: transform 0.35s ease;
+  }
+  .feature:hover { transform: translateY(-6px); }
+
+  .feature-img-wrap {
+    aspect-ratio: 4/5;
+    overflow: hidden;
+    border-radius: 4px;
+    margin-bottom: 24px;
+    box-shadow: var(--shadow);
+    background: var(--linen);
+    /* V2: subtle clay border reveals on hover */
+    outline: 1px solid transparent;
+    transition: outline-color 0.3s;
+  }
+  .feature:hover .feature-img-wrap { outline-color: var(--clay); }
+  .feature-img-wrap img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    transition: transform 1.2s ease;
+  }
+  .feature:hover .feature-img-wrap img { transform: scale(1.04); }
+
+  .feature-modality {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--clay);
+    margin-bottom: 10px;
+  }
+  .feature-title {
+    font-family: var(--serif);
+    font-weight: 300;
+    font-size: 32px;
+    line-height: 1.02;
+    letter-spacing: -1px;
+    color: var(--ink);
+    margin-bottom: 6px;
+    font-variation-settings: "opsz" 72;
+  }
+  .feature-title em { font-style: italic; }
+  .feature-by {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 16px;
+    color: var(--ink-mid);
+    margin-bottom: 20px;
+  }
+  .feature-foot {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 16px;
+    border-top: 1px solid var(--rule-soft);
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    color: var(--ink-mid);
+  }
+  .feature-foot strong { color: var(--ink); font-weight: 500; }
+
+  @media (max-width: 1024px) {
+    .featured-grid { grid-template-columns: 1fr; }
+  }
+</style>

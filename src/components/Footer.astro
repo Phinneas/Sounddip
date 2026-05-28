@@ -1,0 +1,161 @@
+---
+// Footer — full site footer with nav columns + legal links
+---
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <div class="footer-logo">≈ Sound Dip</div>
+        <p class="footer-tagline">A calm bookshop on the internet.<br />For people who like to lie down.</p>
+      </div>
+
+      <nav class="footer-nav">
+        <div class="footer-col">
+          <div class="footer-col-head">Explore</div>
+          <a href="#">Sessions tonight</a>
+          <a href="#">New this week</a>
+          <a href="#">Featured practitioners</a>
+          <a href="#">Sound bath map</a>
+          <a href="#">Browse by city</a>
+        </div>
+        <div class="footer-col">
+          <div class="footer-col-head">Practice</div>
+          <a href="#">What is a sound bath?</a>
+          <a href="#">Your first dip</a>
+          <a href="#">Instruments guide</a>
+          <a href="#">Journal</a>
+          <a href="#">Currents newsletter</a>
+        </div>
+        <div class="footer-col">
+          <div class="footer-col-head">For hosts</div>
+          <a href="#">List your session</a>
+          <a href="#">Practitioner profiles</a>
+          <a href="#">Venue partnerships</a>
+          <a href="#">Host resources</a>
+        </div>
+        <div class="footer-col">
+          <div class="footer-col-head">Company</div>
+          <a href="#">About Sound Dip</a>
+          <a href="#">Editorial standards</a>
+          <a href="#">Press</a>
+          <a href="#">Contact</a>
+        </div>
+      </nav>
+    </div>
+
+    <div class="footer-bottom">
+      <div class="footer-copy">© 2026 Sound Dip. All rights reserved.</div>
+      <div class="footer-legal">
+        <a href="/privacy">Privacy</a>
+        <a href="/terms">Terms</a>
+        <a href="/cookies">Cookies</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    border-top: 1px solid var(--rule);
+    background: var(--bone);
+    padding: 80px 6vw 40px;
+  }
+  .footer-inner {
+    max-width: 1440px;
+    margin: 0 auto;
+  }
+  .footer-top {
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    gap: 80px;
+    margin-bottom: 64px;
+  }
+
+  /* Brand */
+  .footer-logo {
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 300;
+    font-size: 28px;
+    color: var(--ink);
+    letter-spacing: -0.5px;
+    margin-bottom: 20px;
+    font-variation-settings: "opsz" 72;
+  }
+  .footer-tagline {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 16px;
+    color: var(--ink-mid);
+    line-height: 1.55;
+    font-variation-settings: "opsz" 72;
+  }
+
+  /* Nav columns */
+  .footer-nav {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 40px;
+  }
+  .footer-col {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .footer-col-head {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-bottom: 4px;
+  }
+  .footer-col a {
+    font-family: var(--serif);
+    font-size: 15px;
+    color: var(--ink-mid);
+    text-decoration: none;
+    transition: color 0.2s;
+    font-variation-settings: "opsz" 72;
+  }
+  .footer-col a:hover { color: var(--clay); }
+
+  /* Bottom bar */
+  .footer-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 32px;
+    border-top: 1px solid var(--rule-soft);
+  }
+  .footer-copy {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 1px;
+    color: var(--ink-soft);
+  }
+  .footer-legal {
+    display: flex;
+    gap: 24px;
+  }
+  .footer-legal a {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .footer-legal a:hover { color: var(--clay); }
+
+  @media (max-width: 1024px) {
+    .footer-top { grid-template-columns: 1fr; gap: 48px; }
+    .footer-nav { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 640px) {
+    .footer-nav { grid-template-columns: 1fr; }
+    .footer-bottom { flex-direction: column; gap: 16px; align-items: flex-start; }
+  }
+</style>

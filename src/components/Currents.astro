@@ -1,0 +1,101 @@
+---
+// Currents — newsletter signup section
+---
+
+<section class="currents">
+  <div class="currents-eyebrow">Currents</div>
+  <h2>A weekly tide of new <em>sessions</em>, by post.</h2>
+  <p>Every Sunday: this week's featured sessions, two new practitioners, and one essay on the practice. No noise.</p>
+  <form class="currents-form" onsubmit="event.preventDefault()">
+    <input type="email" placeholder="your email" />
+    <button type="submit">Subscribe</button>
+  </form>
+  <div class="currents-fineprint">No spam · Unsubscribe at any time</div>
+</section>
+
+<style>
+  .currents {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 160px 6vw 100px;
+    text-align: center;
+  }
+  .currents-eyebrow {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--clay);
+    margin-bottom: 28px;
+    display: inline-block;
+  }
+  .currents-eyebrow::before,
+  .currents-eyebrow::after { content: "—"; margin: 0 12px; color: var(--clay); }
+  .currents h2 {
+    font-family: var(--serif);
+    font-weight: 300;
+    font-size: clamp(48px, 6.5vw, 88px);
+    line-height: 0.95;
+    letter-spacing: -2px;
+    color: var(--ink);
+    max-width: 840px;
+    margin: 0 auto 24px;
+    font-variation-settings: "opsz" 144;
+  }
+  .currents h2 em { font-style: italic; color: var(--clay); }
+  .currents p {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 20px;
+    color: var(--ink-mid);
+    max-width: 520px;
+    margin: 0 auto 48px;
+    line-height: 1.4;
+    font-variation-settings: "opsz" 72;
+  }
+  .currents-form {
+    max-width: 520px;
+    margin: 0 auto;
+    display: flex;
+    gap: 8px;
+    padding: 8px;
+    background: var(--linen);
+    border: 1px solid var(--rule-soft);
+    border-radius: 100px;
+  }
+  .currents-form input {
+    flex: 1;
+    background: none;
+    border: none;
+    color: var(--ink);
+    padding: 13px 22px;
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 17px;
+    outline: none;
+    font-variation-settings: "opsz" 72;
+  }
+  .currents-form input::placeholder { color: var(--ink-soft); }
+  .currents-form button {
+    background: var(--ink);
+    color: var(--bone);
+    border: none;
+    padding: 12px 28px;
+    border-radius: 100px;
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s;
+    white-space: nowrap;
+  }
+  .currents-form button:hover { background: var(--clay); }
+  .currents-fineprint {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-top: 24px;
+  }
+</style>

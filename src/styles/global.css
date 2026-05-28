@@ -1,0 +1,141 @@
+/* ─────────────────────────────────────────
+   SOUND DIP — Global Design System
+   Palette: V1 warm/editorial
+   Type:    Fraunces · Inter · JetBrains Mono
+   ───────────────────────────────────────── */
+
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;1,9..144,300;1,9..144,400;1,9..144,500&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+
+/* ── Tokens ── */
+:root {
+  --bone:       #f4ede0;
+  --bone-2:     #f7f1e6;
+  --linen:      #ece3d1;
+  --linen-2:    #e3d6bc;
+  --sand:       #d9c8a8;
+  --sand-d:     #c4b292;
+  --clay:       #b8704a;
+  --clay-d:     #9a5a39;
+  --ochre:      #8d6431;
+  --ink:        #221b13;
+  --ink-mid:    #5a4f43;
+  --ink-soft:   #8a7d6e;
+  --rule:       rgba(34, 27, 19, 0.12);
+  --rule-soft:  rgba(34, 27, 19, 0.06);
+  --shadow:     0 1px 2px rgba(80,50,20,0.05), 0 14px 36px rgba(80,50,20,0.06);
+
+  --serif: 'Fraunces', Georgia, serif;
+  --sans:  'Inter', system-ui, sans-serif;
+  --mono:  'JetBrains Mono', monospace;
+}
+
+/* ── Reset ── */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bone);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-weight: 400;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+}
+
+/* ── Paper grain texture (fixed overlay) ── */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.5 0 0 0 0 0.4 0 0 0 0 0.2 0 0 0 0.1 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity: 0.35;
+  mix-blend-mode: multiply;
+  pointer-events: none;
+  z-index: 1;
+}
+main { position: relative; z-index: 2; }
+
+/* ── Shared section wrapper ── */
+.section {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 140px 6vw 0;
+}
+
+/* ── Section header grid ── */
+.section-head {
+  display: grid;
+  grid-template-columns: 72px 1fr auto;
+  gap: 32px;
+  align-items: end;
+  padding-bottom: 32px;
+  border-bottom: 1px solid var(--rule);
+  margin-bottom: 64px;
+}
+.section-num {
+  font-family: var(--serif);
+  font-style: italic;
+  font-weight: 300;
+  font-size: 64px;
+  color: var(--clay);
+  line-height: 0.8;
+}
+.section-title {
+  font-family: var(--serif);
+  font-weight: 300;
+  font-size: clamp(44px, 5vw, 72px);
+  line-height: 0.95;
+  letter-spacing: -2px;
+  color: var(--ink);
+}
+.section-title em { font-style: italic; color: var(--clay); }
+.section-meta {
+  text-align: right;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  line-height: 1.6;
+}
+.section-meta strong {
+  color: var(--ink);
+  font-weight: 500;
+  display: block;
+  margin-bottom: 4px;
+}
+.section-lede {
+  font-family: var(--serif);
+  font-style: italic;
+  font-weight: 300;
+  font-size: 21px;
+  color: var(--ink-mid);
+  max-width: 720px;
+  margin-bottom: 56px;
+  line-height: 1.4;
+}
+
+/* ── Map pin pulse animation ── */
+.pin-pulse   { animation: pinPulse 3s ease-out infinite; transform-origin: center; }
+.pin-pulse-2 { animation-delay: 0.6s; }
+.pin-pulse-3 { animation-delay: 1.2s; }
+.pin-pulse-4 { animation-delay: 1.8s; }
+.pin-pulse-5 { animation-delay: 2.4s; }
+@keyframes pinPulse {
+  0%   { r: 4; opacity: 0.6; }
+  100% { r: 22; opacity: 0; }
+}
+
+/* ── Live dot pulse ── */
+@keyframes pulse {
+  0%   { box-shadow: 0 0 0 0 rgba(184,112,74,0.45); }
+  70%  { box-shadow: 0 0 0 10px rgba(184,112,74,0); }
+  100% { box-shadow: 0 0 0 0 rgba(184,112,74,0); }
+}
+
+/* ── Responsive base ── */
+@media (max-width: 1024px) {
+  .section-head { grid-template-columns: 1fr; gap: 16px; }
+  .section-meta { text-align: left; }
+}

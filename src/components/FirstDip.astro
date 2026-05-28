@@ -1,0 +1,175 @@
+---
+// FirstDip — "For your first time" editorial section
+// V1 design, linen card, bordered steps
+---
+
+<section class="section">
+  <div class="first-dip">
+    <div class="first-dip-content">
+      <div class="first-dip-eyebrow">iv. · For your first time</div>
+      <h3>Your first <em>dip.</em></h3>
+      <p class="first-dip-intro">A sound bath isn't a workout, a class, or a performance. You lie down. You close your eyes. Vibrations from bowls, gongs, and voice wash over you for an hour. Most people fall asleep at least a little — that's the point.</p>
+
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">i</div>
+          <div class="step-body">
+            <strong>Arrive ten minutes early.</strong>
+            <span>Most spaces lock the door once the session begins. Bring socks, a water bottle, an open mind.</span>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">ii</div>
+          <div class="step-body">
+            <strong>Lie down. That's it.</strong>
+            <span>Mats and blankets are provided. You won't be asked to move, chant, or do anything. Just breathe.</span>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">iii</div>
+          <div class="step-body">
+            <strong>Surface slowly afterward.</strong>
+            <span>Don't rush back into the day. Walk home. Drink water. Take a note if something rose up.</span>
+          </div>
+        </div>
+      </div>
+
+      <a href="/guide/first-time" class="first-dip-cta">Read the full guide</a>
+    </div>
+
+    <div class="first-dip-visual">
+      <img
+        src="https://hips.hearstapps.com/hmg-prod/images/sarah-barnard-sensory-wellness-room-2-65c4f0a2e2b5f.jpg"
+        alt="A warm sound bath room with natural light"
+        loading="lazy"
+      />
+      <div class="first-dip-caption">A room in Tribeca, photographed at 4:30 PM.</div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .first-dip {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    background: var(--linen);
+    padding: 88px 80px;
+    border-radius: 16px;
+    align-items: center;
+  }
+  .first-dip-eyebrow {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--clay);
+    margin-bottom: 24px;
+  }
+  .first-dip h3 {
+    font-family: var(--serif);
+    font-weight: 300;
+    font-size: 56px;
+    line-height: 0.95;
+    letter-spacing: -1.5px;
+    color: var(--ink);
+    margin-bottom: 28px;
+    font-variation-settings: "opsz" 144;
+  }
+  .first-dip h3 em { font-style: italic; color: var(--clay); }
+  .first-dip-intro {
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 300;
+    font-size: 18px;
+    color: var(--ink-mid);
+    line-height: 1.5;
+    margin-bottom: 36px;
+    font-variation-settings: "opsz" 72;
+  }
+
+  .steps { display: flex; flex-direction: column; margin-bottom: 40px; }
+  .step {
+    display: grid;
+    grid-template-columns: 52px 1fr;
+    gap: 24px;
+    align-items: start;
+    padding: 22px 0;
+    border-top: 1px solid var(--rule);
+  }
+  .step:last-child { border-bottom: 1px solid var(--rule); }
+  .step-num {
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 300;
+    font-size: 30px;
+    color: var(--clay);
+    line-height: 1;
+    font-variation-settings: "opsz" 72;
+  }
+  .step-body strong {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: 18px;
+    color: var(--ink);
+    display: block;
+    margin-bottom: 4px;
+    font-variation-settings: "opsz" 72;
+  }
+  .step-body span {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 14px;
+    color: var(--ink-mid);
+    line-height: 1.5;
+    font-variation-settings: "opsz" 72;
+  }
+
+  .first-dip-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 28px;
+    background: var(--ink);
+    color: var(--bone);
+    text-decoration: none;
+    border-radius: 100px;
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.3px;
+    transition: background 0.2s;
+  }
+  .first-dip-cta::after { content: "→"; }
+  .first-dip-cta:hover { background: var(--clay); }
+
+  .first-dip-visual {
+    position: relative;
+    aspect-ratio: 4/5;
+    overflow: hidden;
+    border-radius: 6px;
+    box-shadow: var(--shadow);
+  }
+  .first-dip-visual img { width: 100%; height: 100%; object-fit: cover; }
+  .first-dip-caption {
+    position: absolute;
+    bottom: 20px; left: 22px; right: 22px;
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 14px;
+    color: var(--bone);
+    font-variation-settings: "opsz" 72;
+  }
+  .first-dip-caption::before {
+    content: "";
+    display: block;
+    width: 28px; height: 1px;
+    background: var(--bone);
+    opacity: 0.7;
+    margin-bottom: 10px;
+  }
+
+  @media (max-width: 1024px) {
+    .first-dip { grid-template-columns: 1fr; padding: 56px 36px; gap: 48px; }
+  }
+</style>

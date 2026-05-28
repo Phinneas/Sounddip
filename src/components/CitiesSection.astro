@@ -1,0 +1,177 @@
+---
+// CitiesSection — city cards + overflow pills
+// V1 design, italic serif pills, warm overlay
+
+const cities = [
+  { num: "01 · East Coast", name: "New", nameItalic: "York", count: "47 sessions this week", img: "https://images.stockcake.com/public/3/4/6/346ed7ec-2f7d-4dd2-a744-572f9cfcbd96_large/historic-brick-townhouses-stockcake.jpg", alt: "Brooklyn brownstones" },
+  { num: "02 · Mojave", name: "Joshua", nameItalic: "Tree", count: "19 sessions this week", img: "https://sound-bath.com/wp-content/uploads/2025/11/The-Gong-Room-Joshua-Tree.jpeg", alt: "Joshua Tree gong room" },
+  { num: "03 · UK", name: "Lon", nameItalic: "don", count: "22 sessions this week", img: "https://images.stockcake.com/public/c/a/9/ca9d020a-5813-4a78-8fcc-73fae068ce57/golden-hour-street-stockcake.jpg", alt: "Golden hour street" },
+];
+
+const overflow = [
+  { name: "Austin", count: 14 },
+  { name: "Portland", count: 19 },
+  { name: "Berlin", count: 17 },
+  { name: "Mexico City", count: 11 },
+  { name: "Lisbon", count: 9 },
+  { name: "Amsterdam", count: 13 },
+  { name: "Boulder", count: 8 },
+  { name: "Tulum", count: 6 },
+  { name: "Bali", count: 21 },
+  { name: "Tokyo", count: 5 },
+  { name: "Melbourne", count: 12 },
+];
+---
+
+<section class="section">
+  <div class="section-head">
+    <div class="section-num">iii.</div>
+    <div class="section-title">Where to <em>drift.</em></div>
+    <div class="section-meta">
+      <strong>32 cities</strong>
+      and growing
+    </div>
+  </div>
+  <p class="section-lede">Sound Dip is biggest in Brooklyn and Joshua Tree, but we cover thirty-two cities in total. Pick a destination — or browse for one.</p>
+
+  <div class="cities-grid">
+    {cities.map((c) => (
+      <div class="city">
+        <img src={c.img} alt={c.alt} loading="lazy" />
+        <div class="city-info">
+          <div class="city-num">{c.num}</div>
+          <div class="city-name">{c.name} <em>{c.nameItalic}</em></div>
+          <div class="city-count">{c.count}</div>
+        </div>
+      </div>
+    ))}
+  </div>
+
+  <div class="cities-overflow">
+    <span class="cities-overflow-label">Also in</span>
+    {overflow.map((c) => (
+      <span class="city-pill">
+        {c.name} <span class="count">{c.count}</span>
+      </span>
+    ))}
+    <span class="city-pill see-all">See all 32 →</span>
+  </div>
+</section>
+
+<style>
+  .cities-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 28px;
+    margin-bottom: 60px;
+  }
+  .city {
+    position: relative;
+    aspect-ratio: 3/4;
+    border-radius: 6px;
+    overflow: hidden;
+    cursor: pointer;
+    box-shadow: var(--shadow);
+    transition: transform 0.35s ease;
+  }
+  .city:hover { transform: translateY(-4px); }
+  .city img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    transition: transform 1.4s ease;
+  }
+  .city:hover img { transform: scale(1.06); }
+  .city::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, transparent 30%, rgba(34,27,19,0.1) 60%, rgba(34,27,19,0.7) 100%);
+  }
+  .city-info {
+    position: absolute;
+    bottom: 32px; left: 32px; right: 32px;
+    z-index: 2;
+    color: var(--bone);
+  }
+  .city-num {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--bone);
+    opacity: 0.7;
+    margin-bottom: 8px;
+  }
+  .city-name {
+    font-family: var(--serif);
+    font-weight: 300;
+    font-size: 48px;
+    line-height: 0.92;
+    letter-spacing: -1.5px;
+    margin-bottom: 10px;
+    font-variation-settings: "opsz" 144;
+  }
+  .city-name em { font-style: italic; }
+  .city-count {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 16px;
+    color: var(--bone);
+    opacity: 0.85;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-variation-settings: "opsz" 72;
+  }
+  .city-count::after { content: "→"; font-family: var(--sans); font-style: normal; font-size: 16px; }
+
+  /* Overflow pills */
+  .cities-overflow {
+    padding-top: 36px;
+    border-top: 1px solid var(--rule);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: baseline;
+  }
+  .cities-overflow-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-right: 12px;
+    padding: 10px 0;
+  }
+  .city-pill {
+    padding: 10px 18px;
+    border: 1px solid var(--rule);
+    border-radius: 100px;
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 16px;
+    color: var(--ink);
+    cursor: pointer;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--bone);
+    font-variation-settings: "opsz" 72;
+  }
+  .city-pill .count {
+    font-family: var(--mono);
+    font-style: normal;
+    font-size: 10px;
+    letter-spacing: 1px;
+    color: var(--ink-soft);
+  }
+  .city-pill:hover {
+    background: var(--linen);
+    border-color: var(--clay);
+    color: var(--clay);
+  }
+
+  @media (max-width: 1024px) {
+    .cities-grid { grid-template-columns: 1fr; }
+  }
+</style>
