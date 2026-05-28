@@ -1,0 +1,332 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Topbar from '../../components/Topbar.astro';
+import { cities, getCityBySlug } from '../../data/cities';
+
+export function getStaticPaths() {
+  return cities.map((c) => ({ params: { city: c.slug } }));
+}
+
+const { city: slug } = Astro.params;
+const city = getCityBySlug(slug);
+if (!city) return Astro.redirect('/');
+---
+
+<Layout
+  title={`Sound baths in ${city.name} — Sounddip`}
+  description={`${city.tagline} Find sound bath sessions, venues, and practitioners in ${city.name}, ${city.region}.`}
+>
+  <Topbar />
+  <main>
+
+    <div class="city-hero">
+      <div class="city-hero-inner">
+        <div class="city-breadcrumb">
+          <a href="/">Sounddip</a>
+          <span>·</span>
+          <a href="/#cities">Cities</a>
+          <span>·</span>
+          <span>{city.name}</span>
+        </div>
+        <div class="city-kicker">{city.region}</div>
+        <h1>Sound baths in <em>{city.name}.</em></h1>
+        <p class="city-tagline">{city.tagline}</p>
+        <div class="city-meta">
+          <div class="meta-item">
+            <div class="meta-label">Sessions tracked</div>
+            <div class="meta-val">{city.sessionCount}</div>
+          </div>
+          <div class="meta-item">
+            <div class="meta-label">Price range</div>
+            <div class="meta-val">{city.priceRange}</div>
+          </div>
+          <div class="meta-item">
+            <div class="meta-label">Common formats</div>
+            <div class="meta-val">{city.formats.slice(0, 2).join(' · ')}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="city-body">
+
+      <div class="city-formats">
+        {city.formats.map((f) => <span class="format-tag">{f}</span>)}
+      </div>
+
+      <div class="city-content">
+
+        <div class="city-scene">
+          <div class="content-label">The scene</div>
+          {city.scene.split('\n\n').map((para) => <p>{para}</p>)}
+        </div>
+
+        <aside class="city-sidebar">
+
+          <div class="sidebar-block">
+            <div class="sidebar-label">Where to go</div>
+            <div class="venues">
+              {city.venues.map((v) => (
+                <div class="venue">
+                  <div class="venue-name">{v.name}</div>
+                  <div class="venue-note">{v.note}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div class="sidebar-block">
+            <div class="sidebar-label">For your first time</div>
+            <p class="beginner-text">{city.beginner}</p>
+          </div>
+
+          <div class="sidebar-block sidebar-block--meta">
+            <div class="sidebar-label">At a glance</div>
+            <div class="at-a-glance">
+              <div class="glance-row">
+                <span>Price range</span>
+                <strong>{city.priceRange}</strong>
+              </div>
+              <div class="glance-row">
+                <span>Sessions tracked</span>
+                <strong>{city.sessionCount}</strong>
+              </div>
+              {city.formats.map((f) => (
+                <div class="glance-tag">{f}</div>
+              ))}
+            </div>
+          </div>
+
+        </aside>
+
+      </div>
+
+    </div>
+
+    <div class="city-footer-nav">
+      <a href="/" class="back-link">← All cities</a>
+    </div>
+
+  </main>
+</Layout>
+
+<style>
+  main { position: relative; z-index: 2; }
+
+  /* Hero */
+  .city-hero {
+    background: var(--ink);
+    padding: 160px 6vw 80px;
+  }
+  .city-hero-inner {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+  .city-breadcrumb {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    color: var(--ink-soft);
+    margin-bottom: 32px;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+  .city-breadcrumb a {
+    color: var(--sand);
+    text-decoration: none;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+  }
+  .city-breadcrumb a:hover { opacity: 1; }
+  .city-breadcrumb span { color: var(--ink-soft); }
+
+  .city-kicker {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--clay);
+    margin-bottom: 16px;
+  }
+
+  h1 {
+    font-family: var(--serif);
+    font-size: clamp(48px, 7vw, 88px);
+    font-weight: 300;
+    color: var(--bone);
+    line-height: 1.0;
+    letter-spacing: -2px;
+    margin-bottom: 20px;
+    font-variation-settings: "opsz" 72;
+  }
+  h1 em { color: var(--clay); font-style: italic; }
+
+  .city-tagline {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 18px;
+    color: var(--sand);
+    opacity: 0.8;
+    margin-bottom: 48px;
+    max-width: 560px;
+    font-variation-settings: "opsz" 72;
+  }
+
+  .city-meta {
+    display: flex;
+    gap: 40px;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    padding-top: 32px;
+  }
+  .meta-label {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-bottom: 6px;
+  }
+  .meta-val {
+    font-family: var(--serif);
+    font-size: 18px;
+    color: var(--bone);
+    font-variation-settings: "opsz" 72;
+  }
+
+  /* Body */
+  .city-body {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 80px 6vw 0;
+  }
+
+  .city-formats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 64px;
+  }
+  .format-tag {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--clay);
+    border: 1px solid var(--rule);
+    padding: 6px 14px;
+    border-radius: 100px;
+    background: var(--bone-2);
+  }
+
+  .city-content {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 80px;
+    align-items: start;
+  }
+
+  /* Scene */
+  .content-label {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-bottom: 28px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .city-scene p {
+    font-family: var(--serif);
+    font-size: 18px;
+    line-height: 1.75;
+    color: var(--ink);
+    margin-bottom: 24px;
+    font-variation-settings: "opsz" 72;
+  }
+  .city-scene p:last-child { margin-bottom: 0; }
+
+  /* Sidebar */
+  .city-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    position: sticky;
+    top: 32px;
+  }
+  .sidebar-block {
+    padding: 28px 0;
+    border-bottom: 1px solid var(--rule-soft);
+  }
+  .sidebar-block:first-child { padding-top: 0; }
+  .sidebar-label {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-bottom: 20px;
+  }
+
+  .venues { display: flex; flex-direction: column; gap: 20px; }
+  .venue-name {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 16px;
+    color: var(--ink);
+    margin-bottom: 4px;
+    font-variation-settings: "opsz" 72;
+  }
+  .venue-note {
+    font-size: 13px;
+    color: var(--ink-soft);
+    line-height: 1.55;
+  }
+
+  .beginner-text {
+    font-size: 14px;
+    color: var(--ink-mid);
+    line-height: 1.7;
+  }
+
+  .at-a-glance { display: flex; flex-direction: column; gap: 10px; }
+  .glance-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    color: var(--ink-soft);
+  }
+  .glance-row strong { color: var(--ink); font-weight: 500; }
+  .glance-tag {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 1px;
+    color: var(--clay);
+    text-transform: uppercase;
+  }
+
+  /* Footer nav */
+  .city-footer-nav {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 80px 6vw 120px;
+    border-top: 1px solid var(--rule-soft);
+    margin-top: 80px;
+  }
+  .back-link {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    color: var(--clay);
+    text-decoration: none;
+    text-transform: uppercase;
+  }
+  .back-link:hover { opacity: 0.7; }
+
+  @media (max-width: 900px) {
+    .city-content { grid-template-columns: 1fr; }
+    .city-sidebar { position: static; }
+    .city-meta { flex-direction: column; gap: 20px; }
+  }
+</style>

@@ -3,23 +3,21 @@
 // V1 design, italic serif pills, warm overlay
 
 const cities = [
-  { num: "01 · East Coast", name: "New", nameItalic: "York", count: "47 sessions this week", img: "https://images.stockcake.com/public/3/4/6/346ed7ec-2f7d-4dd2-a744-572f9cfcbd96_large/historic-brick-townhouses-stockcake.jpg", alt: "Brooklyn brownstones" },
-  { num: "02 · Mojave", name: "Joshua", nameItalic: "Tree", count: "19 sessions this week", img: "https://sound-bath.com/wp-content/uploads/2025/11/The-Gong-Room-Joshua-Tree.jpeg", alt: "Joshua Tree gong room" },
-  { num: "03 · UK", name: "Lon", nameItalic: "don", count: "22 sessions this week", img: "https://images.stockcake.com/public/c/a/9/ca9d020a-5813-4a78-8fcc-73fae068ce57/golden-hour-street-stockcake.jpg", alt: "Golden hour street" },
+  { num: "01 · East Coast", name: "New", nameItalic: "York", count: "47 sessions this week", img: "https://images.stockcake.com/public/3/4/6/346ed7ec-2f7d-4dd2-a744-572f9cfcbd96_large/historic-brick-townhouses-stockcake.jpg", alt: "Brooklyn brownstones", href: "/cities/new-york-city" },
+  { num: "02 · Mojave", name: "Joshua", nameItalic: "Tree", count: "19 sessions this week", img: "https://sound-bath.com/wp-content/uploads/2025/11/The-Gong-Room-Joshua-Tree.jpeg", alt: "Joshua Tree gong room", href: null },
+  { num: "03 · UK", name: "Lon", nameItalic: "don", count: "22 sessions this week", img: "https://images.stockcake.com/public/c/a/9/ca9d020a-5813-4a78-8fcc-73fae068ce57/golden-hour-street-stockcake.jpg", alt: "Golden hour street", href: null },
 ];
 
 const overflow = [
-  { name: "Austin", count: 14 },
-  { name: "Portland", count: 19 },
-  { name: "Berlin", count: 17 },
-  { name: "Mexico City", count: 11 },
-  { name: "Lisbon", count: 9 },
-  { name: "Amsterdam", count: 13 },
-  { name: "Boulder", count: 8 },
-  { name: "Tulum", count: 6 },
-  { name: "Bali", count: 21 },
-  { name: "Tokyo", count: 5 },
-  { name: "Melbourne", count: 12 },
+  { name: "Austin", count: 14, href: "/cities/austin" },
+  { name: "Chicago", count: 22, href: "/cities/chicago" },
+  { name: "Atlanta", count: 31, href: "/cities/atlanta" },
+  { name: "Los Angeles", count: 58, href: "/cities/los-angeles" },
+  { name: "Seattle", count: 19, href: "/cities/seattle" },
+  { name: "Portland", count: 19, href: "/cities/portland" },
+  { name: "Denver", count: 16, href: "/cities/denver" },
+  { name: "Nashville", count: 12, href: "/cities/nashville" },
+  { name: "Philadelphia", count: 11, href: "/cities/philadelphia" },
 ];
 ---
 
@@ -36,25 +34,24 @@ const overflow = [
 
   <div class="cities-grid">
     {cities.map((c) => (
-      <div class="city">
+      <a class="city" href={c.href ?? undefined} style={c.href ? '' : 'pointer-events:none'}>
         <img src={c.img} alt={c.alt} loading="lazy" />
         <div class="city-info">
           <div class="city-num">{c.num}</div>
           <div class="city-name">{c.name} <em>{c.nameItalic}</em></div>
           <div class="city-count">{c.count}</div>
         </div>
-      </div>
+      </a>
     ))}
   </div>
 
   <div class="cities-overflow">
     <span class="cities-overflow-label">Also in</span>
     {overflow.map((c) => (
-      <span class="city-pill">
+      <a class="city-pill" href={c.href}>
         {c.name} <span class="count">{c.count}</span>
-      </span>
+      </a>
     ))}
-    <span class="city-pill see-all">See all 32 →</span>
   </div>
 </section>
 
@@ -170,6 +167,8 @@ const overflow = [
     border-color: var(--clay);
     color: var(--clay);
   }
+  .city-pill { text-decoration: none; }
+  a.city { text-decoration: none; }
 
   @media (max-width: 1024px) {
     .cities-grid { grid-template-columns: 1fr; }
