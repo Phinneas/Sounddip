@@ -3,21 +3,29 @@
 // V1 design, italic serif pills, warm overlay
 
 const cities = [
-  { num: "01 · East Coast", name: "New", nameItalic: "York", count: "47 sessions this week", img: "https://images.stockcake.com/public/3/4/6/346ed7ec-2f7d-4dd2-a744-572f9cfcbd96_large/historic-brick-townhouses-stockcake.jpg", alt: "Brooklyn brownstones", href: "/cities/new-york-city" },
-  { num: "02 · Mojave", name: "Joshua", nameItalic: "Tree", count: "19 sessions this week", img: "https://sound-bath.com/wp-content/uploads/2025/11/The-Gong-Room-Joshua-Tree.jpeg", alt: "Joshua Tree gong room", href: null },
-  { num: "03 · UK", name: "Lon", nameItalic: "don", count: "22 sessions this week", img: "https://images.stockcake.com/public/c/a/9/ca9d020a-5813-4a78-8fcc-73fae068ce57/golden-hour-street-stockcake.jpg", alt: "Golden hour street", href: null },
+  { num: "01 · East Coast", name: "New", nameItalic: "York", count: "47 sessions this week", img: "https://images.stockcake.com/public/3/4/6/346ed7ec-2f7d-4dd2-a744-572f9cfcbd96_large/historic-brick-townhouses-stockcake.jpg", alt: "Brooklyn brownstones", href: "/cities/new-york" },
+  { num: "02 · Mojave", name: "Joshua", nameItalic: "Tree", count: "11 sessions this week", img: "https://sound-bath.com/wp-content/uploads/2025/11/The-Gong-Room-Joshua-Tree.jpeg", alt: "Joshua Tree gong room", href: "/cities/joshua-tree" },
+  { num: "03 · California", name: "Los", nameItalic: "Angeles", count: "20 sessions this week", img: "https://images.stockcake.com/public/3/4/6/346ed7ec-2f7d-4dd2-a744-572f9cfcbd96_large/historic-brick-townhouses-stockcake.jpg", alt: "Los Angeles at dusk", href: "/cities/los-angeles" },
 ];
 
 const overflow = [
-  { name: "Austin", count: 14, href: "/cities/austin" },
   { name: "Chicago", count: 22, href: "/cities/chicago" },
-  { name: "Atlanta", count: 31, href: "/cities/atlanta" },
-  { name: "Los Angeles", count: 58, href: "/cities/los-angeles" },
+  { name: "Austin", count: 14, href: "/cities/austin" },
+  { name: "San Francisco", count: 10, href: "/cities/san-francisco" },
+  { name: "Denver", count: 16, href: "/cities/denver" },
   { name: "Seattle", count: 19, href: "/cities/seattle" },
   { name: "Portland", count: 19, href: "/cities/portland" },
-  { name: "Denver", count: 16, href: "/cities/denver" },
-  { name: "Nashville", count: 12, href: "/cities/nashville" },
-  { name: "Philadelphia", count: 11, href: "/cities/philadelphia" },
+  { name: "Sedona", count: 8, href: "/cities/sedona" },
+  { name: "Boulder", count: 7, href: "/cities/boulder" },
+  { name: "Asheville", count: 7, href: "/cities/asheville" },
+  { name: "Miami", count: 9, href: "/cities/miami" },
+  { name: "San Diego", count: 8, href: "/cities/san-diego" },
+  { name: "Boston", count: 5, href: "/cities/boston" },
+  { name: "Santa Fe", count: 7, href: "/cities/santa-fe" },
+  { name: "Minneapolis", count: 8, href: "/cities/minneapolis" },
+  { name: "Washington DC", count: 7, href: "/cities/washington-dc" },
+  { name: "New Orleans", count: 5, href: "/cities/new-orleans" },
+  { name: "Burlington", count: 7, href: "/cities/burlington" },
 ];
 ---
 
@@ -26,11 +34,11 @@ const overflow = [
     <div class="section-num">iii.</div>
     <div class="section-title">Where to <em>drift.</em></div>
     <div class="section-meta">
-      <strong>32 cities</strong>
+      <strong>20 cities</strong>
       and growing
     </div>
   </div>
-  <p class="section-lede">Sound Dip is biggest in Brooklyn and Joshua Tree, but we cover thirty-two cities in total. Pick a destination — or browse for one.</p>
+  <p class="section-lede">Sound Dip is biggest in New York and Joshua Tree, but we cover twenty cities in total. Pick a destination — or browse for one.</p>
 
   <div class="cities-grid">
     {cities.map((c) => (

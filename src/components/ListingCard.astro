@@ -1,0 +1,238 @@
+---
+interface Props {
+  name: string;
+  slug: string;
+  neighborhood?: string;
+  modalityTags?: string[];
+  modalityDescription?: string;
+  duration?: string;
+  price?: string;
+  bookingUrl?: string;
+  practitionerBio?: string;
+  sessionDescription?: string;
+  listingStatus?: string;
+  photo?: any;
+  index: number;
+}
+const { name, neighborhood, modalityTags, modalityDescription, duration, price, bookingUrl, practitionerBio, sessionDescription, listingStatus, index } = Astro.props;
+const num = String(index + 1).padStart(2, '0');
+
+const statusLabels: Record<string, string> = {
+  'active': '',
+  'active-secondary': 'Secondary fit',
+  'needs-verification': 'Needs verification',
+  'needs-organizer-name': 'Needs organizer name',
+  'flagged-inactive': 'Flagged inactive',
+};
+const statusLabel = statusLabels[listingStatus || ''] || '';
+---
+
+<article class="listing-card">
+  <div class="listing-card-inner">
+    <div class="listing-num">{num}</div>
+    <div class="listing-body">
+      <div class="listing-header">
+        <h3 class="listing-name">{name}</h3>
+        {neighborhood && <span class="listing-hood">{neighborhood}</span>}
+      </div>
+
+      {modalityTags && modalityTags.length > 0 && (
+        <div class="listing-modalities">
+          {modalityTags.map((tag) => (
+            <span class="modality-pill">{tag.replace('-', ' ')}</span>
+          ))}
+        </div>
+      )}
+
+      {sessionDescription && (
+        <p class="listing-session">{sessionDescription}</p>
+      )}
+
+      {practitionerBio && (
+        <details class="listing-bio-details">
+          <summary>About the practitioner</summary>
+          <p class="listing-bio">{practitionerBio}</p>
+        </details>
+      )}
+
+      <div class="listing-meta">
+        {duration && duration !== 'Not published' && (
+          <span class="meta-item"><span class="meta-label">Duration</span> <span class="meta-value">{duration}</span></span>
+        )}
+        {price && price !== 'Not published' && (
+          <span class="meta-item"><span class="meta-label">Price</span> <span class="meta-value">{price}</span></span>
+        )}
+        {statusLabel && <span class="listing-status-note">{statusLabel}</span>}
+      </div>
+
+      {bookingUrl && bookingUrl !== 'N/A' && (
+        <a href={bookingUrl} class="listing-book" target="_blank" rel="noopener noreferrer">
+          Book a session <span class="arrow">↗</span>
+        </a>
+      )}
+    </div>
+  </div>
+</article>
+
+<style>
+  .listing-card {
+    padding: 28px 0;
+    border-bottom: 1px solid var(--rule-soft);
+  }
+  .listing-card:first-child { border-top: 1px solid var(--rule-soft); }
+
+  .listing-card-inner {
+    display: grid;
+    grid-template-columns: 48px 1fr;
+    gap: 24px;
+    align-items: start;
+  }
+
+  .listing-num {
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 300;
+    font-size: 28px;
+    color: var(--clay);
+    line-height: 1;
+    padding-top: 4px;
+  }
+
+  .listing-body {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .listing-header {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .listing-name {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: 22px;
+    color: var(--ink);
+    letter-spacing: -0.3px;
+    margin: 0;
+    font-variation-settings: "opsz" 72;
+  }
+
+  .listing-hood {
+    font-family: var(--sans);
+    font-size: 13px;
+    color: var(--ink-soft);
+  }
+
+  .listing-modalities {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .modality-pill {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--clay);
+    background: var(--linen);
+    padding: 4px 10px;
+    border-radius: 100px;
+    border: 1px solid var(--rule);
+  }
+
+  .listing-session {
+    font-family: var(--serif);
+    font-size: 15px;
+    color: var(--ink-mid);
+    line-height: 1.6;
+    max-width: 640px;
+  }
+
+  .listing-bio-details {
+    max-width: 640px;
+  }
+
+  .listing-bio-details summary {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    cursor: pointer;
+    padding: 4px 0;
+    transition: color 0.2s;
+  }
+  .listing-bio-details summary:hover { color: var(--clay); }
+
+  .listing-bio {
+    font-family: var(--serif);
+    font-size: 15px;
+    color: var(--ink-mid);
+    line-height: 1.7;
+    padding-top: 10px;
+    font-variation-settings: "opsz" 72;
+  }
+
+  .listing-meta {
+    display: flex;
+    align-items: baseline;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+
+  .meta-item {
+    font-family: var(--sans);
+    font-size: 13px;
+    color: var(--ink-mid);
+  }
+  .meta-label {
+    color: var(--ink-soft);
+    font-size: 11px;
+    margin-right: 4px;
+  }
+  .meta-value {
+    color: var(--ink);
+    font-weight: 500;
+  }
+
+  .listing-status-note {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--ochre);
+    background: var(--linen-2);
+    padding: 3px 10px;
+    border-radius: 100px;
+  }
+
+  .listing-book {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    text-decoration: none;
+    padding-top: 4px;
+    transition: color 0.2s;
+  }
+  .listing-book:hover { color: var(--clay); }
+  .listing-book:hover .arrow { transform: translateX(3px); }
+  .listing-book .arrow {
+    font-size: 14px;
+    transition: transform 0.2s;
+  }
+
+  @media (max-width: 640px) {
+    .listing-card-inner { grid-template-columns: 1fr; }
+    .listing-num { display: none; }
+  }
+</style>

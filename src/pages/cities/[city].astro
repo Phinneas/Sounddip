@@ -1,332 +1,281 @@
 ---
+import { getCityBySlug, cities } from '../../data/cities';
 import Layout from '../../layouts/Layout.astro';
 import Topbar from '../../components/Topbar.astro';
-import { cities, getCityBySlug } from '../../data/cities';
+import CityHero from '../../components/CityHero.astro';
+import VenueCard from '../../components/VenueCard.astro';
+import ListingCard from '../../components/ListingCard.astro';
+import Footer from '../../components/Footer.astro';
+import JsonLd from '../../components/JsonLd.astro';
 
 export function getStaticPaths() {
-  return cities.map((c) => ({ params: { city: c.slug } }));
+  return cities.map((city) => ({
+    params: { city: city.slug },
+  }));
 }
 
 const { city: slug } = Astro.params;
-const city = getCityBySlug(slug);
+const city = getCityBySlug(slug!);
 if (!city) return Astro.redirect('/');
+
+const pageTitle = `Best Sound Baths in ${city.name} — Sound Dip`;
+const pageDescription = `${city.sessionCount} vetted sound bath sessions in ${city.name}. ${city.tagline}`;
+const sceneParagraphs = city.scene.split('\n\n').filter(Boolean);
+
+// Fetch listings from Payload CMS at build time
+let listings: any[] = [];
+const CMS_API = 'https://sounddip-cms.buzzuw2.workers.dev';
+try {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 10000);
+  const cityRes = await fetch(`${CMS_API}/api/cities?where[slug][equals]=${city.slug}&limit=1`, { signal: controller.signal });
+  clearTimeout(timeout);
+  const cityData = await cityRes.json();
+  if (cityData.docs?.[0]?.id) {
+    const cityId = cityData.docs[0].id;
+    const controller2 = new AbortController();
+    const timeout2 = setTimeout(() => controller2.abort(), 15000);
+    const listingsRes = await fetch(`${CMS_API}/api/listings?where[city][equals]=${cityId}&limit=100&depth=0`, { signal: controller2.signal });
+    clearTimeout(timeout2);
+    const listingsData = await listingsRes.json();
+    listings = listingsData.docs || [];
+  }
+} catch (e) {
+  // API fetch failed or timed out — listings section will be empty
+}
+
+// Only show active and active-secondary listings, sorted by status
+const visibleListings = listings
+  .filter((l: any) => ['active', 'active-secondary'].includes(l.listingStatus))
+  .sort((a: any, b: any) => {
+    const statusOrder: Record<string, number> = { 'active': 0, 'active-secondary': 1 };
+    return (statusOrder[a.listingStatus] ?? 9) - (statusOrder[b.listingStatus] ?? 9);
+  });
 ---
 
-<Layout
-  title={`Sound baths in ${city.name} — Sounddip`}
-  description={`${city.tagline} Find sound bath sessions, venues, and practitioners in ${city.name}, ${city.region}.`}
->
-  <Topbar />
+<Layout title={pageTitle} description={pageDescription} canonical={`/cities/${city.slug}`}>
+  <JsonLd data={{
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://sounddip.com"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": city.name,
+        "item": `https://sounddip.com/cities/${city.slug}`
+      }
+    ]
+  }} />
+  <JsonLd data={{
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "name": `Sound Bath Sessions in ${city.name}`,
+    "description": `${city.sessionCount} vetted sound bath sessions in ${city.name}. ${city.tagline}`,
+    "numberOfItems": city.venues.length,
+    "itemListElement": city.venues.map((venue, i) => ({
+      "@type": "ListItem",
+      "position": i + 1,
+      "name": venue.name,
+      "description": venue.note
+    }))
+  }} />
   <main>
+    <Topbar />
+    <CityHero city={city} />
 
-    <div class="city-hero">
-      <div class="city-hero-inner">
-        <div class="city-breadcrumb">
-          <a href="/">Sounddip</a>
-          <span>·</span>
-          <a href="/#cities">Cities</a>
-          <span>·</span>
-          <span>{city.name}</span>
-        </div>
-        <div class="city-kicker">{city.region}</div>
-        <h1>Sound baths in <em>{city.name}.</em></h1>
-        <p class="city-tagline">{city.tagline}</p>
-        <div class="city-meta">
-          <div class="meta-item">
-            <div class="meta-label">Sessions tracked</div>
-            <div class="meta-val">{city.sessionCount}</div>
-          </div>
-          <div class="meta-item">
-            <div class="meta-label">Price range</div>
-            <div class="meta-val">{city.priceRange}</div>
-          </div>
-          <div class="meta-item">
-            <div class="meta-label">Common formats</div>
-            <div class="meta-val">{city.formats.slice(0, 2).join(' · ')}</div>
-          </div>
+    <!-- i. The scene -->
+    <section class="section">
+      <div class="section-head">
+        <div class="section-num">i.</div>
+        <div class="section-title">The <em>scene.</em></div>
+        <div class="section-meta">
+          <strong>{city.name}</strong>
+          {city.region}
         </div>
       </div>
-    </div>
-
-    <div class="city-body">
-
-      <div class="city-formats">
-        {city.formats.map((f) => <span class="format-tag">{f}</span>)}
+      <div class="scene-body">
+        {sceneParagraphs.map((para) => (
+          <p class="scene-para">{para}</p>
+        ))}
       </div>
+    </section>
 
-      <div class="city-content">
-
-        <div class="city-scene">
-          <div class="content-label">The scene</div>
-          {city.scene.split('\n\n').map((para) => <p>{para}</p>)}
+    <!-- ii. Where to go -->
+    <section class="section">
+      <div class="section-head">
+        <div class="section-num">ii.</div>
+        <div class="section-title">Where to <em>go.</em></div>
+        <div class="section-meta">
+          <strong>{city.venues.length} venues</strong>
+          curated
         </div>
-
-        <aside class="city-sidebar">
-
-          <div class="sidebar-block">
-            <div class="sidebar-label">Where to go</div>
-            <div class="venues">
-              {city.venues.map((v) => (
-                <div class="venue">
-                  <div class="venue-name">{v.name}</div>
-                  <div class="venue-note">{v.note}</div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div class="sidebar-block">
-            <div class="sidebar-label">For your first time</div>
-            <p class="beginner-text">{city.beginner}</p>
-          </div>
-
-          <div class="sidebar-block sidebar-block--meta">
-            <div class="sidebar-label">At a glance</div>
-            <div class="at-a-glance">
-              <div class="glance-row">
-                <span>Price range</span>
-                <strong>{city.priceRange}</strong>
-              </div>
-              <div class="glance-row">
-                <span>Sessions tracked</span>
-                <strong>{city.sessionCount}</strong>
-              </div>
-              {city.formats.map((f) => (
-                <div class="glance-tag">{f}</div>
-              ))}
-            </div>
-          </div>
-
-        </aside>
-
       </div>
+      <p class="section-lede">The places in {city.name} worth showing up for — vetted, not aggregated.</p>
+      <div class="venues-list">
+        {city.venues.map((venue, i) => (
+          <VenueCard name={venue.name} note={venue.note} index={i} />
+        ))}
+      </div>
+    </section>
 
-    </div>
+    {visibleListings.length > 0 && (
+    <section class="section">
+      <div class="section-head">
+        <div class="section-num">ii-b.</div>
+        <div class="section-title">All <em>sessions.</em></div>
+        <div class="section-meta">
+          <strong>{visibleListings.length} listings</strong>
+          in {city.name}
+        </div>
+      </div>
+      <p class="section-lede">Every vetted practitioner and session in {city.name} — click a name to read more, book directly through their site.</p>
+      <div class="listings-list">
+        {visibleListings.map((listing: any, i: number) => (
+          <ListingCard
+            name={listing.name}
+            slug={listing.slug}
+            neighborhood={listing.neighborhood}
+            modalityTags={listing.modalityTags}
+            modalityDescription={listing.modalityDescription}
+            duration={listing.duration}
+            price={listing.price}
+            bookingUrl={listing.bookingUrl}
+            practitionerBio={listing.practitionerBio}
+            sessionDescription={listing.sessionDescription}
+            listingStatus={listing.listingStatus}
+            photo={listing.photo}
+            index={i}
+          />
+        ))}
+      </div>
+    </section>
+    )}
 
-    <div class="city-footer-nav">
-      <a href="/" class="back-link">← All cities</a>
-    </div>
+    <!-- iii. Your first dip -->
+    <section class="section section--last">
+      <div class="section-head">
+        <div class="section-num">iii.</div>
+        <div class="section-title">Your first <em>dip.</em></div>
+        <div class="section-meta">
+          <strong>Beginner's guide</strong>
+          {city.name}
+        </div>
+      </div>
+      <p class="section-lede">{city.beginner}</p>
 
+      <div class="meta-grid">
+        <div class="meta-block">
+          <div class="meta-label">Formats available</div>
+          <div class="formats-list">
+            {city.formats.map((f) => (
+              <span class="format-pill">{f}</span>
+            ))}
+          </div>
+        </div>
+        <div class="meta-block">
+          <div class="meta-label">Typical price</div>
+          <div class="price-display">{city.priceRange}</div>
+          <p class="price-note">per session, walk-in or booked</p>
+        </div>
+      </div>
+    </section>
+
+    <Footer />
   </main>
 </Layout>
 
 <style>
   main { position: relative; z-index: 2; }
 
-  /* Hero */
-  .city-hero {
-    background: var(--ink);
-    padding: 160px 6vw 80px;
-  }
-  .city-hero-inner {
-    max-width: 900px;
-    margin: 0 auto;
-  }
-  .city-breadcrumb {
-    font-family: var(--mono);
-    font-size: 11px;
-    letter-spacing: 1.5px;
-    color: var(--ink-soft);
-    margin-bottom: 32px;
+  /* ── Scene ── */
+  .scene-body {
+    max-width: 760px;
     display: flex;
-    gap: 8px;
-    align-items: center;
+    flex-direction: column;
+    gap: 24px;
   }
-  .city-breadcrumb a {
-    color: var(--sand);
-    text-decoration: none;
-    opacity: 0.7;
-    transition: opacity 0.2s;
-  }
-  .city-breadcrumb a:hover { opacity: 1; }
-  .city-breadcrumb span { color: var(--ink-soft); }
-
-  .city-kicker {
-    font-family: var(--mono);
-    font-size: 10px;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    color: var(--clay);
-    margin-bottom: 16px;
-  }
-
-  h1 {
-    font-family: var(--serif);
-    font-size: clamp(48px, 7vw, 88px);
-    font-weight: 300;
-    color: var(--bone);
-    line-height: 1.0;
-    letter-spacing: -2px;
-    margin-bottom: 20px;
-    font-variation-settings: "opsz" 72;
-  }
-  h1 em { color: var(--clay); font-style: italic; }
-
-  .city-tagline {
-    font-family: var(--serif);
-    font-style: italic;
-    font-size: 18px;
-    color: var(--sand);
-    opacity: 0.8;
-    margin-bottom: 48px;
-    max-width: 560px;
-    font-variation-settings: "opsz" 72;
-  }
-
-  .city-meta {
-    display: flex;
-    gap: 40px;
-    border-top: 1px solid rgba(255,255,255,0.08);
-    padding-top: 32px;
-  }
-  .meta-label {
-    font-family: var(--mono);
-    font-size: 9px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: var(--ink-soft);
-    margin-bottom: 6px;
-  }
-  .meta-val {
-    font-family: var(--serif);
-    font-size: 18px;
-    color: var(--bone);
-    font-variation-settings: "opsz" 72;
-  }
-
-  /* Body */
-  .city-body {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 80px 6vw 0;
-  }
-
-  .city-formats {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-bottom: 64px;
-  }
-  .format-tag {
-    font-family: var(--mono);
-    font-size: 10px;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    color: var(--clay);
-    border: 1px solid var(--rule);
-    padding: 6px 14px;
-    border-radius: 100px;
-    background: var(--bone-2);
-  }
-
-  .city-content {
-    display: grid;
-    grid-template-columns: 1fr 340px;
-    gap: 80px;
-    align-items: start;
-  }
-
-  /* Scene */
-  .content-label {
-    font-family: var(--mono);
-    font-size: 9px;
-    letter-spacing: 2.5px;
-    text-transform: uppercase;
-    color: var(--ink-soft);
-    margin-bottom: 28px;
-    padding-bottom: 12px;
-    border-bottom: 1px solid var(--rule);
-  }
-  .city-scene p {
+  .scene-para {
     font-family: var(--serif);
     font-size: 18px;
     line-height: 1.75;
-    color: var(--ink);
-    margin-bottom: 24px;
+    color: var(--ink-mid);
     font-variation-settings: "opsz" 72;
   }
-  .city-scene p:last-child { margin-bottom: 0; }
 
-  /* Sidebar */
-  .city-sidebar {
-    display: flex;
-    flex-direction: column;
-    gap: 0;
-    position: sticky;
-    top: 32px;
+  /* ── Venues ── */
+  .venues-list {
+    max-width: 920px;
   }
-  .sidebar-block {
-    padding: 28px 0;
-    border-bottom: 1px solid var(--rule-soft);
+
+  /* ── Listings ── */
+  .listings-list {
+    max-width: 920px;
   }
-  .sidebar-block:first-child { padding-top: 0; }
-  .sidebar-label {
+
+  /* ── First dip ── */
+  .section--last {
+    padding-bottom: 140px;
+  }
+  .meta-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 64px;
+    max-width: 920px;
+  }
+  .meta-label {
     font-family: var(--mono);
-    font-size: 9px;
-    letter-spacing: 2.5px;
+    font-size: 10px;
+    letter-spacing: 2px;
     text-transform: uppercase;
     color: var(--ink-soft);
     margin-bottom: 20px;
   }
-
-  .venues { display: flex; flex-direction: column; gap: 20px; }
-  .venue-name {
-    font-family: var(--serif);
-    font-style: italic;
-    font-size: 16px;
+  .formats-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .format-pill {
+    font-family: var(--sans);
+    font-size: 13px;
     color: var(--ink);
-    margin-bottom: 4px;
+    background: var(--bone-2);
+    border: 1px solid var(--rule);
+    border-radius: 100px;
+    padding: 8px 18px;
+    transition: border-color 0.2s, color 0.2s;
+    cursor: default;
+    user-select: none;
+  }
+  .format-pill:hover {
+    border-color: var(--clay);
+    color: var(--clay);
+  }
+  .price-display {
+    font-family: var(--serif);
+    font-weight: 300;
+    font-size: 52px;
+    color: var(--ink);
+    letter-spacing: -2px;
+    line-height: 1;
+    margin-bottom: 12px;
     font-variation-settings: "opsz" 72;
   }
-  .venue-note {
-    font-size: 13px;
+  .price-note {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 15px;
     color: var(--ink-soft);
-    line-height: 1.55;
+    font-variation-settings: "opsz" 72;
   }
 
-  .beginner-text {
-    font-size: 14px;
-    color: var(--ink-mid);
-    line-height: 1.7;
-  }
-
-  .at-a-glance { display: flex; flex-direction: column; gap: 10px; }
-  .glance-row {
-    display: flex;
-    justify-content: space-between;
-    font-size: 13px;
-    color: var(--ink-soft);
-  }
-  .glance-row strong { color: var(--ink); font-weight: 500; }
-  .glance-tag {
-    font-family: var(--mono);
-    font-size: 10px;
-    letter-spacing: 1px;
-    color: var(--clay);
-    text-transform: uppercase;
-  }
-
-  /* Footer nav */
-  .city-footer-nav {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 80px 6vw 120px;
-    border-top: 1px solid var(--rule-soft);
-    margin-top: 80px;
-  }
-  .back-link {
-    font-family: var(--mono);
-    font-size: 11px;
-    letter-spacing: 1.5px;
-    color: var(--clay);
-    text-decoration: none;
-    text-transform: uppercase;
-  }
-  .back-link:hover { opacity: 0.7; }
-
-  @media (max-width: 900px) {
-    .city-content { grid-template-columns: 1fr; }
-    .city-sidebar { position: static; }
-    .city-meta { flex-direction: column; gap: 20px; }
+  @media (max-width: 1024px) {
+    .meta-grid { grid-template-columns: 1fr; gap: 40px; }
   }
 </style>

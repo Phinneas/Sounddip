@@ -2,11 +2,15 @@
 interface Props {
   title?: string;
   description?: string;
+  canonical?: string;
 }
 const {
   title = 'Sound Dip — A directory of sound',
   description = 'Find sound bath sessions, vetted practitioners, and the rooms that hold them.',
+  canonical,
 } = Astro.props;
+const siteUrl = 'https://sounddip.com';
+const canonicalURL = canonical ? `${siteUrl}${canonical}` : siteUrl;
 ---
 <!doctype html>
 <html lang="en">
@@ -15,6 +19,15 @@ const {
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content={description} />
   <title>{title}</title>
+  <link rel="canonical" href={canonicalURL} />
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={description} />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content={canonicalURL} />
+  <meta property="og:site_name" content="Sound Dip" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content={title} />
+  <meta name="twitter:description" content={description} />
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />

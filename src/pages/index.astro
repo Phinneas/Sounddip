@@ -9,7 +9,21 @@ import CitiesSection from '../components/CitiesSection.astro';
 import FirstDip from '../components/FirstDip.astro';
 import Currents from '../components/Currents.astro';
 import Footer from '../components/Footer.astro';
+import JsonLd from '../components/JsonLd.astro';
 ---
+
+<JsonLd data={{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "Sound Dip",
+  "url": "https://sounddip.com",
+  "description": "Discover curated sound bath sessions in your city. Browse practitioners, book your next immersion, and explore the world of sound healing.",
+  "potentialAction": {
+    "@type": "SearchAction",
+    "target": "https://sounddip.com/cities/{search_term_string}",
+    "query-input": "required name=search_term_string"
+  }
+}} />
 
 <Layout
   title="Sound Dip — Find a Sound Bath Near You"

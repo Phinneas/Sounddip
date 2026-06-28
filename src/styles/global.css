@@ -14,12 +14,12 @@
   --linen-2:    #e3d6bc;
   --sand:       #d9c8a8;
   --sand-d:     #c4b292;
-  --clay:       #b8704a;
-  --clay-d:     #9a5a39;
+  --clay:       #9a5a39;
+  --clay-d:     #7d492e;
   --ochre:      #8d6431;
   --ink:        #221b13;
   --ink-mid:    #5a4f43;
-  --ink-soft:   #8a7d6e;
+  --ink-soft:   #75685a;
   --rule:       rgba(34, 27, 19, 0.12);
   --rule-soft:  rgba(34, 27, 19, 0.06);
   --shadow:     0 1px 2px rgba(80,50,20,0.05), 0 14px 36px rgba(80,50,20,0.06);
@@ -41,6 +41,15 @@ body {
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
   overflow-x: hidden;
+}
+
+/* ── Focus visible (keyboard nav) ── */
+:focus-visible {
+  outline: 2px solid var(--clay);
+  outline-offset: 2px;
+}
+:focus:not(:focus-visible) {
+  outline: none;
 }
 
 /* ── Paper grain texture (fixed overlay) ── */
