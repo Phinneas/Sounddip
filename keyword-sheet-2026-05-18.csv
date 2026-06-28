@@ -1,0 +1,108 @@
+Category,Keyword,Monthly Volume,CPC ($),Competition,KD (0-100),Intent,Notes
+BROAD,sound bath,40500,1.32,LOW,20,transactional,Head term — core brand keyword; low KD is the whole opportunity
+BROAD,sound bath near me,18100,1.74,LOW,,transactional,Highest-value commercial intent; implicit local signal
+BROAD,singing bowls,18100,1.48,HIGH,,informational,Big head term; high commercial competition but informational intent — good blog/guide target
+BROAD,tibetan singing bowl,14800,1.42,HIGH,8,informational,Strong volume; high commercial comp but low KD — instrument discovery term
+BROAD,singing bowl meditation,12100,1.42,HIGH,16,informational,Overlaps with sound bath; good for pillar content
+BROAD,sound bowls,12100,1.34,HIGH,,transactional,Popular variant spelling; transactional — product + service
+BROAD,sound healing,9900,1.70,LOW,19,informational,Second most important head term; service category
+BROAD,sound therapy,8100,2.41,LOW,44,informational,Higher KD than sound bath but high CPC signals strong buyer intent
+BROAD,crystal singing bowl,5400,1.84,HIGH,,transactional,Instrument term with high commercial competition; ties to format filtering
+BROAD,tibetan bowl meditation,5400,1.72,LOW,,informational,Lower competition variant of tibetan singing bowl
+BROAD,sound bath meditation,3600,1.25,LOW,10,informational,Variant combining both keywords; easy to rank
+BROAD,sound meditation,3600,2.28,LOW,19,informational,Broader category term; good for informational content
+BROAD,biofield tuning,2400,0.67,LOW,4,informational,Niche specialty format; very low KD — easy ranking target
+BROAD,sound healing therapy,1300,1.35,LOW,48,informational,Higher KD than others; clinical framing — useful for E-E-A-T content
+BROAD,sound bath benefits,1300,1.35,LOW,21,informational,Informational head query; strong pillar page candidate
+BROAD,vibrational healing,1000,1.03,LOW,10,informational,Broader wellness term; low KD
+BROAD,crystal bowl meditation,480,1.69,HIGH,,informational,Format-specific instrument term
+BROAD,sound bath experience,320,0.17,LOW,17,commercial,Low CPC but commercial intent — first-timer landing page
+BROAD,healing sound bath,260,1.51,LOW,21,informational,
+BROAD,sound journey,110,,,LOW,,informational,Low volume but used by high-end practitioners as premium framing
+CITY,sound bath new york,1600,2.25,MEDIUM,8,navigational,Highest volume city term; KD 8 = very winnable
+CITY,sound bath los angeles,880,2.47,LOW,,commercial,LA is most competitive editorially but low competition level
+CITY,sound bath chicago,880,2.95,MEDIUM,,navigational,Zero editorial coverage = easiest market to own
+CITY,sound bath atlanta,590,7.83,LOW,,commercial,Highest CPC of city terms — strong buyer intent
+CITY,sound bath austin,480,1.43,LOW,,commercial,No listicle in SERPs; wide open
+CITY,sound bath denver,480,3.95,MEDIUM,,transactional,
+CITY,sound bath houston,480,1.88,LOW,,navigational,
+CITY,sound bath san francisco,480,6.14,LOW,,commercial,High CPC signals premium market
+CITY,sound bath seattle,480,7.65,LOW,1,navigational,Highest CPC after Atlanta; nearly zero KD
+CITY,sound bath miami,170,1.31,LOW,,commercial,
+CITY,sound healing new york,170,2.85,HIGH,20,commercial,HIGH competition level — tougher than sound bath variant
+CITY,sound healing miami,110,0.77,MEDIUM,,commercial,
+CITY,sound healing los angeles,90,2.98,MEDIUM,2,commercial,
+CITY,sound healing chicago,90,2.99,HIGH,,commercial,High competition level for this market
+CITY,sound healing san francisco,70,3.30,MEDIUM,5,informational,
+CITY,sound healing denver,70,5.41,MEDIUM,,commercial,High CPC
+CITY,sound healing sessions near me,70,5.53,LOW,2,navigational,
+CITY,sound healing atlanta,50,1.13,LOW,,commercial,
+CITY,sound healing austin,50,0.71,LOW,,commercial,
+CITY,sound healing houston,50,1.12,LOW,,commercial,
+CITY,sound healing seattle,50,27.19,LOW,32,informational,"Extreme CPC outlier ($27); suggests niche but premium Seattle market"
+CITY,best sound bath los angeles,40,11.33,MEDIUM,,commercial,Very high CPC — most competitive local modifier
+CITY,best sound bath denver,20,4.66,LOW,,commercial,
+CITY,best sound bath san francisco,10,,MEDIUM,,commercial,
+CITY,best sound bath new york,,,,,commercial,No data returned — likely too new/low volume to track
+CITY,best sound bath chicago,,,,,commercial,No data returned
+CITY,best sound bath atlanta,,,,,commercial,No data returned
+CITY,best sound bath austin,,,,,commercial,No data returned
+CITY,best sound bath houston,,,,,commercial,No data returned
+CITY,best sound bath seattle,,,,,commercial,No data returned
+CITY,best sound bath miami,,,,,commercial,No data returned
+FORMAT,floating sound bath,1900,2.46,LOW,,transactional,Highest-volume format term; competitors are weak (per prior research)
+FORMAT,floating sound bath near me,1900,1.49,LOW,,transactional,Same volume as head — near me modifier has equal demand
+FORMAT,gong bath,720,4.73,LOW,,informational,Core format term; high CPC despite informational intent
+FORMAT,gong meditation,720,1.54,HIGH,,informational,Gong variant; HIGH commercial competition
+FORMAT,sound bath yoga,590,1.82,LOW,,informational,Hybrid format; yoga studios are the main competition
+FORMAT,crystal bowl sound bath,480,1.73,HIGH,,transactional,Format filtering keyword — HIGH competition
+FORMAT,gong bath near me,210,3.48,LOW,,transactional,Local + format — ideal Sounddip filter-page query
+FORMAT,tibetan singing bowl benefits,210,1.47,MEDIUM,16,informational,
+FORMAT,full moon sound bath,170,3.95,LOW,,informational,Event-type format; seasonal spike potential
+FORMAT,alchemy singing bowl,110,1.81,HIGH,12,transactional,Niche instrument/format; HIGH competition
+FORMAT,group sound bath,110,0.72,LOW,,informational,Format comparison term
+FORMAT,crystal singing bowl sound bath,70,0.47,MEDIUM,7,transactional,
+FORMAT,gong bath benefits,70,1.27,LOW,5,informational,
+FORMAT,private sound bath,90,1.97,LOW,,commercial,Format + pricing intent
+FORMAT,sound bath retreat,90,1.77,LOW,2,commercial,High-intent travel/experience keyword
+FORMAT,corporate sound bath,20,6.43,LOW,,commercial,Very high CPC ($6.43) for low volume — B2B niche with strong buyer intent
+FORMAT,outdoor sound bath,50,,LOW,10,transactional,Venue-type format
+FORMAT,beach sound bath,30,,LOW,,informational,
+FORMAT,breathwork sound bath,10,,LOW,,informational,Hybrid format; emerging
+FORMAT,prenatal sound bath,,,,,,commercial,No data — niche but present in practitioner listings
+FORMAT,himalayan singing bowl meditation,10,,LOW,67,informational,"Very high KD (67) — established content landscape"
+INFORMATIONAL,what is a sound bath,6600,1.21,LOW,8,informational,Highest-volume informational query; KD 8 = easy win for guide content
+INFORMATIONAL,sound bath for sleep,480,1.34,LOW,1,transactional,KD 1 — essentially uncontested; high health intent
+INFORMATIONAL,sound bath for anxiety,140,0.02,LOW,15,informational,Health intent; low CPC suggests few advertisers
+INFORMATIONAL,do sound baths work,110,0.04,LOW,15,informational,Skeptic/research query — trust-building content
+INFORMATIONAL,what to wear to a sound bath,210,1.60,LOW,,informational,First-timer logistics — easy content win
+INFORMATIONAL,what to bring to a sound bath,70,1.82,LOW,,informational,Logistics companion to above
+INFORMATIONAL,what to expect at a sound bath,50,0.30,LOW,,informational,SERP gap confirmed — nobody covers this fully
+INFORMATIONAL,how does a sound bath work,50,0.04,LOW,6,informational,KD 6; mechanism/science content
+INFORMATIONAL,sound healing benefits,390,7.65,LOW,44,informational,High CPC + KD 44 — competitive but signals buyer-adjacent intent
+INFORMATIONAL,how much does a sound bath cost,90,1.28,LOW,,informational,Price transparency query — confirmed SERP gap
+INFORMATIONAL,sound bath for stress,40,,LOW,18,informational,
+INFORMATIONAL,sound bath science,30,0.03,LOW,7,informational,Low KD; academic/trust content
+INFORMATIONAL,sound bath pregnancy,40,,LOW,,informational,Contraindication query — SERP gap confirmed
+INFORMATIONAL,sound bath frequency,70,,LOW,4,informational,How often query — low KD
+INFORMATIONAL,sound bath vs sound healing,20,,LOW,,informational,Comparison query
+INFORMATIONAL,sound bath side effects,20,,LOW,,informational,Safety/contraindication query — SERP gap
+INFORMATIONAL,sound bath contraindications,10,,LOW,,informational,Safety query — zero results in SERPs per gap analysis
+INFORMATIONAL,sound bath brainwaves,,,,,informational,No data — niche science content angle
+INFORMATIONAL,sound bath vs meditation,,,,,informational,No data returned — comparison query worth creating content for
+INFORMATIONAL,sound bath for beginners,,,,,informational,No data — likely folded into what to expect searches
+INFORMATIONAL,is sound bath safe,,,,,informational,No data — safety concern query
+COMMERCIAL,sound bath near me,18100,1.74,LOW,,transactional,Highest-volume commercial term in the entire sheet
+COMMERCIAL,sound healer near me,2900,2.01,MEDIUM,4,commercial,Practitioner-intent query — core directory use case
+COMMERCIAL,sound healing near me,2900,2.01,MEDIUM,,transactional,
+COMMERCIAL,floating sound bath near me,1900,1.49,LOW,,transactional,Format + local = high Sounddip relevance
+COMMERCIAL,sound bath studio near me,880,0.32,LOW,,transactional,Very low CPC but transactional — easy directory target
+COMMERCIAL,sound bath classes near me,390,1.58,LOW,,transactional,
+COMMERCIAL,sound bath events near me,210,5.06,LOW,,informational,High CPC for informational intent — event discovery
+COMMERCIAL,gong bath near me,210,3.48,LOW,,transactional,Format-filtered local query
+COMMERCIAL,private sound bath near me,70,1.04,LOW,12,commercial,High-intent private booking query
+COMMERCIAL,sound bath price,40,0.40,LOW,,commercial,Price research — confirmed SERP gap
+COMMERCIAL,sound bath online,40,2.62,LOW,2,informational,Virtual/remote session discovery
+COMMERCIAL,book a sound bath,10,,LOW,,transactional,Low volume but pure booking intent
+COMMERCIAL,sound bath booking,,,,,transactional,No data
+COMMERCIAL,find sound bath near me,,,,,transactional,No data — likely folded into sound bath near me

@@ -1,0 +1,103 @@
+Task Name,Section/Column,Description,Priority
+sound bath,Broad,Vol: 40500 | CPC: $1.32 | Competition: LOW | KD: 20 | Intent: transactional | Head term — core brand keyword; low KD is the whole opportunity,High
+sound bath near me,Broad,Vol: 18100 | CPC: $1.74 | Competition: LOW | KD: — | Intent: transactional | Highest-value commercial intent; implicit local signal,High
+singing bowls,Broad,Vol: 18100 | CPC: $1.48 | Competition: HIGH | KD: — | Intent: informational | Big head term; high commercial competition but good blog/guide target,High
+tibetan singing bowl,Broad,Vol: 14800 | CPC: $1.42 | Competition: HIGH | KD: 8 | Intent: informational | Strong volume; high commercial comp but low KD — instrument discovery term,High
+singing bowl meditation,Broad,Vol: 12100 | CPC: $1.42 | Competition: HIGH | KD: 16 | Intent: informational | Overlaps with sound bath; good for pillar content,High
+sound bowls,Broad,Vol: 12100 | CPC: $1.34 | Competition: HIGH | KD: — | Intent: transactional | Popular variant spelling; transactional,High
+sound healing,Broad,Vol: 9900 | CPC: $1.70 | Competition: LOW | KD: 19 | Intent: informational | Second most important head term,High
+sound therapy,Broad,Vol: 8100 | CPC: $2.41 | Competition: LOW | KD: 44 | Intent: informational | Higher KD but high CPC signals strong buyer intent,High
+crystal singing bowl,Broad,Vol: 5400 | CPC: $1.84 | Competition: HIGH | KD: — | Intent: transactional | Instrument term; ties to format filtering,Medium
+tibetan bowl meditation,Broad,Vol: 5400 | CPC: $1.72 | Competition: LOW | KD: — | Intent: informational | Lower competition variant of tibetan singing bowl,Medium
+sound bath meditation,Broad,Vol: 3600 | CPC: $1.25 | Competition: LOW | KD: 10 | Intent: informational | Easy to rank,Medium
+sound meditation,Broad,Vol: 3600 | CPC: $2.28 | Competition: LOW | KD: 19 | Intent: informational | Broader category term,Medium
+biofield tuning,Broad,Vol: 2400 | CPC: $0.67 | Competition: LOW | KD: 4 | Intent: informational | Niche specialty format; very low KD — easy ranking target,Medium
+sound healing therapy,Broad,Vol: 1300 | CPC: $1.35 | Competition: LOW | KD: 48 | Intent: informational | Higher KD; clinical framing useful for E-E-A-T content,Medium
+sound bath benefits,Broad,Vol: 1300 | CPC: $1.35 | Competition: LOW | KD: 21 | Intent: informational | Strong pillar page candidate,Medium
+vibrational healing,Broad,Vol: 1000 | CPC: $1.03 | Competition: LOW | KD: 10 | Intent: informational | Broader wellness term; low KD,Medium
+crystal bowl meditation,Broad,Vol: 480 | CPC: $1.69 | Competition: HIGH | KD: — | Intent: informational | Format-specific instrument term,Low
+sound bath experience,Broad,Vol: 320 | CPC: $0.17 | Competition: LOW | KD: 17 | Intent: commercial | Low CPC but commercial intent — first-timer landing page,Low
+healing sound bath,Broad,Vol: 260 | CPC: $1.51 | Competition: LOW | KD: 21 | Intent: informational,,Low
+sound journey,Broad,Vol: 110 | CPC: — | Competition: LOW | KD: — | Intent: informational | Used by high-end practitioners as premium framing,Low
+sound bath new york,City,Vol: 1600 | CPC: $2.25 | Competition: MEDIUM | KD: 8 | Intent: navigational | Highest-volume city term; KD 8 = very winnable,High
+sound bath los angeles,City,Vol: 880 | CPC: $2.47 | Competition: LOW | KD: — | Intent: commercial | Most competitive city editorially,High
+sound bath chicago,City,Vol: 880 | CPC: $2.95 | Competition: MEDIUM | KD: — | Intent: navigational | Zero editorial coverage = easiest market to own,High
+sound bath atlanta,City,Vol: 590 | CPC: $7.83 | Competition: LOW | KD: — | Intent: commercial | Highest CPC of all city terms — strongest buyer intent,High
+sound bath san diego,City,Vol: 590 | CPC: $2.01 | Competition: MEDIUM | KD: — | Intent: commercial | Tied with Atlanta on volume; strong wellness market,High
+sound bath austin,City,Vol: 480 | CPC: $1.43 | Competition: LOW | KD: — | Intent: commercial | No editorial competition at all,High
+sound bath denver,City,Vol: 480 | CPC: $3.95 | Competition: MEDIUM | KD: — | Intent: transactional | Strong wellness culture; good CPC,High
+sound bath dallas,City,Vol: 480 | CPC: $3.09 | Competition: LOW | KD: 2 | Intent: commercial | Large metro; KD 2 = very easy to rank,High
+sound bath seattle,City,Vol: 480 | CPC: $7.65 | Competition: LOW | KD: 1 | Intent: navigational | Swapped in over Portland — 50% more volume; 5x the CPC,High
+sound bath nashville,City,Vol: 320 | CPC: $2.00 | Competition: LOW | KD: 6 | Intent: navigational | Swapped in over Miami — 2x the volume; emerging wellness city,High
+sound healing new york,City,Vol: 170 | CPC: $2.85 | Competition: HIGH | KD: 20 | Intent: commercial | HIGH competition level — tougher than sound bath variant,Medium
+sound healing los angeles,City,Vol: 90 | CPC: $2.98 | Competition: MEDIUM | KD: 2 | Intent: commercial,,Medium
+sound healing chicago,City,Vol: 90 | CPC: $2.99 | Competition: HIGH | KD: — | Intent: commercial,,Medium
+sound healing atlanta,City,Vol: 50 | CPC: $1.13 | Competition: LOW | KD: — | Intent: commercial,,Low
+sound healing austin,City,Vol: 50 | CPC: $0.71 | Competition: LOW | KD: — | Intent: commercial,,Low
+sound healing denver,City,Vol: 70 | CPC: $5.41 | Competition: MEDIUM | KD: — | Intent: commercial | High CPC,Low
+sound healing dallas,City,Vol: 40 | CPC: $2.69 | Competition: MEDIUM | KD: 4 | Intent: commercial,,Low
+sound healing seattle,City,Vol: 50 | CPC: $27.19 | Competition: LOW | KD: 32 | Intent: informational | Extreme CPC outlier — niche but premium market,Low
+sound healing nashville,City,Vol: 30 | CPC: $2.32 | Competition: LOW | KD: — | Intent: commercial,,Low
+sound healing san diego,City,Vol: 140 | CPC: $1.34 | Competition: MEDIUM | KD: — | Intent: commercial,,Low
+best sound bath los angeles,City,Vol: 40 | CPC: $11.33 | Competition: MEDIUM | KD: — | Intent: commercial | Very high CPC — most competitive local modifier,Low
+best sound bath seattle,City,Vol: — | CPC: — | Competition: — | KD: — | Intent: commercial | No data yet — create and own,Low
+best sound bath chicago,City,Vol: — | CPC: — | Competition: — | KD: — | Intent: commercial | No data yet — create and own,Low
+best sound bath atlanta,City,Vol: — | CPC: — | Competition: — | KD: — | Intent: commercial | No data yet,Low
+best sound bath nashville,City,Vol: — | CPC: — | Competition: — | KD: — | Intent: commercial | No data yet,Low
+best sound bath dallas,City,Vol: — | CPC: — | Competition: — | KD: — | Intent: commercial | No data yet,Low
+best sound bath denver,City,Vol: 20 | CPC: $4.66 | Competition: LOW | KD: — | Intent: commercial,,Low
+best sound bath san diego,City,Vol: — | CPC: — | Competition: — | KD: — | Intent: commercial | No data yet,Low
+best sound bath austin,City,Vol: — | CPC: — | Competition: — | KD: — | Intent: commercial | No data yet,Low
+floating sound bath,Format / Type,Vol: 1900 | CPC: $2.46 | Competition: LOW | KD: — | Intent: transactional | Highest-volume format term; competitor pages are weak,High
+floating sound bath near me,Format / Type,Vol: 1900 | CPC: $1.49 | Competition: LOW | KD: — | Intent: transactional | Same volume as head term — near me has equal demand,High
+gong bath,Format / Type,Vol: 720 | CPC: $4.73 | Competition: LOW | KD: — | Intent: informational | Core format term; high CPC despite informational intent,Medium
+gong meditation,Format / Type,Vol: 720 | CPC: $1.54 | Competition: HIGH | KD: — | Intent: informational | Gong variant; HIGH commercial competition,Medium
+sound bath yoga,Format / Type,Vol: 590 | CPC: $1.82 | Competition: LOW | KD: — | Intent: informational | Hybrid format; yoga studios are the main competition,Medium
+crystal bowl sound bath,Format / Type,Vol: 480 | CPC: $1.73 | Competition: HIGH | KD: — | Intent: transactional | Format filtering keyword,Medium
+gong bath near me,Format / Type,Vol: 210 | CPC: $3.48 | Competition: LOW | KD: — | Intent: transactional | Local + format — ideal Sounddip filter-page query,Medium
+tibetan singing bowl benefits,Format / Type,Vol: 210 | CPC: $1.47 | Competition: MEDIUM | KD: 16 | Intent: informational,,Medium
+full moon sound bath,Format / Type,Vol: 170 | CPC: $3.95 | Competition: LOW | KD: — | Intent: informational | Event-type format; seasonal spike potential,Medium
+alchemy singing bowl,Format / Type,Vol: 110 | CPC: $1.81 | Competition: HIGH | KD: 12 | Intent: transactional | Niche instrument/format; HIGH competition,Low
+group sound bath,Format / Type,Vol: 110 | CPC: $0.72 | Competition: LOW | KD: — | Intent: informational | Format comparison term,Low
+private sound bath,Format / Type,Vol: 90 | CPC: $1.97 | Competition: LOW | KD: — | Intent: commercial | Format + pricing intent,Low
+sound bath retreat,Format / Type,Vol: 90 | CPC: $1.77 | Competition: LOW | KD: 2 | Intent: commercial | High-intent travel/experience keyword; KD 2,Low
+crystal singing bowl sound bath,Format / Type,Vol: 70 | CPC: $0.47 | Competition: MEDIUM | KD: 7 | Intent: transactional,,Low
+gong bath benefits,Format / Type,Vol: 70 | CPC: $1.27 | Competition: LOW | KD: 5 | Intent: informational,,Low
+outdoor sound bath,Format / Type,Vol: 50 | CPC: — | Competition: LOW | KD: 10 | Intent: transactional | Venue-type format,Low
+corporate sound bath,Format / Type,Vol: 20 | CPC: $6.43 | Competition: LOW | KD: — | Intent: commercial | Very high CPC — B2B niche with strong buyer intent,Low
+beach sound bath,Format / Type,Vol: 30 | CPC: — | Competition: LOW | KD: — | Intent: informational,,Low
+breathwork sound bath,Format / Type,Vol: 10 | CPC: — | Competition: LOW | KD: — | Intent: informational | Hybrid format; emerging,Low
+prenatal sound bath,Format / Type,Vol: — | CPC: — | Competition: — | KD: — | Intent: commercial | No data — niche but present in practitioner listings,Low
+what is a sound bath,Informational,Vol: 6600 | CPC: $1.21 | Competition: LOW | KD: 8 | Intent: informational | Highest-volume informational query; KD 8 = easy win,High
+sound bath for sleep,Informational,Vol: 480 | CPC: $1.34 | Competition: LOW | KD: 1 | Intent: transactional | KD 1 — essentially uncontested; high health intent,High
+sound bath benefits,Informational,Vol: 1300 | CPC: $1.35 | Competition: LOW | KD: 21 | Intent: informational | Strong pillar page candidate,High
+what to wear to a sound bath,Informational,Vol: 210 | CPC: $1.60 | Competition: LOW | KD: — | Intent: informational | First-timer logistics — easy content win,Medium
+sound healing benefits,Informational,Vol: 390 | CPC: $7.65 | Competition: LOW | KD: 44 | Intent: informational | High CPC + KD 44 — competitive but signals buyer-adjacent intent,Medium
+do sound baths work,Informational,Vol: 110 | CPC: $0.04 | Competition: LOW | KD: 15 | Intent: informational | Skeptic/research query — trust-building content,Medium
+sound bath for anxiety,Informational,Vol: 140 | CPC: $0.02 | Competition: LOW | KD: 15 | Intent: informational | Health intent; low CPC suggests few advertisers,Medium
+how much does a sound bath cost,Informational,Vol: 90 | CPC: $1.28 | Competition: LOW | KD: — | Intent: informational | Price transparency query — confirmed SERP gap,Medium
+what to bring to a sound bath,Informational,Vol: 70 | CPC: $1.82 | Competition: LOW | KD: — | Intent: informational | Logistics companion to above,Medium
+how does a sound bath work,Informational,Vol: 50 | CPC: $0.04 | Competition: LOW | KD: 6 | Intent: informational | KD 6; mechanism/science content,Medium
+what to expect at a sound bath,Informational,Vol: 50 | CPC: $0.30 | Competition: LOW | KD: — | Intent: informational | SERP gap confirmed — nobody covers this fully,Medium
+sound bath frequency,Informational,Vol: 70 | CPC: — | Competition: LOW | KD: 4 | Intent: informational | How often query — low KD,Low
+sound bath for stress,Informational,Vol: 40 | CPC: — | Competition: LOW | KD: 18 | Intent: informational,,Low
+sound bath science,Informational,Vol: 30 | CPC: $0.03 | Competition: LOW | KD: 7 | Intent: informational | Low KD; academic/trust content,Low
+sound bath pregnancy,Informational,Vol: 40 | CPC: — | Competition: LOW | KD: — | Intent: informational | Contraindication query — SERP gap,Low
+sound bath side effects,Informational,Vol: 20 | CPC: — | Competition: LOW | KD: — | Intent: informational | Safety query — SERP gap,Low
+sound bath vs sound healing,Informational,Vol: 20 | CPC: — | Competition: LOW | KD: — | Intent: informational | Comparison query,Low
+sound bath contraindications,Informational,Vol: 10 | CPC: — | Competition: LOW | KD: — | Intent: informational | Zero results in SERPs — confirmed gap,Low
+sound bath vs meditation,Informational,Vol: — | CPC: — | Competition: — | KD: — | Intent: informational | No data — comparison query worth creating content for,Low
+is sound bath safe,Informational,Vol: — | CPC: — | Competition: — | KD: — | Intent: informational | Safety concern query,Low
+sound bath for beginners,Informational,Vol: — | CPC: — | Competition: — | KD: — | Intent: informational | Likely folded into what to expect searches,Low
+sound bath near me,Commercial,Vol: 18100 | CPC: $1.74 | Competition: LOW | KD: — | Intent: transactional | Highest-volume commercial term in the entire sheet,High
+sound healer near me,Commercial,Vol: 2900 | CPC: $2.01 | Competition: MEDIUM | KD: 4 | Intent: commercial | Practitioner-intent query — core directory use case,High
+sound healing near me,Commercial,Vol: 2900 | CPC: $2.01 | Competition: MEDIUM | KD: — | Intent: transactional,,High
+floating sound bath near me,Commercial,Vol: 1900 | CPC: $1.49 | Competition: LOW | KD: — | Intent: transactional | Format + local = high Sounddip relevance,High
+sound bath studio near me,Commercial,Vol: 880 | CPC: $0.32 | Competition: LOW | KD: — | Intent: transactional | Very low CPC but transactional — easy directory target,High
+sound bath classes near me,Commercial,Vol: 390 | CPC: $1.58 | Competition: LOW | KD: — | Intent: transactional,,Medium
+sound bath events near me,Commercial,Vol: 210 | CPC: $5.06 | Competition: LOW | KD: — | Intent: informational | High CPC for informational intent — event discovery,Medium
+gong bath near me,Commercial,Vol: 210 | CPC: $3.48 | Competition: LOW | KD: — | Intent: transactional | Format-filtered local query,Medium
+private sound bath near me,Commercial,Vol: 70 | CPC: $1.04 | Competition: LOW | KD: 12 | Intent: commercial | High-intent private booking query,Low
+sound bath price,Commercial,Vol: 40 | CPC: $0.40 | Competition: LOW | KD: — | Intent: commercial | Price research — confirmed SERP gap,Low
+sound bath online,Commercial,Vol: 40 | CPC: $2.62 | Competition: LOW | KD: 2 | Intent: informational | Virtual/remote session discovery,Low
+book a sound bath,Commercial,Vol: 10 | CPC: — | Competition: LOW | KD: — | Intent: transactional | Low volume but pure booking intent,Low
