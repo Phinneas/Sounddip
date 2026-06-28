@@ -1,0 +1,6 @@
+{
+  "_instructions": "Add entries as { listingSlug: imageUrl }. Listing slugs follow the pattern slugify(name)-city-slug. To find slugs, query the Payload API or check the database. Image URLs can come from Google Maps business listing responses (main_image field) or practitioner-provided photos. Run with: payload run src/scripts/backfillPhotos.ts",
+  "_example": {
+    "sound-bath-los-angeles-los-angeles": "https://example.com/photo.jpg"
+  }
+}
