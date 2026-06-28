@@ -11,6 +11,7 @@ export const Listings: CollectionConfig = {
   },
   access: {
     read: () => true,
+    create: () => true, // Allow self-submission from /submit form (creates as draft + needs-verification)
   },
   fields: [
     {

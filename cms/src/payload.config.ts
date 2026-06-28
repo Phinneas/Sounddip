@@ -12,6 +12,7 @@ import { Users } from './collections/Users'
 import { Media } from './collections/Media'
 import { Cities } from './collections/Cities'
 import { Listings } from './collections/Listings'
+import { submitVerifyEndpoint, submitVerifyPutEndpoint } from './endpoints/submitVerify'
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { migrations } from './migrations'
 
@@ -57,6 +58,7 @@ export default buildConfig({
   collections: [Users, Media, Cities, Listings],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
+  endpoints: [submitVerifyEndpoint, submitVerifyPutEndpoint],
   typescript: {
     outputFile: path.resolve(dirname, 'payload-types.ts'),
   },

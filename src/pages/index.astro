@@ -85,6 +85,9 @@ import JsonLd from '../components/JsonLd.astro';
       <FirstDip />
     </div>
     <Currents />
+    <div class="submit-banner">
+      <a href="/submit">Run sound bath sessions? <em>Add your practice — free.</em></a>
+    </div>
   </main>
   <Footer />
 </Layout>
@@ -105,4 +108,28 @@ import JsonLd from '../components/JsonLd.astro';
     border-bottom: 1px solid var(--rule-soft);
   }
   .page-sections .section:last-child { border-bottom: none; }
+
+  /* ── Submit banner ── */
+  .submit-banner {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 60px 6vw 100px;
+    text-align: center;
+  }
+  .submit-banner a {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 22px;
+    color: var(--clay);
+    text-decoration: none;
+    border-bottom: 1px solid var(--clay);
+    padding-bottom: 2px;
+    transition: color 0.2s, border-color 0.2s;
+    font-variation-settings: "opsz" 72;
+  }
+  .submit-banner a em { font-style: italic; }
+  .submit-banner a:hover {
+    color: var(--clay-d);
+    border-color: var(--clay-d);
+  }
 </style>

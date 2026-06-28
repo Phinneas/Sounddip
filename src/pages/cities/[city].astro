@@ -236,6 +236,7 @@ const visibleListings = listings
           />
         ))}
       </div>
+      <a href="/submit" class="submit-cta">Run a sound bath in {city.name}? <em>Add your practice.</em></a>
     </section>
     )}
 
@@ -298,6 +299,26 @@ const visibleListings = listings
   /* ── Listings ── */
   .listings-list {
     max-width: 920px;
+  }
+
+  /* ── Submit CTA ── */
+  .submit-cta {
+    display: inline-block;
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 18px;
+    color: var(--clay);
+    text-decoration: none;
+    margin-top: 40px;
+    padding-bottom: 2px;
+    border-bottom: 1px solid var(--clay);
+    transition: color 0.2s, border-color 0.2s;
+    font-variation-settings: "opsz" 72;
+  }
+  .submit-cta em { font-style: italic; }
+  .submit-cta:hover {
+    color: var(--clay-d);
+    border-color: var(--clay-d);
   }
 
   /* ── First dip ── */

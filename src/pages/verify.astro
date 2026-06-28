@@ -1,0 +1,159 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Topbar from '../components/Topbar.astro';
+import Footer from '../components/Footer.astro';
+
+// The token is passed as a query param: /verify?token=abc123
+const token = Astro.url.searchParams.get('token');
+const slug = Astro.url.searchParams.get('slug');
+---
+
+<Layout
+  title="Verify Your Submission — Sound Dip"
+  description="Confirm your sound bath practice submission on Sound Dip."
+  canonical="/verify"
+>
+  <main>
+    <Topbar />
+
+    <section class="section">
+      <div class="section-head">
+        <div class="section-num">&#10003;</div>
+        <div class="section-title">Verify your <em>listing.</em></div>
+      </div>
+
+      <div class="verify-container" id="verify-container">
+        {!token || !slug ? (
+          <div class="verify-error">
+            <h3>Invalid link.</h3>
+            <p>This verification link is missing required information. Please check the link from your email and try again.</p>
+            <a href="/" class="back-home">Back to Sound Dip</a>
+          </div>
+        ) : (
+          <div class="verify-pending" id="verify-pending">
+            <h3>Verifying…</h3>
+            <p>Confirming your email address. This takes a few seconds.</p>
+          </div>
+          <div class="verify-success" id="verify-success" style="display:none">
+            <h3>Verified.</h3>
+            <p>Your email is confirmed. Your listing is now in our review queue — we'll check your website or social presence and publish it, typically within 48 hours. No further action needed from you.</p>
+            <a href="/" class="back-home">Back to Sound Dip</a>
+          </div>
+          <div class="verify-error" id="verify-error" style="display:none">
+            <h3>Verification failed.</h3>
+            <p id="verify-error-msg">This link may have expired or already been used. If you think this is an error, email hello@sounddip.com.</p>
+            <a href="/submit" class="back-home">Submit again</a>
+          </div>
+        )}
+      </div>
+    </section>
+
+    <Footer />
+  </main>
+</Layout>
+
+<style>
+  .verify-container {
+    max-width: 640px;
+  }
+
+  .verify-pending,
+  .verify-success,
+  .verify-error {
+    padding: 40px;
+    border-radius: 12px;
+  }
+
+  .verify-pending {
+    background: var(--bone-2);
+    border: 1px solid var(--rule);
+  }
+
+  .verify-success {
+    background: var(--linen);
+    border: 1px solid var(--sand);
+  }
+
+  .verify-error {
+    background: rgba(154, 90, 57, 0.06);
+    border: 1px solid rgba(154, 90, 57, 0.2);
+  }
+
+  .verify-pending h3,
+  .verify-success h3,
+  .verify-error h3 {
+    font-family: var(--serif);
+    font-weight: 300;
+    font-size: 36px;
+    color: var(--ink);
+    margin-bottom: 16px;
+    font-variation-settings: "opsz" 72;
+  }
+
+  .verify-error h3 {
+    color: var(--clay-d);
+  }
+
+  .verify-pending p,
+  .verify-success p,
+  .verify-error p {
+    color: var(--ink-mid);
+    font-size: 16px;
+    line-height: 1.6;
+    margin-bottom: 24px;
+  }
+
+  .back-home {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--clay);
+    text-decoration: none;
+    border-bottom: 1px solid var(--clay);
+    padding-bottom: 2px;
+    transition: color 0.2s;
+  }
+
+  .back-home:hover {
+    color: var(--clay-d);
+  }
+</style>
+
+{token && slug && (
+<script define:vars={{ token, slug }}>
+  const CMS_API = 'https://sounddip-cms.buzzuw2.workers.dev';
+
+  async function verify() {
+    const pending = document.getElementById('verify-pending');
+    const success = document.getElementById('verify-success');
+    const error = document.getElementById('verify-error');
+    const errorMsg = document.getElementById('verify-error-msg');
+
+    try {
+      const res = await fetch(`${CMS_API}/api/submit-verify`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token, slug }),
+      });
+
+      if (!res.ok) {
+        const body = await res.text();
+        throw new Error(body || 'Verification failed');
+      }
+
+      // Success
+      if (pending) pending.style.display = 'none';
+      if (success) success.style.display = 'block';
+
+    } catch (err: any) {
+      if (pending) pending.style.display = 'none';
+      if (error) error.style.display = 'block';
+      if (errorMsg) errorMsg.textContent = err.message || 'Verification failed. Please try again.';
+    }
+  }
+
+  verify();
+</script>
+)}
