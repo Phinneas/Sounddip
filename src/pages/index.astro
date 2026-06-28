@@ -20,9 +20,54 @@ import JsonLd from '../components/JsonLd.astro';
   "description": "Discover curated sound bath sessions in your city. Browse practitioners, book your next immersion, and explore the world of sound healing.",
   "potentialAction": {
     "@type": "SearchAction",
-    "target": "https://sounddip.com/cities/{search_term_string}",
+    "target": {
+      "@type": "EntryPoint",
+      "urlTemplate": "https://sounddip.com/cities/{search_term_string}"
+    },
     "query-input": "required name=search_term_string"
   }
+}} />
+
+<!-- Organization schema for knowledge panel eligibility -->
+<JsonLd data={{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Sound Dip",
+  "url": "https://sounddip.com",
+  "description": "A curated directory of sound bath sessions, practitioners, and venues across the United States.",
+  "sameAs": []
+}} />
+
+<!-- FAQPage schema: top-level "what is a sound bath" Q&A -->
+<JsonLd data={{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What is a sound bath?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "A sound bath is a meditative experience where you lie down and close your eyes while vibrations from singing bowls, gongs, and voice wash over you for about an hour. Most people fall asleep at least a little — that's the point. No movement, chanting, or effort is required."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What should I bring to a sound bath?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Arrive ten minutes early — most spaces lock the door once the session begins. Bring socks, a water bottle, and an open mind. Mats and blankets are typically provided."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How much does a sound bath cost?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Group sound bath sessions in most US cities range from $20 to $60 per session. Private sessions can run $100–$300 depending on the practitioner and duration. Walk-in and advance booking prices are usually similar."
+      }
+    }
+  ]
 }} />
 
 <Layout

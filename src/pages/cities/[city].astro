@@ -54,6 +54,7 @@ const visibleListings = listings
 ---
 
 <Layout title={pageTitle} description={pageDescription} canonical={`/cities/${city.slug}`}>
+  <!-- BreadcrumbList: Home > City -->
   <JsonLd data={{
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
@@ -72,18 +73,99 @@ const visibleListings = listings
       }
     ]
   }} />
+
+  <!-- ItemList: session/practitioner names with URLs -->
   <JsonLd data={{
     "@context": "https://schema.org",
     "@type": "ItemList",
     "name": `Sound Bath Sessions in ${city.name}`,
-    "description": `${city.sessionCount} vetted sound bath sessions in ${city.name}. ${city.tagline}`,
-    "numberOfItems": city.venues.length,
-    "itemListElement": city.venues.map((venue, i) => ({
+    "description": pageDescription,
+    "numberOfItems": visibleListings.length || city.venues.length,
+    "itemListElement": (visibleListings.length > 0 ? visibleListings : city.venues).map((item: any, i: number) => ({
       "@type": "ListItem",
       "position": i + 1,
-      "name": venue.name,
-      "description": venue.note
+      "name": item.name,
+      ...(item.bookingUrl ? { "url": item.bookingUrl } : {}),
+      ...(item.note ? { "description": item.note } : item.sessionDescription ? { "description": item.sessionDescription } : {})
     }))
+  }} />
+
+  <!-- Event schemas: one per active listing (sound baths are time-based recurring events) -->
+  {visibleListings.filter((l: any) => l.bookingUrl && l.bookingUrl !== 'N/A').map((listing: any) => {
+    const today = new Date().toISOString().split('T')[0];
+    // Extract first numeric price from free-text field like "$20 advance / $25 day-of"
+    const priceMatch = String(listing.price || '').match(/\$(\d+(?:\.\d+)?)/);
+    const priceNum = priceMatch ? priceMatch[1] : '';
+    return (
+    <JsonLd data={{
+      "@context": "https://schema.org",
+      "@type": "Event",
+      "name": listing.modalityDescription
+        ? `${listing.modalityDescription} — ${listing.name}`
+        : `Sound bath with ${listing.name}`,
+      "startDate": today,
+      "endDate": today,
+      "location": {
+        "@type": "Place",
+        "name": listing.neighborhood ? `${listing.neighborhood}, ${city.name}` : city.name,
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": city.name,
+          "addressRegion": city.region,
+          "addressCountry": "US"
+        }
+      },
+      "organizer": {
+        "@type": "Person",
+        "name": listing.name,
+        "jobTitle": "Sound Bath Practitioner"
+      },
+      "offers": {
+        "@type": "Offer",
+        ...(priceNum ? { "price": priceNum, "priceCurrency": "USD" } : {}),
+        "url": listing.bookingUrl,
+        "availability": "https://schema.org/InStock"
+      },
+      "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
+      "eventStatus": "https://schema.org/EventScheduled",
+      ...(listing.photo ? { "image": listing.photo } : {}),
+      "description": listing.sessionDescription || listing.practitionerBio || ''
+    }} />
+    );
+  })}
+
+  <!-- Person schemas: one per practitioner -->
+  {visibleListings.map((listing: any) => (
+    <JsonLd data={{
+      "@context": "https://schema.org",
+      "@type": "Person",
+      "name": listing.name,
+      "jobTitle": "Sound Bath Practitioner",
+      ...(listing.bookingUrl && listing.bookingUrl !== 'N/A' ? { "url": listing.bookingUrl } : {}),
+      ...(listing.practitionerBio ? { "description": listing.practitionerBio } : {}),
+      ...(listing.photo ? { "image": listing.photo } : {})
+    }} />
+  ))}
+
+  <!-- Article schema: "Your first dip" guide -->
+  <JsonLd data={{
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": `Your First Sound Bath in ${city.name}`,
+    "description": city.beginner,
+    "author": {
+      "@type": "Organization",
+      "name": "Sound Dip",
+      "url": "https://sounddip.com"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Sound Dip",
+      "url": "https://sounddip.com"
+    },
+    "url": `https://sounddip.com/cities/${city.slug}`,
+    "datePublished": "2026-06-01",
+    "dateModified": new Date().toISOString().split('T')[0]
   }} />
   <main>
     <Topbar />
