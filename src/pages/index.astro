@@ -84,6 +84,17 @@ import JsonLd from '../components/JsonLd.astro';
       <CitiesSection />
       <FirstDip />
     </div>
+
+    <!-- Quiz CTA -->
+    <section class="quiz-cta">
+      <div class="quiz-cta-inner">
+        <div class="quiz-cta-num">v.</div>
+        <h2>Not sure where to <em>start?</em></h2>
+        <p class="quiz-cta-sub">Answer five questions. We'll match you to sessions that fit — real practitioners, real booking links, no email required.</p>
+        <a href="/find-your-dip" class="quiz-cta-button">Find your dip <span class="quiz-cta-arrow">→</span></a>
+      </div>
+    </section>
+
     <Currents />
     <div class="submit-banner">
       <a href="/submit">Run sound bath sessions? <em>Add your practice — free.</em></a>
@@ -132,4 +143,64 @@ import JsonLd from '../components/JsonLd.astro';
     color: var(--clay-d);
     border-color: var(--clay-d);
   }
+
+  /* ── Quiz CTA ── */
+  .quiz-cta {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 120px 6vw;
+    text-align: center;
+    border-bottom: 1px solid var(--rule-soft);
+  }
+  .quiz-cta-inner {
+    max-width: 720px;
+    margin: 0 auto;
+  }
+  .quiz-cta-num {
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 300;
+    font-size: 48px;
+    color: var(--clay);
+    line-height: 0.8;
+    margin-bottom: 24px;
+  }
+  .quiz-cta h2 {
+    font-family: var(--serif);
+    font-weight: 300;
+    font-size: clamp(44px, 5vw, 64px);
+    line-height: 0.95;
+    letter-spacing: -2px;
+    color: var(--ink);
+    margin-bottom: 24px;
+    font-variation-settings: "opsz" 144;
+  }
+  .quiz-cta h2 em { font-style: italic; color: var(--clay); }
+  .quiz-cta-sub {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 20px;
+    color: var(--ink-mid);
+    line-height: 1.4;
+    margin-bottom: 40px;
+    font-variation-settings: "opsz" 72;
+  }
+  .quiz-cta-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 16px 32px;
+    background: var(--ink);
+    color: var(--bone);
+    text-decoration: none;
+    border-radius: 100px;
+    font-family: var(--sans);
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 0.2px;
+    transition: background 0.2s;
+  }
+  .quiz-cta-button:hover { background: var(--clay); }
+  .quiz-cta-arrow { transition: transform 0.2s; }
+  .quiz-cta-button:hover .quiz-cta-arrow { transform: translateX(4px); }
 </style>

@@ -1,0 +1,11 @@
+name = "quiz-recommend"
+main = "src/index.ts"
+compatibility_date = "2024-12-01"
+
+# Set the API key as a secret:
+#   npx wrangler secret put DEEPSEEK_API_KEY
+# This is NOT stored in this file — it's set via the wrangler CLI.
+
+# Optional: restrict CORS to the Sound Dip domain in production
+# [vars]
+# ALLOWED_ORIGIN = "https://sounddip.com"

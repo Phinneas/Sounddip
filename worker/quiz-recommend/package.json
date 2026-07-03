@@ -1,0 +1,14 @@
+{
+  "name": "quiz-recommend",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "set-key": "wrangler secret put DEEPSEEK_API_KEY"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20241218.0",
+    "wrangler": "^3.99.0"
+  }
+}

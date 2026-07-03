@@ -1,277 +1,223 @@
-// Run with: payload run src/scripts/generateDescriptions.ts
+// Run with: cd cms && REMOTE=true DEEPSEEK_API_KEY=sk-... payload run src/scripts/generateDescriptions.ts
 //
-// Generates draft practitionerBio + sessionDescription for every Listing
-// that lacks them, using existing listing fields as source material.
-// Also improves modalityTags where the source data makes a better tag obvious.
+// Generates practitionerBio + sessionDescription for listings missing them,
+// using Claude API (Sonnet). Calibrated to the site's editorial voice.
+// Idempotent: skips listings that already have both fields.
 //
-// This is a CONTENT DRAFTING tool, not a publisher. Everything it writes
-// is a draft that should be reviewed before setting _status to published.
-//
-// Uses dynamic imports — see seedCities.ts for why.
-
-import { fileURLToPath } from 'url'
-import path from 'path' // eslint-disable-line @typescript-eslint/no-unused-vars
+// Dynamic imports deliberately — see importListings.ts for why.
 
 const { default: config } = await import('../payload.config.js')
 const { getPayload } = await import('payload')
 
 const payload = await getPayload({ config })
 
-// Fetch all listings that lack practitionerBio
-const allListings = await payload.find({
-  collection: 'listings',
-  limit: 300,
-  // No draft filter — we want all of them
-})
+const DEEPSEEK_API_KEY = process.env.DEEPSEEK_API_KEY
+if (!DEEPSEEK_API_KEY) {
+  console.error('DEEPSEEK_API_KEY environment variable is required.')
+  process.exit(1)
+}
 
-const needingDescriptions = allListings.docs.filter(
-  (doc: any) => !doc.practitionerBio || doc.practitionerBio.trim() === ''
+// ── System prompt calibrated against descriptions-la-pilot.md + FirstDip.astro ──
+
+const SYSTEM_PROMPT = `You are the editorial voice of Sound Dip, a sound bath directory.
+Your style: short declarative sentences, concrete and sensory, not generic
+wellness marketing. Match this tone:
+"A sound bath isn't a workout, a class, or a performance. You lie down.
+You close your eyes. Vibrations from bowls, gongs, and voice wash over you
+for an hour. Most people fall asleep at least a little — that's the point."
+
+Generate two fields for this listing:
+
+1. practitionerBio (100-150 words): About the practitioner — their background,
+   training, style, what makes them distinctive. Original prose, NOT copied
+   from their website. Third person, no marketing claims, no "experience the
+   healing power of" language. State facts. Use specifics when available.
+
+2. sessionDescription (60-100 words): The session format.
+   Pattern: [Modality] · [Duration] · [Venue], [City]. [What makes it
+   distinctive.] [Price if known.]
+   Keep it factual and concrete. One sentence per idea.
+
+Return JSON: { "practitionerBio": "...", "sessionDescription": "..." }
+No markdown. No headers. Just the JSON object.`
+
+// ── DeepSeek API call (OpenAI-compatible) ──
+
+async function generateDescription(listing: any, cityName: string): Promise<{ practitionerBio: string; sessionDescription: string } | null> {
+  const userPrompt = `Listing: ${listing.name}
+City: ${cityName}
+Neighborhood: ${listing.neighborhood || 'Not specified'}
+Modality: ${listing.modalityDescription || 'Not specified'}
+Tags: ${(listing.modalityTags || []).join(', ') || 'None'}
+Duration: ${listing.duration || 'Not published'}
+Price: ${listing.price || 'Not published'}
+Booking URL: ${listing.bookingUrl || 'None'}
+Research notes: ${listing.sourcingNotes || 'None'}
+Source: ${listing.source || 'Unknown'}
+
+Generate the two fields.`
+
+  try {
+    const res = await fetch('https://api.deepseek.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${DEEPSEEK_API_KEY}`,
+      },
+      body: JSON.stringify({
+        model: 'deepseek-chat',
+        max_tokens: 600,
+        messages: [
+          { role: 'system', content: SYSTEM_PROMPT },
+          { role: 'user', content: userPrompt },
+        ],
+        response_format: { type: 'json_object' },
+      }),
+    })
+
+    if (!res.ok) {
+      const errText = await res.text()
+      console.error(`  API error (${res.status}): ${errText.substring(0, 200)}`)
+      return null
+    }
+
+    const data = await res.json()
+    const responseText = data?.choices?.[0]?.message?.content || ''
+
+    // Extract JSON from response
+    const jsonMatch = responseText.match(/\{[\s\S]*\}/)
+    if (!jsonMatch) {
+      console.error('  No JSON in response')
+      return null
+    }
+
+    const parsed = JSON.parse(jsonMatch[0])
+    if (!parsed.practitionerBio || !parsed.sessionDescription) {
+      console.error('  Missing fields in JSON response')
+      return null
+    }
+
+    return {
+      practitionerBio: parsed.practitionerBio.trim(),
+      sessionDescription: parsed.sessionDescription.trim(),
+    }
+  } catch (err) {
+    console.error('  Error:', err instanceof Error ? err.message : err)
+    return null
+  }
+}
+
+// ── Process with concurrency ──
+
+async function processBatch(listings: any[], cityMap: Map<number, string>, concurrency: number) {
+  const results: { id: any; bio: string; desc: string; name: string }[] = []
+  const errors: string[] = []
+
+  for (let i = 0; i < listings.length; i += concurrency) {
+    const batch = listings.slice(i, i + concurrency)
+    const batchNum = Math.floor(i / concurrency) + 1
+    const totalBatches = Math.ceil(listings.length / concurrency)
+    console.log(`\nBatch ${batchNum}/${totalBatches} (${batch.length} listings)...`)
+
+    const batchResults = await Promise.all(
+      batch.map(async (listing) => {
+        const cityName = cityMap.get(typeof listing.city === 'object' ? listing.city?.id : listing.city) || 'Unknown'
+        const result = await generateDescription(listing, cityName)
+        if (result) {
+          console.log(`  ✓ ${listing.name}`)
+          return { id: listing.id, bio: result.practitionerBio, desc: result.sessionDescription, name: listing.name }
+        }
+        console.error(`  ✗ ${listing.name}`)
+        return null
+      })
+    )
+
+    for (const r of batchResults) {
+      if (r) results.push(r)
+      else errors.push('')
+    }
+
+    // Small delay between batches for rate limiting
+    if (i + concurrency < listings.length) {
+      await new Promise((r) => setTimeout(r, 500))
+    }
+  }
+
+  return { results, errors }
+}
+
+// ── Main ──
+
+console.log('Fetching all listings...')
+
+const allListings: any[] = []
+let page = 1
+let hasMore = true
+while (hasMore) {
+  const result = await payload.find({
+    collection: 'listings',
+    limit: 100,
+    page,
+    depth: 1,
+  })
+  allListings.push(...result.docs)
+  hasMore = result.hasNextPage
+  page++
+}
+
+console.log(`Total listings: ${allListings.length}`)
+
+// Build city ID → name map
+const cityMap = new Map<number, string>()
+const cities = await payload.find({ collection: 'cities', limit: 100, depth: 0 })
+for (const city of cities.docs) {
+  cityMap.set(city.id, city.name)
+}
+
+// Filter to listings missing descriptions
+const needingDescriptions = allListings.filter(
+  (l) => !l.practitionerBio || !l.sessionDescription
 )
 
-console.log(`Total listings: ${allListings.totalDocs}`)
 console.log(`Listings needing descriptions: ${needingDescriptions.length}`)
+console.log(`Already have descriptions: ${allListings.length - needingDescriptions.length}`)
 
-// Modality tag improvement map — keywords that signal specific modalities
-const MODALITY_IMPROVEMENTS: { tag: string; patterns: RegExp[] }[] = [
-  { tag: 'gong', patterns: [/gong/i] },
-  { tag: 'crystal', patterns: [/crystal/i, /singing bowl/i] },
-  { tag: 'tibetan-bowls', patterns: [/tibetan/i, /himalayan/i] },
-  { tag: 'voice', patterns: [/voice/i, /vocal/i, /chant/i, /overtone/i, /singing/i] },
-  { tag: 'brass', patterns: [/brass/i, /bell/i] },
-  { tag: 'reiki', patterns: [/reiki/i] },
-  { tag: 'breathwork', patterns: [/breathwork/i, /breath work/i] },
-]
-
-function improveModalityTags(
-  currentTags: string[],
-  modalityDesc: string,
-  sourcingNotes: string,
-  name: string
-): string[] | null {
-  const combined = `${modalityDesc} ${sourcingNotes} ${name}`
-  const improved = new Set<string>()
-
-  for (const { tag, patterns } of MODALITY_IMPROVEMENTS) {
-    if (patterns.some((p) => p.test(combined))) {
-      improved.add(tag)
-    }
-  }
-
-  if (improved.size === 0) return null // Can't improve
-
-  // Check if current tags are just ['other'] or ['mixed']
-  const currentSet = new Set(currentTags)
-  const isGeneric = currentTags.length === 1 && (currentTags[0] === 'other' || currentTags[0] === 'mixed')
-
-  if (!isGeneric) {
-    // Already has specific tags — only improve if we'd add new ones
-    let added = false
-    for (const tag of improved) {
-      if (!currentSet.has(tag)) added = true
-    }
-    if (!added) return null
-  }
-
-  // Merge existing specific tags with improved ones
-  for (const tag of currentTags) {
-    if (tag !== 'other') improved.add(tag)
-  }
-
-  if (improved.size > 1) improved.add('mixed')
-  if (improved.size === 0) return null
-
-  const result = Array.from(improved)
-  // Sort for consistency
-  return result.sort()
+if (needingDescriptions.length === 0) {
+  console.log('Nothing to do — all listings have descriptions.')
+  process.exit(0)
 }
 
-// Generate a practitioner bio from listing data
-function generateBio(doc: any): string {
-  const name = doc.name || 'This practitioner'
-  const modality = doc.modalityDescription || ''
-  const neighborhood = doc.neighborhood || ''
-  const notes = doc.sourcingNotes || ''
-  const price = doc.price || ''
-  const duration = doc.duration || ''
-  const source = doc.source || ''
+// Process in batches of 3 (concurrency)
+const CONCURRENCY = 3
+const { results, errors } = await processBatch(needingDescriptions, cityMap, CONCURRENCY)
 
-  // Build bio from available data
-  const parts: string[] = []
+console.log(`\nGenerated ${results.length} descriptions, ${errors.length} failures.`)
+console.log('Writing to Payload...')
 
-  // Opening — who and where
-  if (neighborhood) {
-    parts.push(`${cleanName(name)} operates out of ${neighborhood}`)
-  } else {
-    parts.push(`${cleanName(name)} offers sound healing sessions`)
-  }
+let updated = 0
+let failed = 0
 
-  // Modality detail
-  if (modality) {
-    parts.push(`with a focus on ${modality.toLowerCase()}`)
-  }
-
-  // Sourcing notes often contain rich context
-  if (notes) {
-    const noteInsights = extractInsights(notes)
-    if (noteInsights) parts.push(noteInsights)
-  }
-
-  // Price transparency callout
-  if (price && price !== 'Not published') {
-    parts.push(`Sessions are priced at ${price}`)
-  }
-
-  // Duration if available
-  if (duration && duration !== 'Not published') {
-    parts.push(`running ${duration}`)
-  }
-
-  // Source-based credibility
-  if (source && source.includes('website')) {
-    parts.push('with an active web presence')
-  }
-
-  // Closing
-  parts.push('-- a listing worth verifying for current availability before booking.')
-
-  return joinBio(parts)
-}
-
-function cleanName(name: string): string {
-  // Remove parenthetical content for cleaner prose
-  return name.replace(/\s*\(.*?\)\s*$/, '').trim()
-}
-
-function extractInsights(notes: string): string {
-  // Pull out useful factual content from sourcing notes
-  const insights: string[] = []
-
-  // Rating/review mentions
-  const ratingMatch = notes.match(/(\d+\.?\d*)\s*(?:rating|stars?)\s*\((\d+)\s*reviews?\)/i)
-  if (ratingMatch) {
-    insights.push(`rated ${ratingMatch[1]} across ${ratingMatch[2]} reviews`)
-  }
-
-  // Longevity mentions
-  const yearsMatch = notes.match(/(\d+)\+?\s*years?/i)
-  if (yearsMatch) {
-    insights.push(`with over ${yearsMatch[1]} years of practice`)
-  }
-
-  // Corporate clients
-  if (notes.match(/corporate/i)) {
-    insights.push('serving both individual and corporate clients')
-  }
-
-  // Training/certification
-  if (notes.match(/certif|trained|E-RYT|YTT/i)) {
-    insights.push('with formal training credentials')
-  }
-
-  // Recurring schedule
-  if (notes.match(/recurring|weekly|monthly|every/i)) {
-    insights.push('running on a recurring schedule')
-  }
-
-  if (insights.length === 0) return ''
-  return insights.slice(0, 2).join(', ')
-}
-
-function joinBio(parts: string[]): string {
-  // Join into coherent prose — this is a draft, not final copy
-  let bio = parts[0]
-  for (let i = 1; i < parts.length; i++) {
-    const part = parts[i]
-    if (part.startsWith('--') || part.startsWith(',') || part.startsWith('with')) {
-      bio += ' ' + part
-    } else if (part.startsWith('running') || part.startsWith('rated') || part.startsWith('serving')) {
-      bio += ', ' + part
-    } else {
-      bio += '. ' + part.charAt(0).toUpperCase() + part.slice(1)
-    }
-  }
-  if (!bio.endsWith('.')) bio += '.'
-  return bio
-}
-
-// Generate a session description from listing data
-function generateSessionDescription(doc: any): string {
-  const modality = doc.modalityDescription || 'Sound bath'
-  const duration = doc.duration && doc.duration !== 'Not published' ? doc.duration : 'Duration varies'
-  const neighborhood = doc.neighborhood || 'Location confirmed at booking'
-  const price = doc.price && doc.price !== 'Not published' ? doc.price : 'Contact for pricing'
-  const bookingUrl = doc.bookingUrl
-
-  const parts: string[] = []
-
-  // Format line
-  parts.push(`${modality} · ${duration} · ${neighborhood}.`)
-
-  // What makes it distinctive — from notes
-  const notes = doc.sourcingNotes || ''
-  if (notes.includes('recurring') || notes.includes('weekly') || notes.includes('monthly')) {
-    parts.push('Recurring series.')
-  } else if (notes.includes('private')) {
-    parts.push('Private sessions by appointment.')
-  }
-
-  // Price
-  if (price !== 'Contact for pricing') {
-    parts.push(price + '.')
-  } else {
-    parts.push('Contact for pricing.')
-  }
-
-  // Booking
-  if (bookingUrl) {
-    parts.push('Book online.')
-  }
-
-  return parts.join(' ')
-}
-
-let patched = 0
-let tagsImproved = 0
-const skipped = 0
-
-for (const doc of needingDescriptions) {
-  const bio = generateBio(doc)
-  const sessionDesc = generateSessionDescription(doc)
-
-  const updateData: any = {
-    practitionerBio: bio,
-    sessionDescription: sessionDesc,
-  }
-
-  // Also improve modality tags if possible
-  const improvedTags = improveModalityTags(
-    doc.modalityTags || [],
-    doc.modalityDescription || '',
-    doc.sourcingNotes || '',
-    doc.name || ''
-  )
-  if (improvedTags) {
-    updateData.modalityTags = improvedTags
-    tagsImproved++
-  }
-
+for (const r of results) {
   try {
     await payload.update({
       collection: 'listings',
-      id: doc.id,
-      data: updateData,
+      id: r.id,
+      data: {
+        practitionerBio: r.bio,
+        sessionDescription: r.desc,
+      },
     })
-    patched++
-    if (patched % 20 === 0) {
-      console.log(`Progress: ${patched}/${needingDescriptions.length}`)
-    }
+    updated++
   } catch (err) {
-    console.error(`Failed to patch "${doc.name}":`, err instanceof Error ? err.message : err)
+    failed++
+    console.error(`  Failed to update ${r.name}:`, err instanceof Error ? err.message : err)
   }
 }
 
-console.log(`\nDone: ${patched} listings patched with draft descriptions.`)
-console.log(`Tags improved on ${tagsImproved} listings.`)
-console.log(`Skipped: ${skipped}.`)
-console.log(`\nNOTE: These are draft descriptions. Review before publishing.`)
+console.log(`\nDescription generation done:`)
+console.log(`  Generated: ${results.length}`)
+console.log(`  Updated in DB: ${updated}`)
+console.log(`  Failed to update: ${failed}`)
+console.log(`  Skipped (API failures): ${errors.length}`)
+
 process.exit(0)
