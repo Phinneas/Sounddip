@@ -19,7 +19,7 @@ const city = getCityBySlug(slug!);
 if (!city) return Astro.redirect('/');
 
 const pageTitle = `Best Sound Baths in ${city.name} — Sound Dip`;
-const pageDescription = `${city.sessionCount} vetted sound bath sessions in ${city.name}. ${city.tagline}`;
+const pageDescription = `${city.sessionCount} vetted sound bath sessions in ${city.name}. ${city.priceRange} per session. ${city.formats.slice(0, 3).join(', ')}.`;
 const sceneParagraphs = city.scene.split('\n\n').filter(Boolean);
 
 // Fetch listings from Payload CMS at build time
