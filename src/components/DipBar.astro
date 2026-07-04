@@ -1,33 +1,53 @@
 ---
 // DipBar — the segmented search widget
-// Improvements:
-//   • Added chevron (⌄) after each field value — clear dropdown affordance
-//   • Hover gives each field a deeper linen background
-//   • Active field shows a thin clay underline
-//   • Arrow icon changed to ↗ on submit to signal discovery action
+// Functional: City selector + Modality filter, navigates to city page with query param
 ---
 
 <div class="dip-bar-wrap" id="dip-bar">
-  <form class="dip-bar" onsubmit="event.preventDefault()">
+  <form class="dip-bar" id="dip-bar-form">
 
-    <div class="dip-field" tabindex="0">
+    <!-- City dropdown -->
+    <div class="dip-field" id="dip-city-field" tabindex="0" role="combobox" aria-expanded="false" aria-label="Select city">
       <div class="dip-label">City</div>
-      <div class="dip-value">Brooklyn, NY <span class="chevron">⌄</span></div>
+      <div class="dip-value" id="dip-city-value">Select city <span class="chevron">⌄</span></div>
+      <div class="dip-menu" id="dip-city-menu" hidden>
+        <div class="dip-option" data-value="new-york">New York City</div>
+        <div class="dip-option" data-value="los-angeles">Los Angeles</div>
+        <div class="dip-option" data-value="san-francisco">San Francisco</div>
+        <div class="dip-option" data-value="chicago">Chicago</div>
+        <div class="dip-option" data-value="austin">Austin</div>
+        <div class="dip-option" data-value="denver">Denver</div>
+        <div class="dip-option" data-value="portland">Portland</div>
+        <div class="dip-option" data-value="seattle">Seattle</div>
+        <div class="dip-option" data-value="joshua-tree">Joshua Tree</div>
+        <div class="dip-option" data-value="boulder">Boulder</div>
+        <div class="dip-option" data-value="sedona">Sedona</div>
+        <div class="dip-option" data-value="asheville">Asheville</div>
+        <div class="dip-option" data-value="miami">Miami</div>
+        <div class="dip-option" data-value="san-diego">San Diego</div>
+        <div class="dip-option" data-value="boston">Boston</div>
+        <div class="dip-option" data-value="santa-fe">Santa Fe</div>
+        <div class="dip-option" data-value="minneapolis">Minneapolis</div>
+        <div class="dip-option" data-value="washington-dc">Washington DC</div>
+        <div class="dip-option" data-value="new-orleans">New Orleans</div>
+        <div class="dip-option" data-value="burlington">Burlington</div>
+      </div>
     </div>
 
-    <div class="dip-field" tabindex="0">
-      <div class="dip-label">When</div>
-      <div class="dip-value">Tonight <span class="chevron">⌄</span></div>
-    </div>
-
-    <div class="dip-field" tabindex="0">
-      <div class="dip-label">Time</div>
-      <div class="dip-value placeholder">After 6 PM <span class="chevron">⌄</span></div>
-    </div>
-
-    <div class="dip-field" tabindex="0">
+    <!-- Modality dropdown -->
+    <div class="dip-field" id="dip-modality-field" tabindex="0" role="combobox" aria-expanded="false" aria-label="Select modality">
       <div class="dip-label">Modality</div>
-      <div class="dip-value placeholder">Any <span class="chevron">⌄</span></div>
+      <div class="dip-value placeholder" id="dip-modality-value">Any <span class="chevron">⌄</span></div>
+      <div class="dip-menu" id="dip-modality-menu" hidden>
+        <div class="dip-option" data-value="any">Any modality</div>
+        <div class="dip-option" data-value="gong">Gong</div>
+        <div class="dip-option" data-value="crystal">Crystal bowls</div>
+        <div class="dip-option" data-value="voice">Voice</div>
+        <div class="dip-option" data-value="tibetan-bowls">Tibetan bowls</div>
+        <div class="dip-option" data-value="reiki">Reiki</div>
+        <div class="dip-option" data-value="breathwork">Breathwork</div>
+        <div class="dip-option" data-value="mixed">Mixed</div>
+      </div>
     </div>
 
     <button type="submit" class="dip-submit">
@@ -42,14 +62,14 @@
     max-width: 1440px;
     margin: 0 auto;
     padding: 56px 6vw 0;
-    scroll-margin-top: 80px; /* offset for fixed topbar */
+    scroll-margin-top: 80px;
   }
   .dip-bar {
     background: var(--linen);
     border-radius: 16px;
     padding: 14px;
     display: grid;
-    grid-template-columns: 1.4fr 1fr 1fr 1fr auto;
+    grid-template-columns: 1.4fr 1fr auto;
     gap: 1px;
     box-shadow: var(--shadow);
     border: 1px solid var(--rule-soft);
@@ -64,7 +84,6 @@
   }
   .dip-field:hover,
   .dip-field:focus { background: var(--bone-2); }
-  /* Clay underline on focus — improved affordance */
   .dip-field:focus::after {
     content: "";
     position: absolute;
@@ -73,13 +92,23 @@
     background: var(--clay);
     opacity: 0.6;
   }
-  /* Dividers between fields */
   .dip-field:not(:last-of-type)::before {
     content: "";
     position: absolute;
     right: -1px; top: 25%; bottom: 25%;
     width: 1px;
     background: var(--rule);
+  }
+  .dip-field.open {
+    background: var(--bone-2);
+  }
+  .dip-field.open::after {
+    content: "";
+    position: absolute;
+    bottom: 10px; left: 26px; right: 26px;
+    height: 1px;
+    background: var(--clay);
+    opacity: 0.8;
   }
   .dip-label {
     font-family: var(--mono);
@@ -108,7 +137,47 @@
     color: var(--ink-soft);
     margin-top: 2px;
     flex-shrink: 0;
+    transition: transform 0.2s;
   }
+  .dip-field.open .chevron { transform: rotate(180deg); }
+
+  /* Dropdown menu */
+  .dip-menu {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    right: 0;
+    background: var(--bone);
+    border: 1px solid var(--rule);
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(80,50,20,0.12);
+    z-index: 50;
+    max-height: 320px;
+    overflow-y: auto;
+    padding: 6px;
+  }
+  .dip-option {
+    padding: 10px 16px;
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 17px;
+    color: var(--ink);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+    font-variation-settings: "opsz" 72;
+  }
+  .dip-option:hover,
+  .dip-option.highlighted {
+    background: var(--linen);
+    color: var(--clay);
+  }
+  .dip-option.selected {
+    background: var(--linen);
+    color: var(--clay);
+    font-weight: 400;
+  }
+
   .dip-submit {
     background: var(--ink);
     color: var(--bone);
@@ -136,3 +205,133 @@
     .dip-bar { grid-template-columns: 1fr; }
   }
 </style>
+
+<script>
+  // ── DipBar dropdown logic ──
+
+  const cityField = document.getElementById('dip-city-field')!;
+  const cityMenu = document.getElementById('dip-city-menu')!;
+  const cityValue = document.getElementById('dip-city-value')!;
+  const modalityField = document.getElementById('dip-modality-field')!;
+  const modalityMenu = document.getElementById('dip-modality-menu')!;
+  const modalityValue = document.getElementById('dip-modality-value')!;
+  const form = document.getElementById('dip-bar-form')!;
+
+  let selectedCity = '';
+  let selectedModality = 'any';
+
+  // ── Dropdown toggle logic ──
+
+  function toggleMenu(field: HTMLElement, menu: HTMLElement) {
+    const isOpen = !menu.hidden;
+    // Close all menus first
+    cityMenu.hidden = true;
+    modalityMenu.hidden = true;
+    cityField.classList.remove('open');
+    modalityField.classList.remove('open');
+    cityField.setAttribute('aria-expanded', 'false');
+    modalityField.setAttribute('aria-expanded', 'false');
+    // Open this one if it was closed
+    if (!isOpen) {
+      menu.hidden = false;
+      field.classList.add('open');
+      field.setAttribute('aria-expanded', 'true');
+    }
+  }
+
+  cityField.addEventListener('click', (e) => {
+    e.stopPropagation();
+    toggleMenu(cityField, cityMenu);
+  });
+  modalityField.addEventListener('click', (e) => {
+    e.stopPropagation();
+    toggleMenu(modalityField, modalityMenu);
+  });
+
+  // Close on outside click
+  document.addEventListener('click', () => {
+    cityMenu.hidden = true;
+    modalityMenu.hidden = true;
+    cityField.classList.remove('open');
+    modalityField.classList.remove('open');
+    cityField.setAttribute('aria-expanded', 'false');
+    modalityField.setAttribute('aria-expanded', 'false');
+  });
+
+  // ── Option selection ──
+
+  cityMenu.querySelectorAll('.dip-option').forEach(opt => {
+    opt.addEventListener('click', (e) => {
+      e.stopPropagation();
+      selectedCity = (opt as HTMLElement).dataset.value || '';
+      cityValue.textContent = opt.textContent || '';
+      cityValue.classList.remove('placeholder');
+      cityMenu.querySelectorAll('.dip-option').forEach(o => o.classList.remove('selected'));
+      opt.classList.add('selected');
+      cityMenu.hidden = true;
+      cityField.classList.remove('open');
+      cityField.setAttribute('aria-expanded', 'false');
+    });
+  });
+
+  modalityMenu.querySelectorAll('.dip-option').forEach(opt => {
+    opt.addEventListener('click', (e) => {
+      e.stopPropagation();
+      selectedModality = (opt as HTMLElement).dataset.value || 'any';
+      modalityValue.textContent = (opt.textContent || 'Any') + ' ';
+      const chevron = document.createElement('span');
+      chevron.className = 'chevron';
+      chevron.textContent = '⌄';
+      modalityValue.appendChild(chevron);
+      if (selectedModality === 'any') {
+        modalityValue.classList.add('placeholder');
+      } else {
+        modalityValue.classList.remove('placeholder');
+      }
+      modalityMenu.querySelectorAll('.dip-option').forEach(o => o.classList.remove('selected'));
+      opt.classList.add('selected');
+      modalityMenu.hidden = true;
+      modalityField.classList.remove('open');
+      modalityField.setAttribute('aria-expanded', 'false');
+    });
+  });
+
+  // ── Keyboard nav ──
+
+  [cityField, modalityField].forEach(field => {
+    field.addEventListener('keydown', (e: KeyboardEvent) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        const menu = field.querySelector('.dip-menu') as HTMLElement;
+        toggleMenu(field, menu);
+      }
+      if (e.key === 'Escape') {
+        cityMenu.hidden = true;
+        modalityMenu.hidden = true;
+        cityField.classList.remove('open');
+        modalityField.classList.remove('open');
+        cityField.setAttribute('aria-expanded', 'false');
+        modalityField.setAttribute('aria-expanded', 'false');
+      }
+    });
+  });
+
+  // ── Form submit ──
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    if (!selectedCity) {
+      // No city selected — scroll to cities section
+      const citiesSection = document.querySelector('.cities-overflow');
+      if (citiesSection) {
+        citiesSection.scrollIntoView({ behavior: 'smooth' });
+      }
+      return;
+    }
+    let url = `/cities/${selectedCity}/`;
+    if (selectedModality && selectedModality !== 'any') {
+      url += `?modality=${selectedModality}`;
+    }
+    window.location.href = url;
+  });
+</script>

@@ -217,23 +217,39 @@ const visibleListings = listings
         </div>
       </div>
       <p class="section-lede">Every vetted practitioner and session in {city.name} — click a name to read more, book directly through their site.</p>
-      <div class="listings-list">
+
+      <!-- Modality filter bar -->
+      <div class="modality-filter" id="modality-filter">
+        <span class="modality-filter-label">Filter:</span>
+        <button class="modality-filter-pill active" data-modality="all">All</button>
+        <button class="modality-filter-pill" data-modality="gong">Gong</button>
+        <button class="modality-filter-pill" data-modality="crystal">Crystal bowls</button>
+        <button class="modality-filter-pill" data-modality="voice">Voice</button>
+        <button class="modality-filter-pill" data-modality="tibetan-bowls">Tibetan bowls</button>
+        <button class="modality-filter-pill" data-modality="reiki">Reiki</button>
+        <button class="modality-filter-pill" data-modality="breathwork">Breathwork</button>
+        <button class="modality-filter-pill" data-modality="mixed">Mixed</button>
+      </div>
+
+      <div class="listings-list" id="listings-list">
         {visibleListings.map((listing: any, i: number) => (
-          <ListingCard
-            name={listing.name}
-            slug={listing.slug}
-            neighborhood={listing.neighborhood}
-            modalityTags={listing.modalityTags}
-            modalityDescription={listing.modalityDescription}
-            duration={listing.duration}
-            price={listing.price}
-            bookingUrl={listing.bookingUrl}
-            practitionerBio={listing.practitionerBio}
-            sessionDescription={listing.sessionDescription}
-            listingStatus={listing.listingStatus}
-            photo={listing.photo}
-            index={i}
-          />
+          <div class="listing-wrapper" data-modalities={(listing.modalityTags || []).join(',')}>
+            <ListingCard
+              name={listing.name}
+              slug={listing.slug}
+              neighborhood={listing.neighborhood}
+              modalityTags={listing.modalityTags}
+              modalityDescription={listing.modalityDescription}
+              duration={listing.duration}
+              price={listing.price}
+              bookingUrl={listing.bookingUrl}
+              practitionerBio={listing.practitionerBio}
+              sessionDescription={listing.sessionDescription}
+              listingStatus={listing.listingStatus}
+              photo={listing.photo}
+              index={i}
+            />
+          </div>
         ))}
       </div>
       <a href="/submit" class="submit-cta">Run a sound bath in {city.name}? <em>Add your practice.</em></a>
@@ -381,4 +397,130 @@ const visibleListings = listings
   @media (max-width: 1024px) {
     .meta-grid { grid-template-columns: 1fr; gap: 40px; }
   }
+
+  /* ── Modality filter bar ── */
+  .modality-filter {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: baseline;
+    margin-bottom: 32px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .modality-filter-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-right: 8px;
+    padding: 8px 0;
+  }
+  .modality-filter-pill {
+    padding: 8px 16px;
+    border: 1px solid var(--rule);
+    border-radius: 100px;
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 15px;
+    color: var(--ink);
+    cursor: pointer;
+    transition: all 0.2s;
+    background: var(--bone);
+    font-variation-settings: "opsz" 72;
+  }
+  .modality-filter-pill:hover {
+    background: var(--linen);
+    border-color: var(--clay);
+    color: var(--clay);
+  }
+  .modality-filter-pill.active {
+    background: var(--ink);
+    color: var(--bone);
+    border-color: var(--ink);
+  }
+
+  /* ── Listing wrapper for filtering ── */
+  .listing-wrapper.hidden {
+    display: none;
+  }
+
+  /* ── Empty state ── */
+  .filter-empty {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 18px;
+    color: var(--ink-soft);
+    text-align: center;
+    padding: 48px 0;
+    font-variation-settings: "opsz" 72;
+  }
 </style>
+
+<script>
+  // ── Modality filtering on city pages ──
+  const filterBar = document.getElementById('modality-filter');
+  const listingsList = document.getElementById('listings-list');
+  if (!filterBar || !listingsList) {
+    // Page may have no listings section
+  } else {
+    const wrappers = Array.from(listingsList.querySelectorAll('.listing-wrapper')) as HTMLElement[];
+    const pills = Array.from(filterBar.querySelectorAll('.modality-filter-pill')) as HTMLElement[];
+    let emptyMsg: HTMLElement | null = null;
+
+    function applyFilter(modality: string) {
+      let visibleCount = 0;
+      wrappers.forEach(w => {
+        const tags = (w.dataset.modalities || '').split(',').map(t => t.trim()).filter(Boolean);
+        if (modality === 'all' || tags.includes(modality)) {
+          w.classList.remove('hidden');
+          visibleCount++;
+        } else {
+          w.classList.add('hidden');
+        }
+      });
+
+      // Show/hide empty state
+      if (emptyMsg) emptyMsg.remove();
+      if (visibleCount === 0) {
+        emptyMsg = document.createElement('p');
+        emptyMsg.className = 'filter-empty';
+        emptyMsg.textContent = 'No sessions match this modality. Try another filter.';
+        listingsList.appendChild(emptyMsg);
+      }
+
+      // Update active pill
+      pills.forEach(p => {
+        if (p.dataset.modality === modality) {
+          p.classList.add('active');
+        } else {
+          p.classList.remove('active');
+        }
+      });
+    }
+
+    // Pill click handlers
+    pills.forEach(pill => {
+      pill.addEventListener('click', () => {
+        const modality = pill.dataset.modality || 'all';
+        applyFilter(modality);
+        // Update URL without reload
+        const url = new URL(window.location.href);
+        if (modality === 'all') {
+          url.searchParams.delete('modality');
+        } else {
+          url.searchParams.set('modality', modality);
+        }
+        window.history.replaceState({}, '', url.toString());
+      });
+    });
+
+    // On page load, check for ?modality= query param
+    const params = new URLSearchParams(window.location.search);
+    const modalityParam = params.get('modality');
+    if (modalityParam) {
+      applyFilter(modalityParam);
+    }
+  }
+</script>
