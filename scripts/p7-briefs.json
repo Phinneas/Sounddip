@@ -1,0 +1,185 @@
+[
+  {
+    "week": 1,
+    "title": "Content Audit + Guides Retrofit",
+    "slug": null,
+    "type": "retrofit",
+    "asanaTaskGid": "1216131168610054",
+    "note": "Internal-only work: tag existing URLs by reasoning mode, retrofit 5 /guides/ posts with H2 sub-query structure + FAQPage/Article schema. No new article to generate."
+  },
+  {
+    "week": 2,
+    "title": "What Is a Sound Bath? The Complete Guide",
+    "slug": "what-is-a-sound-bath",
+    "type": "guide",
+    "asanaTaskGid": "1216131168566145",
+    "mainKeyword": "what is a sound bath",
+    "secondaryKeywords": ["sound bath explained", "sound bath definition", "what happens at a sound bath"],
+    "targetLength": "2,000-2,500 words",
+    "schema": ["FAQPage", "Article"],
+    "brief": "Create the flagship definitional authority page that earns high-reasoning AI citations at Exploration stage.\n\nSTRUCTURE — one H2 per sub-query that AI fires:\n- What is a sound bath (1-sentence definition)\n- How does a sound bath work (mechanism: vibroacoustics, brainwave entrainment, vagal tone)\n- What instruments are used\n- What does it feel like during the session\n- How long does a sound bath last\n- How much does a sound bath cost\n- What to wear and bring\n- Who should not attend (contraindications)\n- Is a sound bath spiritual or secular\n- How is a sound bath different from meditation\n- How to find a qualified practitioner\n\nINTERNAL LINKS: Link from every city page and listing page",
+    "internalLinks": ["/blog/sound-healing-for-anxiety/", "/cities/los-angeles/", "/cities/new-york-city/", "/cities/asheville/"]
+  },
+  {
+    "week": 3,
+    "title": "Sound Bath Benefits: What the Research Actually Shows",
+    "slug": "sound-bath-benefits",
+    "type": "guide",
+    "asanaTaskGid": "1216131386391391",
+    "mainKeyword": "sound bath benefits",
+    "secondaryKeywords": ["sound bath for anxiety", "sound bath for sleep", "sound healing research", "sound therapy science"],
+    "targetLength": "1,800-2,200 words",
+    "schema": ["Article", "FAQPage"],
+    "brief": "Create the clinical evidence page that earns citations from high-reasoning AI when users ask about sound bath effectiveness.\n\nSTRUCTURE:\n- What does the research show overall (honest framing)\n- Anxiety and stress reduction (HRV data, cortisol studies — cite by researcher name)\n- Sleep quality (peer-reviewed evidence)\n- Mood and emotional regulation\n- Physical relaxation (vagal tone, nervous system response)\n- What the evidence does NOT yet show (epistemically honest — this builds trust)\n- How many sessions to see results\n- Group vs. private session outcomes\n\nIMPORTANT: Cite actual studies with researcher names and publication years. Do not use 'many people report' language. This is what separates a citable reference page from a wellness blog post.",
+    "internalLinks": ["/blog/sound-healing-for-anxiety/", "/blog/what-is-a-sound-bath/"]
+  },
+  {
+    "week": 4,
+    "title": "Are Sound Baths Safe? Contraindications, Risks, and What to Know",
+    "slug": "are-sound-baths-safe",
+    "type": "guide",
+    "asanaTaskGid": "1216131386389026",
+    "mainKeyword": "are sound baths safe",
+    "secondaryKeywords": ["sound bath contraindications", "dangers of singing bowls", "sound bath risks", "singing bowls safe for epilepsy", "sound bath during pregnancy"],
+    "targetLength": "1,500-2,000 words",
+    "schema": ["Article", "FAQPage"],
+    "brief": "Create the definitive safety reference page. This is the content high-reasoning AI cites when asked about risks and contraindications.\n\nSTRUCTURE:\n- Are sound baths generally safe (direct answer first)\n- Who should NOT attend: epilepsy (vibration/seizure risk), pacemakers, severe tinnitus, first-trimester pregnancy\n- Volume safety: what decibel levels are typical, what is safe exposure\n- Can a sound bath trigger trauma responses? (yes — honest answer with guidance)\n- Are sound baths safe for children?\n- Are sound baths safe during pregnancy? (trimester-specific guidance)\n- How long is too long for a session?\n- Signs a session is not going well and what to do\n- How to disclose conditions to a practitioner before booking",
+    "internalLinks": ["/blog/what-is-a-sound-bath/", "/blog/sound-bath-benefits/"]
+  },
+  {
+    "week": 5,
+    "title": "FAQ Cluster — 5 Standalone Pages",
+    "slug": null,
+    "type": "faq-cluster",
+    "asanaTaskGid": "1216131108958872",
+    "brief": "Replace Reddit/UGC as the go-to source for pre-booking questions. Each page is a standalone URL with FAQPage schema — not buried in a longer guide.",
+    "pages": [
+      {
+        "title": "What to Wear to a Sound Bath",
+        "slug": "what-to-wear-to-a-sound-bath",
+        "mainKeyword": "what to wear to a sound bath",
+        "targetLength": "300-500 words",
+        "schema": ["FAQPage"],
+        "brief": "Direct answer in first sentence (no preamble). 300-500 words total. FAQPage schema. Internal link to flagship What Is page and relevant city pages."
+      },
+      {
+        "title": "How Long Does a Sound Bath Last?",
+        "slug": "how-long-does-a-sound-bath-last",
+        "mainKeyword": "how long does a sound bath last",
+        "targetLength": "300-500 words",
+        "schema": ["FAQPage"],
+        "brief": "Direct answer in first sentence (no preamble). 300-500 words total. FAQPage schema. Internal link to flagship What Is page and relevant city pages."
+      },
+      {
+        "title": "What Happens During a Sound Bath?",
+        "slug": "what-happens-during-a-sound-bath",
+        "mainKeyword": "what happens during a sound bath",
+        "targetLength": "300-500 words",
+        "schema": ["FAQPage"],
+        "brief": "Direct answer in first sentence (no preamble). 300-500 words total. FAQPage schema. Internal link to flagship What Is page and relevant city pages."
+      },
+      {
+        "title": "How Much Does a Sound Bath Cost?",
+        "slug": "how-much-does-a-sound-bath-cost",
+        "mainKeyword": "how much does a sound bath cost",
+        "targetLength": "300-500 words",
+        "schema": ["FAQPage"],
+        "brief": "Direct answer in first sentence (no preamble). Cover group vs. private, city variation. 300-500 words total. FAQPage schema. Internal link to flagship What Is page and relevant city pages."
+      },
+      {
+        "title": "Can You Fall Asleep During a Sound Bath?",
+        "slug": "can-you-fall-asleep-during-a-sound-bath",
+        "mainKeyword": "can you fall asleep during a sound bath",
+        "targetLength": "300-500 words",
+        "schema": ["FAQPage"],
+        "brief": "Direct answer in first sentence (no preamble). 300-500 words total. FAQPage schema. Internal link to flagship What Is page and relevant city pages."
+      }
+    ]
+  },
+  {
+    "week": 6,
+    "title": "Skeptic Cluster — Spiritual/Secular + Christianity",
+    "slug": null,
+    "type": "skeptic-cluster",
+    "asanaTaskGid": "1216131386205252",
+    "brief": "Capture the skeptical inquirer segment — KD 1-5, near-zero competition, high conversion intent when concerns are addressed.",
+    "pages": [
+      {
+        "title": "Is a Sound Bath Spiritual or Secular? What to Expect If You're Not Into Woo",
+        "slug": "is-a-sound-bath-spiritual-or-secular",
+        "mainKeyword": "is a sound bath spiritual",
+        "targetLength": "800-1,200 words",
+        "schema": ["Article", "FAQPage"],
+        "brief": "Direct answer: sound baths can be experienced as pure acoustic/physical phenomena. What practitioners typically say vs. what the secular experience actually is. How to communicate secular preference when booking. What to do if a session feels too spiritual. KD: ~2-5"
+      },
+      {
+        "title": "Are Sound Baths Against Christianity? What Faith Traditions Say",
+        "slug": "are-sound-baths-against-christianity",
+        "mainKeyword": "are sound baths against christianity",
+        "targetLength": "800-1,200 words",
+        "schema": ["Article", "FAQPage"],
+        "brief": "This is a real, common question — treat it with full respect and nuance. Survey what different Christian denominations say. Distinguish between the physical acoustic experience and spiritual/ceremonial framing. Quotes or perspectives from Christians who do attend sound baths. Not a promotional piece — honest, balanced, not dismissive. KD: <5"
+      }
+    ]
+  },
+  {
+    "week": 7,
+    "title": "Validation Cluster — Do Sound Baths Work + vs. Meditation",
+    "slug": null,
+    "type": "validation-cluster",
+    "asanaTaskGid": "1216131414093256",
+    "brief": "Two comparison/validation pieces that fire 24+ sub-queries under high reasoning. These target the Validation stage of the buyer journey.",
+    "pages": [
+      {
+        "title": "Do Sound Baths Actually Work? An Evidence-Based Answer",
+        "slug": "do-sound-baths-actually-work",
+        "mainKeyword": "do sound baths work",
+        "targetLength": "1,200-1,800 words",
+        "schema": ["Article", "FAQPage"],
+        "brief": "Direct answer (honest about what evidence shows and what it doesn't). Summary of peer-reviewed evidence. What 'working' means: anxiety reduction vs. sleep vs. mood vs. relaxation. Placebo consideration (honest framing builds trust). What variables affect outcomes: session length, instrument type, practitioner quality, environment. KD: ~10-15"
+      },
+      {
+        "title": "Sound Bath vs. Meditation: What's the Difference and Which Is Right for You?",
+        "slug": "sound-bath-vs-meditation",
+        "mainKeyword": "sound bath vs meditation",
+        "targetLength": "1,200-1,800 words",
+        "schema": ["Article", "FAQPage"],
+        "brief": "Mechanism difference. Time commitment comparison. Practitioner requirement (meditation = solo; sound bath = guided). Cost comparison. Accessibility (meditation is free; sound bath requires booking). Effectiveness by specific outcome: anxiety, sleep, focus, emotional processing. Can you do both? (yes — internal link opportunity to listings). KD: ~15-20"
+      }
+    ]
+  },
+  {
+    "week": 8,
+    "title": "City Deep-Dives — LA, NYC, Comparison",
+    "slug": null,
+    "type": "city-cluster",
+    "asanaTaskGid": "1216131414100816",
+    "brief": "Add regional cultural depth to city pages that national directories can't replicate. Under high reasoning, AI cites city-specific content when making local recommendations.",
+    "pages": [
+      {
+        "title": "Sound Bath in Los Angeles: What Makes the LA Scene Different",
+        "slug": "sound-bath-los-angeles",
+        "mainKeyword": "sound bath los angeles",
+        "targetLength": "1,000-1,500 words",
+        "schema": ["Article"],
+        "brief": "LA = densest practitioner concentration in the US. Most format diversity: ceremonial, studio, spa, outdoor, rooftop. Cultural lineage: LA's connection to sound healing's US introduction. Neighborhoods to look in (Silver Lake, Venice, Echo Park, Topanga). Price range and what affects it in LA specifically. Internal link to all LA listing pages."
+      },
+      {
+        "title": "Sound Bath in New York City: Where to Go If You're New to Sound Healing",
+        "slug": "sound-bath-new-york-city",
+        "mainKeyword": "sound bath new york city",
+        "targetLength": "1,000-1,500 words",
+        "schema": ["Article"],
+        "brief": "NYC skews more clinical: meditation centers, yoga studios with sound components. Denser but more time-pressured audience — session format differences. Neighborhoods: Lower East Side, Park Slope, Upper West Side. Internal link to all NYC listing pages."
+      },
+      {
+        "title": "Sound Bath NYC vs. LA: What's Different About Each City's Scene",
+        "slug": "sound-bath-nyc-vs-la",
+        "mainKeyword": "sound bath nyc vs la",
+        "targetLength": "1,000-1,500 words",
+        "schema": ["Article"],
+        "brief": "Comparison format fires 24 sub-queries under high reasoning. Format culture difference (ceremonial vs. clinical). Price comparison. Practitioner background differences. Which city for what type of experience. Earns citations from both local and national traveler audiences."
+      }
+    ]
+  }
+]

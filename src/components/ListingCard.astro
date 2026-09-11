@@ -1,8 +1,11 @@
 ---
+import { resolvePhotoUrl, resolvePhotoAlt } from '../data/cms';
+
 interface Props {
   name: string;
   slug: string;
   neighborhood?: string;
+  cityName?: string;
   modalityTags?: string[];
   modalityDescription?: string;
   duration?: string;
@@ -14,26 +17,42 @@ interface Props {
   photo?: any;
   index: number;
 }
-const { name, neighborhood, modalityTags, modalityDescription, duration, price, bookingUrl, practitionerBio, sessionDescription, listingStatus, index } = Astro.props;
+const { name, neighborhood, cityName, modalityTags, modalityDescription, duration, price, bookingUrl, practitionerBio, sessionDescription, listingStatus, photo, index } = Astro.props;
 const num = String(index + 1).padStart(2, '0');
 
-const statusLabels: Record<string, string> = {
-  'active': '',
-  'active-secondary': 'Secondary fit',
-  'needs-verification': 'Needs verification',
-  'needs-organizer-name': 'Needs organizer name',
-  'flagged-inactive': 'Flagged inactive',
-};
-const statusLabel = statusLabels[listingStatus || ''] || '';
+// Locale line: neighborhood + city (homepage shows the city since cards span cities;
+// city pages don't pass cityName, so they render neighborhood only as before).
+const localeParts = [neighborhood, cityName].filter(Boolean);
+const localeLine = localeParts.join(' · ');
+
+// Photo: real CMS photo when populated, else a neutral placeholder (the
+// practitioner's initial in the site's italic serif). Never a fake stock image.
+const photoUrl = resolvePhotoUrl(photo);
+const photoAlt = resolvePhotoAlt(photo, name);
+const initial = name ? name.trim().charAt(0).toUpperCase() : '';
+
+// Verification badge: "active" listings have been reviewed and verified online
+// (web + event-platform research) — shown as "Verified online", an accurate
+// signal rather than a false "vetted in person" claim. "active-secondary"
+// carries the "Secondary fit" note; "auto-verified" is no longer shown publicly.
+const isVetted = listingStatus === 'active';
+const isSecondary = listingStatus === 'active-secondary';
+const isAutoVerified = listingStatus === 'auto-verified';
 ---
 
 <article class="listing-card">
   <div class="listing-card-inner">
     <div class="listing-num">{num}</div>
+    <div class="listing-avatar" aria-hidden={photoUrl ? 'true' : 'false'}>
+      {photoUrl
+        ? <img src={photoUrl} alt={photoAlt} loading="lazy" />
+        : <span class="listing-avatar-initial">{initial}</span>
+      }
+    </div>
     <div class="listing-body">
       <div class="listing-header">
         <h3 class="listing-name">{name}</h3>
-        {neighborhood && <span class="listing-hood">{neighborhood}</span>}
+        {localeLine && <span class="listing-hood">{localeLine}</span>}
       </div>
 
       {modalityTags && modalityTags.length > 0 && (
@@ -62,7 +81,9 @@ const statusLabel = statusLabels[listingStatus || ''] || '';
         {price && price !== 'Not published' && (
           <span class="meta-item"><span class="meta-label">Price</span> <span class="meta-value">{price}</span></span>
         )}
-        {statusLabel && <span class="listing-status-note">{statusLabel}</span>}
+        {isVetted && <span class="listing-vetted"><span class="vetted-check">✓</span> Verified online</span>}
+        {isAutoVerified && <span class="listing-listed">Listed</span>}
+        {isSecondary && <span class="listing-status-note">Secondary fit</span>}
       </div>
 
       {bookingUrl && bookingUrl !== 'N/A' && (
@@ -83,7 +104,7 @@ const statusLabel = statusLabels[listingStatus || ''] || '';
 
   .listing-card-inner {
     display: grid;
-    grid-template-columns: 48px 1fr;
+    grid-template-columns: 48px 56px 1fr;
     gap: 24px;
     align-items: start;
   }
@@ -96,6 +117,32 @@ const statusLabel = statusLabels[listingStatus || ''] || '';
     color: var(--clay);
     line-height: 1;
     padding-top: 4px;
+  }
+
+  .listing-avatar {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    overflow: hidden;
+    background: var(--linen);
+    border: 1px solid var(--rule);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .listing-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .listing-avatar-initial {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 22px;
+    color: var(--clay);
+    line-height: 1;
+    font-variation-settings: "opsz" 72;
   }
 
   .listing-body {
@@ -211,6 +258,38 @@ const statusLabel = statusLabels[listingStatus || ''] || '';
     border-radius: 100px;
   }
 
+  .listing-vetted {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--clay);
+    background: var(--linen);
+    border: 1px solid var(--rule);
+    padding: 3px 10px;
+    border-radius: 100px;
+  }
+  .vetted-check {
+    font-family: var(--sans);
+    font-size: 10px;
+    line-height: 1;
+  }
+
+  .listing-listed {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    background: var(--linen);
+    border: 1px solid var(--rule);
+    padding: 3px 10px;
+    border-radius: 100px;
+  }
+
   .listing-book {
     display: inline-flex;
     align-items: center;
@@ -232,7 +311,7 @@ const statusLabel = statusLabels[listingStatus || ''] || '';
   }
 
   @media (max-width: 640px) {
-    .listing-card-inner { grid-template-columns: 1fr; }
+    .listing-card-inner { grid-template-columns: 56px 1fr; gap: 16px; }
     .listing-num { display: none; }
   }
 </style>

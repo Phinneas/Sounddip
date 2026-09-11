@@ -4,12 +4,22 @@ import Topbar from '../components/Topbar.astro';
 import Hero from '../components/Hero.astro';
 import DipBar from '../components/DipBar.astro';
 import MapSection from '../components/MapSection.astro';
-import FeaturedSection from '../components/FeaturedSection.astro';
 import CitiesSection from '../components/CitiesSection.astro';
 import FirstDip from '../components/FirstDip.astro';
 import Currents from '../components/Currents.astro';
 import Footer from '../components/Footer.astro';
 import JsonLd from '../components/JsonLd.astro';
+import { getAllVisibleListings } from '../data/cms';
+
+// Fetch all visible listings once at build time for the hero's real NYC count
+// (no fabricated numbers). The "Sessions near you" map loads its own geocoded
+// JSON client-side, so it needs no props here.
+const allListings = await getAllVisibleListings();
+
+// Real NYC session count for the hero (no fabricated "tonight" number).
+const nycSessionCount = allListings.filter(
+  (l) => typeof l.city === 'object' && l.city !== null && l.city.slug === 'new-york',
+).length;
 ---
 
 <JsonLd data={{
@@ -72,15 +82,14 @@ import JsonLd from '../components/JsonLd.astro';
 
 <Layout
   title="Sound Dip — Find a Sound Bath Near You"
-  description="Discover curated sound bath sessions in your city. Browse practitioners, book your next immersion, and explore the world of sound healing."
+  description="Discover curated sound bath sessions in your city. Browse verified practitioners, book your next immersion, and explore the world of sound healing."
 >
   <Topbar />
   <main>
-    <Hero />
+    <Hero nycSessionCount={nycSessionCount} />
     <DipBar />
     <div class="page-sections">
       <MapSection />
-      <FeaturedSection />
       <CitiesSection />
       <FirstDip />
     </div>
@@ -88,9 +97,9 @@ import JsonLd from '../components/JsonLd.astro';
     <!-- Quiz CTA -->
     <section class="quiz-cta">
       <div class="quiz-cta-inner">
-        <div class="quiz-cta-num">v.</div>
+        <div class="quiz-cta-num">iv.</div>
         <h2>Not sure where to <em>start?</em></h2>
-        <p class="quiz-cta-sub">Answer five questions. We'll match you to sessions that fit — real practitioners, real booking links, no email required.</p>
+        <p class="quiz-cta-sub">Enter your ZIP code and see verified sound baths near you — real practitioners, real booking links, no email required.</p>
         <a href="/find-your-dip" class="quiz-cta-button">Find your dip <span class="quiz-cta-arrow">→</span></a>
       </div>
     </section>

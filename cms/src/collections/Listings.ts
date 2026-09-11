@@ -39,6 +39,48 @@ export const Listings: CollectionConfig = {
       type: 'text',
     },
     {
+      name: 'address',
+      type: 'text',
+      admin: {
+        description: 'Street address (machine-sourced from scraping). Optional — many listings only have a neighborhood.',
+      },
+    },
+    {
+      name: 'state',
+      type: 'text',
+      admin: {
+        description: 'US state abbreviation or full name, e.g. "NY" or "New York".',
+      },
+    },
+    {
+      name: 'zip',
+      type: 'text',
+      admin: {
+        description: 'US ZIP code (machine-sourced). Enables future proximity/zip search.',
+      },
+    },
+    {
+      name: 'lat',
+      type: 'number',
+      admin: {
+        description: 'Latitude (decimal degrees). Machine-sourced; used for future proximity features.',
+      },
+    },
+    {
+      name: 'lng',
+      type: 'number',
+      admin: {
+        description: 'Longitude (decimal degrees). Machine-sourced; used for future proximity features.',
+      },
+    },
+    {
+      name: 'phone',
+      type: 'text',
+      admin: {
+        description: 'Public contact phone number, if available.',
+      },
+    },
+    {
       name: 'modalityTags',
       type: 'select',
       hasMany: true,
@@ -115,7 +157,14 @@ export const Listings: CollectionConfig = {
       name: 'source',
       type: 'text',
       admin: {
-        description: 'Where this listing was found, e.g. "Google Maps + website", "Eventbrite (Tavily search)"',
+        description: 'Where this listing was found, e.g. "Google Maps + website", "Eventbrite search"',
+      },
+    },
+    {
+      name: 'featured',
+      type: 'checkbox',
+      admin: {
+        description: 'Editor-curated featured pick. When true, this listing is eligible for the homepage "Now bathing" section. This is a deliberate editorial action, not inferred from any other field.',
       },
     },
     {
@@ -129,6 +178,7 @@ export const Listings: CollectionConfig = {
       options: [
         { label: 'Active', value: 'active' },
         { label: 'Active - secondary fit', value: 'active-secondary' },
+        { label: 'Auto-verified (machine-sourced)', value: 'auto-verified' },
         { label: 'Needs verification', value: 'needs-verification' },
         { label: 'Needs organizer name', value: 'needs-organizer-name' },
         { label: 'Flagged inactive', value: 'flagged-inactive' },

@@ -1,0 +1,105 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Topbar from '../components/Topbar.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<Layout
+  title="About Sound Dip — A Directory of Sound Baths"
+  description="Who runs Sound Dip, why it exists, and how we choose the practitioners and sessions we list. Vetted, not aggregated."
+  canonical="/about"
+>
+  <main>
+    <Topbar />
+    <article class="static-page">
+      <header class="static-head">
+        <div class="static-num">§</div>
+        <h1>About <em>Sound Dip.</em></h1>
+      </header>
+
+      <section class="prose">
+        <h2>What this is</h2>
+        <p>Sound Dip is a small directory of sound bath sessions and practitioners across the United States. It exists for one reason: finding a sound bath in most cities is far harder than it should be. The sessions are out there — in yoga studios, borrowed rooms, parks, and a few purpose-built spaces — but they are scattered across Eventbrite pages, Instagram accounts, and studio schedules that never link to each other.</p>
+        <p>We built the index that was missing. Instead of a map with a thousand undifferentiated pins, we publish a shorter list of practitioners we can actually describe, organized by city, with the details that matter before you book: format, instruments, price, group size, and what the room is actually like.</p>
+
+        <h2 id="philosophy">Editorial philosophy</h2>
+        <p>Our standard is <em>vetted, not aggregated</em>. We would rather list five practitioners we can stand behind than fifty we cannot describe. Every listing we publish gets an original write-up written by a person, not scraped from a business listing or generated in bulk. If we cannot say something specific and true about a session, we leave it out.</p>
+        <p>That means the directory is smaller than it could be, and we are comfortable with that. A shorter list with real descriptions beats a longer list of names and outbound links.</p>
+
+        <h2 id="curation">How we choose listings</h2>
+        <p>We find practitioners the way a careful newcomer would: through their own websites, published schedules, and event platforms, then we confirm what we can against public information. We note what each practitioner actually offers, where the sessions happen, and how to book.</p>
+        <p>Listings carry an honest status. Sessions we have reviewed and verified are marked <em>Verified online</em>. We do not claim to have attended every session in person, and we will not label something "vetted in person" unless it actually was. If we cannot confirm a practitioner, we do not publish them.</p>
+        <p>Practitioners can also add or correct their own listings, and they go through a short verification step before they appear.</p>
+
+        <h2 id="who">Who runs this</h2>
+        <p>Sound Dip is run by a small editorial team with a working knowledge of sound healing and a low tolerance for the wellness-industry fluff that makes this practice hard to take seriously. We write about what the evidence actually shows, and we keep the tone calm and specific.</p>
+
+        <h2>Contact</h2>
+        <p>Questions, corrections, or a session you think belongs here? Email us at <a href="mailto:hello@sounddip.com">hello@sounddip.com</a>. We read everything and reply when we can.</p>
+      </section>
+    </article>
+    <Footer />
+  </main>
+</Layout>
+
+<style>
+  .static-page {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 140px 6vw 80px;
+  }
+  .static-head {
+    margin-bottom: 56px;
+  }
+  .static-num {
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 300;
+    font-size: 48px;
+    color: var(--clay);
+    line-height: 0.8;
+    margin-bottom: 24px;
+  }
+  .static-head h1 {
+    font-family: var(--serif);
+    font-weight: 300;
+    font-size: clamp(44px, 6vw, 72px);
+    line-height: 0.95;
+    letter-spacing: -2px;
+    color: var(--ink);
+    margin: 0;
+    font-variation-settings: "opsz" 144;
+  }
+  .static-head h1 em { font-style: italic; color: var(--clay); }
+
+  .prose {
+    font-family: var(--serif);
+    font-size: 19px;
+    line-height: 1.7;
+    color: var(--ink);
+    font-variation-settings: "opsz" 72;
+  }
+  .prose h2 {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: 28px;
+    line-height: 1.2;
+    color: var(--ink);
+    margin-top: 56px;
+    margin-bottom: 20px;
+    letter-spacing: -0.5px;
+    font-variation-settings: "opsz" 144;
+  }
+  .prose p { margin-bottom: 24px; color: var(--ink-mid); }
+  .prose a {
+    color: var(--clay);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  .prose a:hover { color: var(--clay-d); }
+
+  @media (max-width: 640px) {
+    .static-page { padding: 100px 6vw 60px; }
+    .prose { font-size: 17px; }
+  }
+</style>

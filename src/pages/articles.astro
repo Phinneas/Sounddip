@@ -1,0 +1,6 @@
+---
+// The site's article index lives at /blog (linked from the top nav and footer).
+// /articles is a permanent redirect so the URL also resolves to real content
+// instead of a 404 or a homepage fallback.
+return Astro.redirect('/blog/', 301);
+---

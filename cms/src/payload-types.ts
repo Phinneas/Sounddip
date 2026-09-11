@@ -234,11 +234,34 @@ export interface Listing {
   city: number | City;
   neighborhood?: string | null;
   /**
+   * Street address (machine-sourced from scraping). Optional — many listings only have a neighborhood.
+   */
+  address?: string | null;
+  /**
+   * US state abbreviation or full name, e.g. "NY" or "New York".
+   */
+  state?: string | null;
+  /**
+   * US ZIP code (machine-sourced). Enables future proximity/zip search.
+   */
+  zip?: string | null;
+  /**
+   * Latitude (decimal degrees). Machine-sourced; used for future proximity features.
+   */
+  lat?: number | null;
+  /**
+   * Longitude (decimal degrees). Machine-sourced; used for future proximity features.
+   */
+  lng?: number | null;
+  /**
+   * Public contact phone number, if available.
+   */
+  phone?: string | null;
+  /**
    * Structured tags used for the site's modality filter
    */
   modalityTags?:
-    | ('gong' | 'crystal' | 'voice' | 'brass' | 'tibetan-bowls' | 'reiki' | 'breathwork' | 'mixed' | 'other')[]
-    | null;
+    ('gong' | 'crystal' | 'voice' | 'brass' | 'tibetan-bowls' | 'reiki' | 'breathwork' | 'mixed' | 'other')[] | null;
   /**
    * Free-text modality detail as originally sourced, e.g. "Crystal bowls, gong, group/private/corporate sound bath"
    */
@@ -269,13 +292,23 @@ export interface Listing {
    */
   sourcingNotes?: string | null;
   /**
-   * Where this listing was found, e.g. "Google Maps + website", "Eventbrite (Tavily search)"
+   * Where this listing was found, e.g. "Google Maps + website", "Eventbrite search"
    */
   source?: string | null;
   /**
+   * Editor-curated featured pick. When true, this listing is eligible for the homepage "Now bathing" section. This is a deliberate editorial action, not inferred from any other field.
+   */
+  featured?: boolean | null;
+  /**
    * Research-confidence assessment — separate from the Draft/Published state above, which controls site visibility
    */
-  listingStatus: 'active' | 'active-secondary' | 'needs-verification' | 'needs-organizer-name' | 'flagged-inactive';
+  listingStatus:
+    | 'active'
+    | 'active-secondary'
+    | 'auto-verified'
+    | 'needs-verification'
+    | 'needs-organizer-name'
+    | 'flagged-inactive';
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
@@ -436,6 +469,12 @@ export interface ListingsSelect<T extends boolean = true> {
   slug?: T;
   city?: T;
   neighborhood?: T;
+  address?: T;
+  state?: T;
+  zip?: T;
+  lat?: T;
+  lng?: T;
+  phone?: T;
   modalityTags?: T;
   modalityDescription?: T;
   duration?: T;
@@ -446,6 +485,7 @@ export interface ListingsSelect<T extends boolean = true> {
   photo?: T;
   sourcingNotes?: T;
   source?: T;
+  featured?: T;
   listingStatus?: T;
   updatedAt?: T;
   createdAt?: T;

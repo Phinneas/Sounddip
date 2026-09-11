@@ -1,5 +1,6 @@
 ---
 import { getCityBySlug, cities } from '../../data/cities';
+import { getListingsForCity, getCityRecord, resolvePhotoUrl } from '../../data/cms';
 import Layout from '../../layouts/Layout.astro';
 import Topbar from '../../components/Topbar.astro';
 import CityHero from '../../components/CityHero.astro';
@@ -18,39 +19,30 @@ const { city: slug } = Astro.params;
 const city = getCityBySlug(slug!);
 if (!city) return Astro.redirect('/');
 
+// Fetch listings + the city record from Payload CMS at build time (shared
+// client in src/data/cms.ts). The real session count comes from the CMS, not
+// the hardcoded literal in cities.ts.
+const [listings, cityRecord] = await Promise.all([
+  getListingsForCity(city.slug),
+  getCityRecord(city.slug),
+]);
+const realSessionCount = listings.length;
+
 const pageTitle = `Best Sound Baths in ${city.name} — Sound Dip`;
-const pageDescription = `${city.sessionCount} vetted sound bath sessions in ${city.name}. ${city.priceRange} per session. ${city.formats.slice(0, 3).join(', ')}.`;
+const pageDescription = `${realSessionCount} verified sound bath sessions in ${city.name}. ${city.priceRange} per session. ${city.formats.slice(0, 3).join(', ')}.`;
 const sceneParagraphs = city.scene.split('\n\n').filter(Boolean);
 
-// Fetch listings from Payload CMS at build time
-let listings: any[] = [];
-const CMS_API = 'https://sounddip-cms.buzzuw2.workers.dev';
-try {
-  const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 10000);
-  const cityRes = await fetch(`${CMS_API}/api/cities?where[slug][equals]=${city.slug}&limit=1`, { signal: controller.signal });
-  clearTimeout(timeout);
-  const cityData = await cityRes.json();
-  if (cityData.docs?.[0]?.id) {
-    const cityId = cityData.docs[0].id;
-    const controller2 = new AbortController();
-    const timeout2 = setTimeout(() => controller2.abort(), 15000);
-    const listingsRes = await fetch(`${CMS_API}/api/listings?where[city][equals]=${cityId}&limit=100&depth=0`, { signal: controller2.signal });
-    clearTimeout(timeout2);
-    const listingsData = await listingsRes.json();
-    listings = listingsData.docs || [];
-  }
-} catch (e) {
-  // API fetch failed or timed out — listings section will be empty
-}
+// Sort by status (active before active-secondary). Visibility filtering is
+// already applied inside getListingsForCity.
+const visibleListings = [...listings].sort((a: any, b: any) => {
+  const statusOrder: Record<string, number> = { 'active': 0, 'active-secondary': 1 };
+  return (statusOrder[a.listingStatus] ?? 9) - (statusOrder[b.listingStatus] ?? 9);
+});
 
-// Only show active and active-secondary listings, sorted by status
-const visibleListings = listings
-  .filter((l: any) => ['active', 'active-secondary'].includes(l.listingStatus))
-  .sort((a: any, b: any) => {
-    const statusOrder: Record<string, number> = { 'active': 0, 'active-secondary': 1 };
-    return (statusOrder[a.listingStatus] ?? 9) - (statusOrder[b.listingStatus] ?? 9);
-  });
+// Real CMS timestamps for the Article schema (no fabricated literal). Omitted
+// entirely if the city record isn't in the CMS.
+const cityPublishedDate = cityRecord?.createdAt ? cityRecord.createdAt.split('T')[0] : null;
+const cityModifiedDate = cityRecord?.updatedAt ? cityRecord.updatedAt.split('T')[0] : null;
 ---
 
 <Layout title={pageTitle} description={pageDescription} canonical={`/cities/${city.slug}`}>
@@ -74,9 +66,11 @@ const visibleListings = listings
     ]
   }} />
 
-  <!-- ItemList: session/practitioner names with URLs -->
+  <!-- ItemList: session/practitioner names with URLs. The `sd:` (sounddip)
+       namespace carries the verification signal as a real crawlable property on
+       each item, sourced from the listing's listingStatus field. -->
   <JsonLd data={{
-    "@context": "https://schema.org",
+    "@context": ["https://schema.org", { "sd": "https://sounddip.com/ns/" }],
     "@type": "ItemList",
     "name": `Sound Bath Sessions in ${city.name}`,
     "description": pageDescription,
@@ -86,56 +80,20 @@ const visibleListings = listings
       "position": i + 1,
       "name": item.name,
       ...(item.bookingUrl ? { "url": item.bookingUrl } : {}),
-      ...(item.note ? { "description": item.note } : item.sessionDescription ? { "description": item.sessionDescription } : {})
+      ...(item.note ? { "description": item.note } : item.sessionDescription ? { "description": item.sessionDescription } : {}),
+      ...(item.listingStatus === 'active' ? { "sd:verified-online": true } : {})
     }))
   }} />
 
-  <!-- Event schemas: one per active listing (sound baths are time-based recurring events) -->
-  {visibleListings.filter((l: any) => l.bookingUrl && l.bookingUrl !== 'N/A').map((listing: any) => {
-    const today = new Date().toISOString().split('T')[0];
-    // Extract first numeric price from free-text field like "$20 advance / $25 day-of"
-    const priceMatch = String(listing.price || '').match(/\$(\d+(?:\.\d+)?)/);
-    const priceNum = priceMatch ? priceMatch[1] : '';
-    return (
-    <JsonLd data={{
-      "@context": "https://schema.org",
-      "@type": "Event",
-      "name": listing.modalityDescription
-        ? `${listing.modalityDescription} — ${listing.name}`
-        : `Sound bath with ${listing.name}`,
-      "startDate": today,
-      "endDate": today,
-      "location": {
-        "@type": "Place",
-        "name": listing.neighborhood ? `${listing.neighborhood}, ${city.name}` : city.name,
-        "address": {
-          "@type": "PostalAddress",
-          "addressLocality": city.name,
-          "addressRegion": city.region,
-          "addressCountry": "US"
-        }
-      },
-      "organizer": {
-        "@type": "Person",
-        "name": listing.name,
-        "jobTitle": "Sound Bath Practitioner"
-      },
-      "offers": {
-        "@type": "Offer",
-        ...(priceNum ? { "price": priceNum, "priceCurrency": "USD" } : {}),
-        "url": listing.bookingUrl,
-        "availability": "https://schema.org/InStock"
-      },
-      "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
-      "eventStatus": "https://schema.org/EventScheduled",
-      ...(listing.photo ? { "image": listing.photo } : {}),
-      "description": listing.sessionDescription || listing.practitionerBio || ''
-    }} />
-    );
-  })}
+  <!-- Note: Event schema was previously emitted with startDate/endDate set to
+       the build date. The Listing model has no real scheduled session date, so
+       Event markup would assert a false event instance. It is dropped here in
+       favor of the ItemList + Person schemas, which make no date claim. -->
 
   <!-- Person schemas: one per practitioner -->
-  {visibleListings.map((listing: any) => (
+  {visibleListings.map((listing: any) => {
+    const photoUrl = resolvePhotoUrl(listing.photo);
+    return (
     <JsonLd data={{
       "@context": "https://schema.org",
       "@type": "Person",
@@ -143,11 +101,15 @@ const visibleListings = listings
       "jobTitle": "Sound Bath Practitioner",
       ...(listing.bookingUrl && listing.bookingUrl !== 'N/A' ? { "url": listing.bookingUrl } : {}),
       ...(listing.practitionerBio ? { "description": listing.practitionerBio } : {}),
-      ...(listing.photo ? { "image": listing.photo } : {})
+      ...(photoUrl ? { "image": photoUrl } : {}),
+      ...(listing.listingStatus === 'active' ? { "sd:verified-online": true } : {})
     }} />
-  ))}
+    );
+  })}
 
-  <!-- Article schema: "Your first dip" guide -->
+  <!-- Article schema: "Your first dip" guide. Dates come from the real CMS
+       city record (createdAt/updatedAt). When the record is unavailable the
+       date fields are omitted rather than fabricated. -->
   <JsonLd data={{
     "@context": "https://schema.org",
     "@type": "Article",
@@ -164,12 +126,12 @@ const visibleListings = listings
       "url": "https://sounddip.com"
     },
     "url": `https://sounddip.com/cities/${city.slug}`,
-    "datePublished": "2026-06-01",
-    "dateModified": new Date().toISOString().split('T')[0]
+    ...(cityPublishedDate ? { "datePublished": cityPublishedDate } : {}),
+    ...(cityModifiedDate ? { "dateModified": cityModifiedDate } : {})
   }} />
   <main>
     <Topbar />
-    <CityHero city={city} />
+    <CityHero city={city} sessionCount={realSessionCount} />
 
     <!-- i. The scene -->
     <section class="section">
@@ -216,7 +178,7 @@ const visibleListings = listings
           in {city.name}
         </div>
       </div>
-      <p class="section-lede">Every vetted practitioner and session in {city.name} — click a name to read more, book directly through their site.</p>
+      <p class="section-lede">Every verified practitioner and session in {city.name} — click a name to read more, book directly through their site.</p>
 
       <!-- Modality filter bar -->
       <div class="modality-filter" id="modality-filter">

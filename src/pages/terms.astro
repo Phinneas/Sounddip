@@ -1,0 +1,66 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Topbar from '../components/Topbar.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<Layout
+  title="Terms of Service — Sound Dip"
+  description="The terms that govern your use of the Sound Dip directory."
+  canonical="/terms"
+>
+  <main>
+    <Topbar />
+    <article class="static-page">
+      <header class="static-head">
+        <div class="static-num">§</div>
+        <h1>Terms of <em>Service.</em></h1>
+        <p class="static-updated">Last updated: 2026</p>
+      </header>
+
+      <section class="prose">
+        <p>These terms govern your use of sounddip.com (the "Site"), operated by Sound Dip. By using the Site, you agree to these terms.</p>
+
+        <h2>What the directory is</h2>
+        <p>Sound Dip is an informational directory of sound bath sessions and practitioners. Listings are compiled from public information and practitioner submissions, and written for general information only. The Site does not provide medical, psychological, or professional advice, and nothing on the Site is intended to diagnose or treat any condition. If you have a health concern, speak to a qualified professional before attending a session.</p>
+
+        <h2>Bookings and third parties</h2>
+        <p>We do not take bookings or payments. Links to practitioners' sites and booking platforms are provided for convenience, and any booking you make is a transaction between you and that third party. We are not a party to those transactions and are not responsible for the availability, quality, or cancellation of any session, or for the content of third-party sites.</p>
+
+        <h2>Accuracy</h2>
+        <p>We work to keep listings accurate, but session schedules, prices, and venues change, and practitioners are responsible for the information they submit. Listings are provided "as is" without warranties of any kind. Verify details with a practitioner before relying on them.</p>
+
+        <h2>Your submissions</h2>
+        <p>If you submit a listing or contact us, you confirm that the information you provide is accurate and that you have the right to share it. We may review, edit, or decline any submission in our discretion.</p>
+
+        <h2>Intellectual property</h2>
+        <p>The Site's text, design, and original editorial content are owned by Sound Dip and may not be reproduced without permission. Practitioner names and third-party trademarks belong to their respective owners.</p>
+
+        <h2>Limitation of liability</h2>
+        <p>To the fullest extent permitted by law, Sound Dip and its operators are not liable for any direct, indirect, incidental, or consequential damages arising from your use of the Site or any session you book through a linked third party.</p>
+
+        <h2>Changes</h2>
+        <p>We may update these terms from time to time. Continued use of the Site after changes are posted constitutes acceptance of the revised terms.</p>
+
+        <h2>Contact</h2>
+        <p>Questions about these terms? Email <a href="mailto:hello@sounddip.com">hello@sounddip.com</a>.</p>
+      </section>
+    </article>
+    <Footer />
+  </main>
+</Layout>
+
+<style>
+  .static-page { max-width: 760px; margin: 0 auto; padding: 140px 6vw 80px; }
+  .static-head { margin-bottom: 56px; }
+  .static-num { font-family: var(--serif); font-style: italic; font-weight: 300; font-size: 48px; color: var(--clay); line-height: 0.8; margin-bottom: 24px; }
+  .static-head h1 { font-family: var(--serif); font-weight: 300; font-size: clamp(44px, 6vw, 72px); line-height: 0.95; letter-spacing: -2px; color: var(--ink); margin: 0 0 16px; font-variation-settings: "opsz" 144; }
+  .static-head h1 em { font-style: italic; color: var(--clay); }
+  .static-updated { font-family: var(--mono); font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--ink-soft); }
+  .prose { font-family: var(--serif); font-size: 19px; line-height: 1.7; color: var(--ink); font-variation-settings: "opsz" 72; }
+  .prose h2 { font-family: var(--serif); font-weight: 400; font-size: 28px; line-height: 1.2; color: var(--ink); margin-top: 56px; margin-bottom: 20px; letter-spacing: -0.5px; font-variation-settings: "opsz" 144; }
+  .prose p { margin-bottom: 24px; color: var(--ink-mid); }
+  .prose a { color: var(--clay); text-decoration: underline; text-underline-offset: 2px; }
+  .prose a:hover { color: var(--clay-d); }
+  @media (max-width: 640px) { .static-page { padding: 100px 6vw 60px; } .prose { font-size: 17px; } }
+</style>

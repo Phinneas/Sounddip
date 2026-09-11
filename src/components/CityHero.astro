@@ -3,8 +3,11 @@ import type { City } from '../data/cities';
 
 interface Props {
   city: City;
+  // Real session count from the CMS (passed from [city].astro). When omitted
+  // (no CMS data available), 0 is shown honestly rather than a hardcoded literal.
+  sessionCount?: number;
 }
-const { city } = Astro.props;
+const { city, sessionCount = 0 } = Astro.props;
 ---
 
 <div class="city-hero">
@@ -18,7 +21,7 @@ const { city } = Astro.props;
       <p class="city-hero-tagline">{city.tagline}</p>
       <div class="city-hero-stats">
         <div class="stat">
-          <span class="stat-value">{city.sessionCount}</span>
+          <span class="stat-value">{sessionCount}</span>
           <span class="stat-label">sessions tracked</span>
         </div>
         <div class="stat-divider"></div>
