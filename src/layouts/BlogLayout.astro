@@ -4,15 +4,21 @@ import Topbar from '../components/Topbar.astro';
 import Footer from '../components/Footer.astro';
 import JsonLd from '../components/JsonLd.astro';
 
+interface FaqItem {
+  question: string;
+  answer: string;
+}
+
 interface Props {
   title: string;
   description: string;
   pubDate: Date;
   updatedDate?: Date;
   author: string;
+  faq?: FaqItem[];
 }
 
-const { title, description, pubDate, updatedDate, author } = Astro.props;
+const { title, description, pubDate, updatedDate, author, faq } = Astro.props;
 const siteUrl = 'https://sounddip.com';
 const canonicalURL = new URL(Astro.url.pathname, siteUrl).href;
 const fmtDate = (d: Date) =>
@@ -30,6 +36,21 @@ const fmtDate = (d: Date) =>
   "publisher": { "@type": "Organization", "name": "Sound Dip", "url": siteUrl },
   "mainEntityOfPage": canonicalURL,
 }} />
+
+{faq && faq.length > 0 && (
+  <JsonLd data={{
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": faq.map((item) => ({
+      "@type": "Question",
+      "name": item.question,
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": item.answer,
+      },
+    })),
+  }} />
+)}
 
 <Layout title={`${title} — Sound Dip`} description={description} canonical={Astro.url.pathname}>
   <Topbar />

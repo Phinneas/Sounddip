@@ -9,6 +9,10 @@ const blog = defineCollection({
     updatedDate: z.coerce.date().optional(),
     author: z.string().default('Sound Dip'),
     tags: z.array(z.string()).default([]),
+    faq: z.array(z.object({
+      question: z.string(),
+      answer: z.string(),
+    })).optional(),
   }),
 });
 
