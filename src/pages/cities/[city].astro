@@ -8,6 +8,7 @@ import VenueCard from '../../components/VenueCard.astro';
 import ListingCard from '../../components/ListingCard.astro';
 import Footer from '../../components/Footer.astro';
 import JsonLd from '../../components/JsonLd.astro';
+import { getCollection } from 'astro:content';
 
 export function getStaticPaths() {
   return cities.map((city) => ({
@@ -27,6 +28,14 @@ const [listings, cityRecord] = await Promise.all([
   getCityRecord(city.slug),
 ]);
 const realSessionCount = listings.length;
+
+// Cross-link to the city's long-form editorial guide when one exists. City
+// guides carry a "sound bath <city name>" tag by convention; guides link back
+// to this page, keeping the hub and editorial loop bidirectional.
+const blogPosts = await getCollection('blog');
+const cityGuide = blogPosts.find((post) =>
+  post.data.tags.includes(`sound bath ${city.name.toLowerCase()}`),
+);
 
 const pageTitle = `Best Sound Baths in ${city.name} — Sound Dip`;
 const pageDescription = `${realSessionCount} verified sound bath sessions in ${city.name}. ${city.priceRange} per session. ${city.formats.slice(0, 3).join(', ')}.`;
@@ -245,6 +254,12 @@ const cityModifiedDate = cityRecord?.updatedAt ? cityRecord.updatedAt.split('T')
           <p class="price-note">per session, walk-in or booked</p>
         </div>
       </div>
+
+      {cityGuide && (
+        <a href={`/blog/${cityGuide.slug}/`} class="guide-cta">
+          Read our <em>{cityGuide.data.title.replace(/^The /, '')}</em>
+        </a>
+      )}
     </section>
 
     <Footer />
@@ -279,8 +294,8 @@ const cityModifiedDate = cityRecord?.updatedAt ? cityRecord.updatedAt.split('T')
     max-width: 920px;
   }
 
-  /* ── Submit CTA ── */
-  .submit-cta {
+  /* ── CTAs (submit + editorial guide cross-link) ── */
+  .submit-cta, .guide-cta {
     display: inline-block;
     font-family: var(--serif);
     font-style: italic;
@@ -293,8 +308,8 @@ const cityModifiedDate = cityRecord?.updatedAt ? cityRecord.updatedAt.split('T')
     transition: color 0.2s, border-color 0.2s;
     font-variation-settings: "opsz" 72;
   }
-  .submit-cta em { font-style: italic; }
-  .submit-cta:hover {
+  .submit-cta em, .guide-cta em { font-style: italic; }
+  .submit-cta:hover, .guide-cta:hover {
     color: var(--clay-d);
     border-color: var(--clay-d);
   }
