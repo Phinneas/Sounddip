@@ -11,6 +11,8 @@ const { city, sessionCount = 0 } = Astro.props;
 ---
 
 <div class="city-hero">
+  <div class="glow glow--violet city-hero-glow-a" aria-hidden="true"></div>
+  <div class="glow glow--leaf city-hero-glow-b" aria-hidden="true"></div>
   <div class="city-hero-inner">
 
     <!-- LEFT: text -->
@@ -51,11 +53,22 @@ const { city, sessionCount = 0 } = Astro.props;
 
 <style>
   .city-hero {
+    position: relative;
     max-width: 1440px;
     margin: 0 auto;
     padding: 120px 6vw 80px;
   }
+  .city-hero-glow-a {
+    width: 520px; height: 520px;
+    top: -100px; left: -140px;
+  }
+  .city-hero-glow-b {
+    width: 380px; height: 380px;
+    top: 40px; right: -100px;
+  }
   .city-hero-inner {
+    position: relative;
+    z-index: 1;
     display: grid;
     grid-template-columns: 1.1fr 1fr;
     gap: 80px;
@@ -90,13 +103,13 @@ const { city, sessionCount = 0 } = Astro.props;
 
   /* City name */
   .city-hero-name {
-    font-family: var(--serif);
+    font-family: var(--sans);
     font-weight: 300;
-    font-size: clamp(72px, 10vw, 160px);
-    line-height: 0.88;
-    letter-spacing: -4px;
+    font-size: clamp(60px, 9vw, 128px);
+    line-height: 1.0;
+    letter-spacing: 0.04em;
+    text-transform: lowercase;
     color: var(--ink);
-    font-variation-settings: "opsz" 144;
     margin-bottom: 32px;
   }
 
@@ -173,7 +186,7 @@ const { city, sessionCount = 0 } = Astro.props;
     font-size: 9px;
     letter-spacing: 2px;
     text-transform: uppercase;
-    color: rgba(244, 237, 224, 0.65);
+    color: rgba(250, 250, 250, 0.65);
   }
   .city-hero-caption .place {
     font-family: var(--serif);

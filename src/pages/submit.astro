@@ -4,6 +4,7 @@ import Topbar from '../components/Topbar.astro';
 import Footer from '../components/Footer.astro';
 import JsonLd from '../components/JsonLd.astro';
 import { cities } from '../data/cities';
+import { modalities } from '../data/modalities';
 ---
 
 <Layout
@@ -71,15 +72,9 @@ import { cities } from '../data/cities';
               <label for="modality" class="form-label">Primary modality <span class="required">*</span></label>
               <select id="modality" name="modality" required>
                 <option value="">Select your main instrument/style</option>
-                <option value="gong">Gong</option>
-                <option value="crystal">Crystal singing bowls</option>
-                <option value="voice">Voice / vocal toning</option>
-                <option value="brass">Brass / bronze bowls</option>
-                <option value="tibetan-bowls">Tibetan / Himalayan bowls</option>
-                <option value="reiki">Reiki + sound</option>
-                <option value="breathwork">Breathwork + sound</option>
-                <option value="mixed">Mixed / multi-instrument</option>
-                <option value="other">Other</option>
+                {modalities.map((m) => (
+                  <option value={m.value}>{m.label}</option>
+                ))}
               </select>
             </div>
             <div class="form-group">
@@ -209,7 +204,7 @@ import { cities } from '../data/cities';
   .submit-form textarea:focus {
     outline: none;
     border-color: var(--clay);
-    box-shadow: 0 0 0 3px rgba(154, 90, 57, 0.12);
+    box-shadow: 0 0 0 3px rgba(154, 3, 30, 0.12);
   }
 
   .submit-form input:invalid:not(:focus):not(:placeholder-shown),
@@ -337,8 +332,8 @@ import { cities } from '../data/cities';
   }
 
   .form-error {
-    background: rgba(154, 90, 57, 0.06);
-    border: 1px solid rgba(154, 90, 57, 0.2);
+    background: rgba(154, 3, 30, 0.06);
+    border: 1px solid rgba(154, 3, 30, 0.2);
   }
 
   .form-error h3 {

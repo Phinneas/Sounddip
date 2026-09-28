@@ -1,5 +1,6 @@
 ---
 import { getCityBySlug, cities } from '../../data/cities';
+import { filterableModalities } from '../../data/modalities';
 import { getListingsForCity, getCityRecord, resolvePhotoUrl } from '../../data/cms';
 import Layout from '../../layouts/Layout.astro';
 import Topbar from '../../components/Topbar.astro';
@@ -193,13 +194,9 @@ const cityModifiedDate = cityRecord?.updatedAt ? cityRecord.updatedAt.split('T')
       <div class="modality-filter" id="modality-filter">
         <span class="modality-filter-label">Filter:</span>
         <button class="modality-filter-pill active" data-modality="all">All</button>
-        <button class="modality-filter-pill" data-modality="gong">Gong</button>
-        <button class="modality-filter-pill" data-modality="crystal">Crystal bowls</button>
-        <button class="modality-filter-pill" data-modality="voice">Voice</button>
-        <button class="modality-filter-pill" data-modality="tibetan-bowls">Tibetan bowls</button>
-        <button class="modality-filter-pill" data-modality="reiki">Reiki</button>
-        <button class="modality-filter-pill" data-modality="breathwork">Breathwork</button>
-        <button class="modality-filter-pill" data-modality="mixed">Mixed</button>
+        {filterableModalities.map((m) => (
+          <button class="modality-filter-pill" data-modality={m.value}>{m.label}</button>
+        ))}
       </div>
 
       <div class="listings-list" id="listings-list">

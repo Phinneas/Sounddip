@@ -1,6 +1,9 @@
 ---
 // DipBar — the segmented search widget
-// Functional: City selector + Modality filter, navigates to city page with query param
+// Functional: City selector + Modality filter, navigates to city page with query param.
+// City and modality options are generated from src/data (single source of truth).
+import { cities } from '../data/cities';
+import { filterableModalities } from '../data/modalities';
 ---
 
 <div class="dip-bar-wrap" id="dip-bar">
@@ -11,26 +14,9 @@
       <div class="dip-label">City</div>
       <div class="dip-value" id="dip-city-value">Select city <span class="chevron">⌄</span></div>
       <div class="dip-menu" id="dip-city-menu" hidden>
-        <div class="dip-option" data-value="new-york">New York City</div>
-        <div class="dip-option" data-value="los-angeles">Los Angeles</div>
-        <div class="dip-option" data-value="san-francisco">San Francisco</div>
-        <div class="dip-option" data-value="chicago">Chicago</div>
-        <div class="dip-option" data-value="austin">Austin</div>
-        <div class="dip-option" data-value="denver">Denver</div>
-        <div class="dip-option" data-value="portland">Portland</div>
-        <div class="dip-option" data-value="seattle">Seattle</div>
-        <div class="dip-option" data-value="joshua-tree">Joshua Tree</div>
-        <div class="dip-option" data-value="boulder">Boulder</div>
-        <div class="dip-option" data-value="sedona">Sedona</div>
-        <div class="dip-option" data-value="asheville">Asheville</div>
-        <div class="dip-option" data-value="miami">Miami</div>
-        <div class="dip-option" data-value="san-diego">San Diego</div>
-        <div class="dip-option" data-value="boston">Boston</div>
-        <div class="dip-option" data-value="santa-fe">Santa Fe</div>
-        <div class="dip-option" data-value="minneapolis">Minneapolis</div>
-        <div class="dip-option" data-value="washington-dc">Washington DC</div>
-        <div class="dip-option" data-value="new-orleans">New Orleans</div>
-        <div class="dip-option" data-value="burlington">Burlington</div>
+        {cities.map((city) => (
+          <div class="dip-option" data-value={city.slug}>{city.name}</div>
+        ))}
       </div>
     </div>
 
@@ -40,13 +26,9 @@
       <div class="dip-value placeholder" id="dip-modality-value">Any <span class="chevron">⌄</span></div>
       <div class="dip-menu" id="dip-modality-menu" hidden>
         <div class="dip-option" data-value="any">Any modality</div>
-        <div class="dip-option" data-value="gong">Gong</div>
-        <div class="dip-option" data-value="crystal">Crystal bowls</div>
-        <div class="dip-option" data-value="voice">Voice</div>
-        <div class="dip-option" data-value="tibetan-bowls">Tibetan bowls</div>
-        <div class="dip-option" data-value="reiki">Reiki</div>
-        <div class="dip-option" data-value="breathwork">Breathwork</div>
-        <div class="dip-option" data-value="mixed">Mixed</div>
+        {filterableModalities.map((m) => (
+          <div class="dip-option" data-value={m.value}>{m.label}</div>
+        ))}
       </div>
     </div>
 
@@ -150,7 +132,7 @@
     background: var(--bone);
     border: 1px solid var(--rule);
     border-radius: 12px;
-    box-shadow: 0 8px 32px rgba(80,50,20,0.12);
+    box-shadow: 0 8px 32px rgba(28,10,20,0.12);
     z-index: 50;
     max-height: 320px;
     overflow-y: auto;

@@ -1,39 +1,61 @@
 /* ─────────────────────────────────────────
-   SOUND DIP — Global Design System
-   Palette: V1 warm/editorial
-   Type:    Fraunces · Inter · JetBrains Mono
+   SOUND DIP — Global Design System (V2)
+   Palette: Crimson Violet / Deep Crimson / Princeton Orange / Autumn Leaf / Dark Teal
+   Type:    Hanken Grotesk · Newsreader · Space Mono
    ───────────────────────────────────────── */
 
-@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,700;1,9..144,300;1,9..144,400;1,9..144,500&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@300;400;500&family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,300;1,6..72,400;1,6..72,500&family=Space+Mono:wght@400;700&display=swap');
 
-/* ── Tokens ── */
+/* ── Tokens ──
+   Canonical names mirror the redesign spec; the `--bone/--clay/…` aliases keep
+   every existing component working while pointing at the new palette. */
 :root {
-  --bone:       #f4ede0;
-  --bone-2:     #f7f1e6;
-  --linen:      #ece3d1;
-  --linen-2:    #e3d6bc;
-  --sand:       #d9c8a8;
-  --sand-d:     #c4b292;
-  --clay:       #9a5a39;
-  --clay-d:     #7d492e;
-  --ochre:      #8d6431;
-  --ink:        #221b13;
-  --ink-mid:    #5a4f43;
-  --ink-soft:   #75685a;
-  --rule:       rgba(34, 27, 19, 0.12);
-  --rule-soft:  rgba(34, 27, 19, 0.06);
-  --shadow:     0 1px 2px rgba(80,50,20,0.05), 0 14px 36px rgba(80,50,20,0.06);
+  /* Canonical */
+  --paper:      #FAFAFA;
+  --mist:       #F2F2F2;
+  --tint-teal:  #E4EDEF;
+  --tint-violet:#EFE6EE;
+  --ink:        #1C0A14;
+  --muted:      #5E5560;
+  --rule:       rgb(28 10 20 / 0.2);
+  --violet:     #5F0F40;   /* Crimson Violet */
+  --crimson:    #9A031E;   /* Deep Crimson */
+  --orange:     #FB8B24;   /* Princeton Orange */
+  --leaf:       #E36414;   /* Autumn Leaf */
+  --teal:       #0F4C5C;   /* Dark Teal */
 
-  --serif: 'Fraunces', Georgia, serif;
-  --sans:  'Inter', system-ui, sans-serif;
-  --mono:  'JetBrains Mono', monospace;
+  --font-display: 'Hanken Grotesk', system-ui, sans-serif;
+  --font-serif:   'Newsreader', Georgia, serif;
+  --font-mono:    'Space Mono', monospace;
+
+  --gutter:    56px;
+  --gutter-sm: 16px;
+
+  /* Legacy aliases — point at the new system so no component markup changes. */
+  --bone:       var(--paper);
+  --bone-2:     var(--mist);
+  --linen:      var(--tint-violet);
+  --linen-2:    #E5D6ED;
+  --sand:       var(--tint-teal);
+  --sand-d:     #CDE0E4;
+  --clay:       var(--crimson);   /* accent */
+  --clay-d:     var(--violet);    /* accent darker */
+  --ochre:      var(--leaf);      /* secondary accent */
+  --ink-mid:    var(--muted);
+  --ink-soft:   #7A6F78;
+  --rule-soft:  rgb(28 10 20 / 0.06);
+  --shadow:     0 1px 2px rgba(28,10,20,0.05), 0 14px 36px rgba(28,10,20,0.08);
+
+  --serif: var(--font-serif);
+  --sans:  var(--font-display);
+  --mono:  var(--font-mono);
 }
 
 /* ── Reset ── */
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 html { scroll-behavior: smooth; }
 body {
-  background: var(--bone);
+  background: var(--paper);
   color: var(--ink);
   font-family: var(--sans);
   font-weight: 400;
@@ -45,25 +67,30 @@ body {
 
 /* ── Focus visible (keyboard nav) ── */
 :focus-visible {
-  outline: 2px solid var(--clay);
+  outline: 2px solid var(--crimson);
   outline-offset: 2px;
 }
 :focus:not(:focus-visible) {
   outline: none;
 }
 
-/* ── Paper grain texture (fixed overlay) ── */
-body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.5 0 0 0 0 0.4 0 0 0 0 0.2 0 0 0 0.1 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  opacity: 0.35;
-  mix-blend-mode: multiply;
-  pointer-events: none;
-  z-index: 1;
-}
 main { position: relative; z-index: 2; }
+
+/* ── Glow (CSS radial blur circles, per spec — no images) ── */
+.glow {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.55;
+  pointer-events: none;
+  z-index: 0;
+}
+.glow--violet { background: var(--violet); }
+.glow--orange { background: var(--orange); opacity: 0.45; }
+.glow--leaf   { background: var(--leaf); opacity: 0.35; }
+@media (prefers-reduced-motion: reduce) {
+  .glow { filter: blur(60px); }
+}
 
 /* ── Shared section wrapper ── */
 .section {
@@ -87,7 +114,7 @@ main { position: relative; z-index: 2; }
   font-style: italic;
   font-weight: 300;
   font-size: 64px;
-  color: var(--clay);
+  color: var(--crimson);
   line-height: 0.8;
 }
 .section-title {
@@ -98,7 +125,7 @@ main { position: relative; z-index: 2; }
   letter-spacing: -2px;
   color: var(--ink);
 }
-.section-title em { font-style: italic; color: var(--clay); }
+.section-title em { font-style: italic; color: var(--crimson); }
 .section-meta {
   text-align: right;
   font-family: var(--mono);
@@ -110,7 +137,7 @@ main { position: relative; z-index: 2; }
 }
 .section-meta strong {
   color: var(--ink);
-  font-weight: 500;
+  font-weight: 400;
   display: block;
   margin-bottom: 4px;
 }
@@ -138,9 +165,9 @@ main { position: relative; z-index: 2; }
 
 /* ── Live dot pulse ── */
 @keyframes pulse {
-  0%   { box-shadow: 0 0 0 0 rgba(184,112,74,0.45); }
-  70%  { box-shadow: 0 0 0 10px rgba(184,112,74,0); }
-  100% { box-shadow: 0 0 0 0 rgba(184,112,74,0); }
+  0%   { box-shadow: 0 0 0 0 rgba(251,139,36,0.45); }
+  70%  { box-shadow: 0 0 0 10px rgba(251,139,36,0); }
+  100% { box-shadow: 0 0 0 0 rgba(251,139,36,0); }
 }
 
 /* ── Responsive base ── */

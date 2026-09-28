@@ -1,0 +1,220 @@
+---
+// Long-tail SEO landing page: /cities/[city]/[modality]
+// Renders a city filtered to one modality (e.g. "Gong sound baths in New York").
+// Only city×modality combos with >=1 visible listing are generated (no thin/empty
+// pages), and each gets its own title, description, canonical and schema.
+
+import { cities } from '../../../data/cities';
+import { modalities, filterableModalities, type Modality } from '../../../data/modalities';
+import { getAllVisibleListings } from '../../../data/cms';
+import Layout from '../../../layouts/Layout.astro';
+import Topbar from '../../../components/Topbar.astro';
+import Footer from '../../../components/Footer.astro';
+import ListingCard from '../../../components/ListingCard.astro';
+import JsonLd from '../../../components/JsonLd.astro';
+
+const cityBySlug = Object.fromEntries(cities.map((c) => [c.slug, c]));
+
+export async function getStaticPaths() {
+  const all = await getAllVisibleListings();
+
+  // Group visible listings by "city::modality" so we only emit combos that have content.
+  const bucket: Record<string, any[]> = {};
+  for (const l of all) {
+    const citySlug = typeof l.city === 'object' && l.city ? (l.city as any).slug : null;
+    if (!citySlug) continue;
+    for (const t of l.modalityTags || []) {
+      const key = `${citySlug}::${t}`;
+      (bucket[key] ||= []).push(l);
+    }
+  }
+
+  const paths: any[] = [];
+  for (const city of cities) {
+    for (const m of filterableModalities) {
+      const key = `${city.slug}::${m.value}`;
+      if (bucket[key]?.length) {
+        paths.push({ params: { city: city.slug, modality: m.value }, props: { matches: bucket[key] } });
+      }
+    }
+  }
+  return paths;
+}
+
+const { city: slug, modality: modSlug } = Astro.params;
+const city = cityBySlug[slug!];
+const mod = modalities.find((m) => m.value === modSlug);
+if (!city || !mod) return Astro.redirect('/cities/');
+
+const { matches } = Astro.props as { matches: any[] };
+
+// Natural topic phrasing for the handful of labels that don't read well with a
+// naive "[label] sound baths" suffix.
+function topicPhrase(m: Modality): string {
+  const specials: Record<string, string> = {
+    jazz: 'Jazz sound baths',
+    'hip-hop': 'Hip-hop sound baths',
+    floating: 'Floating sound baths',
+    nature: 'Nature sound baths',
+  };
+  return specials[m.value] ?? `${m.label} sound baths`;
+}
+
+const phrase = topicPhrase(mod);
+const pageTitle = `Best ${phrase} in ${city.name} — Sound Dip`;
+const pageDescription = `${matches.length} verified ${phrase.toLowerCase()} in ${city.name}, each with a practitioner bio and booking link. Browse by neighborhood and price.`;
+---
+
+<Layout title={pageTitle} description={pageDescription} canonical={`/cities/${city.slug}/${mod.value}`}>
+  <!-- BreadcrumbList: Home > City > Modality -->
+  <JsonLd data={{
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://sounddip.com" },
+      { "@type": "ListItem", "position": 2, "name": city.name, "item": `https://sounddip.com/cities/${city.slug}` },
+      { "@type": "ListItem", "position": 3, "name": mod.label, "item": `https://sounddip.com/cities/${city.slug}/${mod.value}` }
+    ]
+  }} />
+
+  <!-- ItemList: the sessions on this filtered page -->
+  <JsonLd data={{
+    "@context": ["https://schema.org", { "sd": "https://sounddip.com/ns/" }],
+    "@type": "ItemList",
+    "name": `${phrase} in ${city.name}`,
+    "description": pageDescription,
+    "numberOfItems": matches.length,
+    "itemListElement": matches.map((l: any, i: number) => ({
+      "@type": "ListItem",
+      "position": i + 1,
+      "name": l.name,
+      ...(l.bookingUrl ? { "url": l.bookingUrl } : {}),
+      ...(l.sessionDescription ? { "description": l.sessionDescription } : {}),
+      ...(l.listingStatus === 'active' ? { "sd:verified-online": true } : {})
+    }))
+  }} />
+
+  <main>
+    <Topbar />
+    <section class="mod-page">
+      <header class="mod-head">
+        <a href={`/cities/${city.slug}`} class="mod-crumb">← All {city.name} sessions</a>
+        <div class="mod-kicker">{mod.label} · {city.name}</div>
+        <h1>{phrase} in {city.name}</h1>
+        <p class="mod-lede">{matches.length} verified session{matches.length === 1 ? '' : 's'}, each led by a practitioner you can book with directly. Filter by modality on the full city page to compare.</p>
+        <div class="mod-actions">
+          <a href={`/cities/${city.slug}`} class="mod-cta">See all modalities</a>
+        </div>
+      </header>
+
+      <div class="mod-list">
+        {matches.map((l: any, i: number) => (
+          <ListingCard
+            name={l.name}
+            slug={l.slug}
+            neighborhood={l.neighborhood}
+            modalityTags={l.modalityTags}
+            modalityDescription={l.modalityDescription}
+            duration={l.duration}
+            price={l.price}
+            bookingUrl={l.bookingUrl}
+            practitionerBio={l.practitionerBio}
+            sessionDescription={l.sessionDescription}
+            listingStatus={l.listingStatus}
+            photo={l.photo}
+            index={i}
+          />
+        ))}
+      </div>
+
+      <a href={`/cities/${city.slug}`} class="mod-back">All {city.name} sound baths →</a>
+    </section>
+    <Footer />
+  </main>
+</Layout>
+
+<style>
+  .mod-page {
+    max-width: 920px;
+    margin: 0 auto;
+    padding: 140px 6vw 100px;
+  }
+  .mod-head { margin-bottom: 64px; }
+  .mod-crumb {
+    display: inline-flex;
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    text-decoration: none;
+    margin-bottom: 32px;
+    transition: color 0.2s;
+  }
+  .mod-crumb:hover { color: var(--crimson); }
+  .mod-kicker {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--crimson);
+    margin-bottom: 16px;
+  }
+  .mod-head h1 {
+    font-family: var(--serif);
+    font-weight: 300;
+    font-size: clamp(40px, 6vw, 72px);
+    line-height: 0.95;
+    letter-spacing: -2px;
+    color: var(--ink);
+    margin-bottom: 24px;
+    font-variation-settings: "opsz" 144;
+  }
+  .mod-lede {
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 300;
+    font-size: 20px;
+    color: var(--ink-mid);
+    line-height: 1.4;
+    max-width: 640px;
+    margin-bottom: 32px;
+    font-variation-settings: "opsz" 72;
+  }
+  .mod-actions { display: flex; flex-wrap: wrap; gap: 12px; }
+  .mod-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 13px 24px;
+    background: var(--ink);
+    color: var(--paper);
+    text-decoration: none;
+    border-radius: 100px;
+    font-family: var(--sans);
+    font-size: 14px;
+    font-weight: 500;
+    transition: background 0.2s;
+  }
+  .mod-cta:hover { background: var(--crimson); }
+
+  .mod-list { margin-bottom: 48px; }
+
+  .mod-back {
+    display: inline-block;
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 18px;
+    color: var(--crimson);
+    text-decoration: none;
+    border-bottom: 1px solid var(--crimson);
+    padding-bottom: 2px;
+    transition: color 0.2s, border-color 0.2s;
+    font-variation-settings: "opsz" 72;
+  }
+  .mod-back:hover { color: var(--violet); border-color: var(--violet); }
+
+  @media (max-width: 640px) {
+    .mod-page { padding: 100px 6vw 60px; }
+  }
+</style>

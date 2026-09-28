@@ -1,5 +1,5 @@
 ---
-// Hero — V1 split layout (left type, right photo)
+// Hero — split layout (left type, right photo) on the V2 visual system.
 // The session count is real, passed from index.astro (CMS visible listings in
 // New York). No fabricated "tonight"/live-session claims — the Listing model has
 // no schedule data, so the hero no longer implies a session is happening right now.
@@ -11,12 +11,15 @@ const { nycSessionCount } = Astro.props;
 ---
 
 <section class="hero">
+  <div class="glow glow--violet hero-glow-a" aria-hidden="true"></div>
+  <div class="glow glow--orange hero-glow-b" aria-hidden="true"></div>
+
   <div class="hero-inner">
 
     <!-- LEFT: Text -->
     <div class="hero-text">
       <div class="hero-eyebrow">An index of sound · est. 2026</div>
-      <h1>Find a<br>sound <em>bath.</em></h1>
+      <h1>find a<br>sound <em>bath.</em></h1>
       <p class="hero-sub">A small, considered directory of sound bath sessions, verified practitioners, and the rooms that hold them.</p>
 
       <div class="hero-action">
@@ -43,16 +46,33 @@ const { nycSessionCount } = Astro.props;
 
 <style>
   .hero {
+    position: relative;
     max-width: 1440px;
     margin: 0 auto;
     padding: 140px 6vw 80px;
+  }
+  .hero-glow-a {
+    width: 560px; height: 560px;
+    top: -120px; left: -160px;
+  }
+  .hero-glow-b {
+    width: 420px; height: 420px;
+    top: 60px; right: -120px;
+  }
+  .hero-inner {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: 1.15fr 1fr;
+    gap: 80px;
+    align-items: end;
   }
   .hero-eyebrow {
     font-family: var(--mono);
     font-size: 11px;
     letter-spacing: 3px;
     text-transform: uppercase;
-    color: var(--clay);
+    color: var(--crimson);
     margin-bottom: 36px;
     display: inline-flex;
     align-items: center;
@@ -61,28 +81,27 @@ const { nycSessionCount } = Astro.props;
   .hero-eyebrow::before {
     content: "";
     width: 30px; height: 1px;
-    background: var(--clay);
+    background: var(--crimson);
     opacity: 0.5;
   }
-  .hero-inner {
-    display: grid;
-    grid-template-columns: 1.15fr 1fr;
-    gap: 80px;
-    align-items: end;
-  }
   .hero-text h1 {
-    font-family: var(--serif);
+    font-family: var(--sans);
     font-weight: 300;
-    font-size: clamp(72px, 9.5vw, 168px);
-    line-height: 0.9;
-    letter-spacing: -4px;
+    font-size: clamp(64px, 8vw, 120px);
+    line-height: 1.0;
+    letter-spacing: 0.04em;
+    text-transform: lowercase;
     color: var(--ink);
-    font-variation-settings: "opsz" 144;
     margin-bottom: 32px;
   }
   .hero-text h1 em {
+    font-family: var(--serif);
     font-style: italic;
-    color: var(--clay);
+    font-weight: 300;
+    color: var(--crimson);
+    letter-spacing: -0.02em;
+    text-transform: none;
+    font-variation-settings: "opsz" 72;
   }
   .hero-sub {
     font-family: var(--serif);
@@ -95,7 +114,7 @@ const { nycSessionCount } = Astro.props;
     margin-bottom: 44px;
   }
 
-  /* Improved: CTA block replaces raw stat block */
+  /* CTA block */
   .hero-action {
     display: flex;
     flex-direction: column;
@@ -108,14 +127,14 @@ const { nycSessionCount } = Astro.props;
     text-transform: uppercase;
     color: var(--ink-soft);
   }
-  .hero-urgency strong { color: var(--ink); font-weight: 500; }
+  .hero-urgency strong { color: var(--ink); font-weight: 400; }
   .hero-cta {
     display: inline-flex;
     align-items: center;
     gap: 10px;
     padding: 14px 28px;
     background: var(--ink);
-    color: var(--bone);
+    color: var(--paper);
     text-decoration: none;
     border-radius: 100px;
     font-family: var(--sans);
@@ -126,7 +145,7 @@ const { nycSessionCount } = Astro.props;
     transition: background 0.2s;
   }
   .hero-cta::after { content: "→"; }
-  .hero-cta:hover { background: var(--clay); }
+  .hero-cta:hover { background: var(--crimson); }
 
   /* Photo */
   .hero-photo-wrap {
@@ -153,7 +172,7 @@ const { nycSessionCount } = Astro.props;
     font-size: 10px;
     letter-spacing: 2px;
     text-transform: uppercase;
-    color: var(--bone);
+    color: var(--paper);
   }
   .hero-caption .place {
     font-family: var(--serif);
@@ -165,7 +184,7 @@ const { nycSessionCount } = Astro.props;
 
   @media (max-width: 1024px) {
     .hero-inner { grid-template-columns: 1fr; gap: 48px; }
-    .hero-text h1 { font-size: clamp(60px, 14vw, 100px); }
+    .hero-text h1 { font-size: clamp(56px, 14vw, 96px); }
     .hero-photo-wrap { aspect-ratio: 4/3; }
   }
 </style>

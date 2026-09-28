@@ -1,5 +1,6 @@
 ---
 import { resolvePhotoUrl, resolvePhotoAlt } from '../data/cms';
+import { modalityLabel } from '../data/modalities';
 
 interface Props {
   name: string;
@@ -58,7 +59,7 @@ const isAutoVerified = listingStatus === 'auto-verified';
       {modalityTags && modalityTags.length > 0 && (
         <div class="listing-modalities">
           {modalityTags.map((tag) => (
-            <span class="modality-pill">{tag.replace('-', ' ')}</span>
+            <span class="modality-pill">{modalityLabel(tag)}</span>
           ))}
         </div>
       )}

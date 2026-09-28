@@ -211,7 +211,7 @@ const { lede = 'Enter your ZIP code to see verified sound bath sessions within d
     border-radius: 50%;
     background: var(--clay);
     border: 3px solid var(--bone);
-    box-shadow: 0 0 0 1px rgba(34, 27, 19, 0.25), 0 2px 6px rgba(34, 27, 19, 0.3);
+    box-shadow: 0 0 0 1px rgba(28, 10, 20, 0.25), 0 2px 6px rgba(28, 10, 20, 0.3);
     cursor: pointer;
   }
 
@@ -342,8 +342,8 @@ const { lede = 'Enter your ZIP code to see verified sound bath sessions within d
         .addTo(map);
       const popupHtml = `<div style="font-family:Inter,sans-serif;max-width:220px">
         <strong style="font-size:14px">${escapeHtml(l.name)}</strong>
-        <div style="font-size:12px;color:#5a4f43">${escapeHtml(l.city)}</div>
-        ${l.bookingUrl && l.bookingUrl !== 'N/A' ? `<a href="${escapeHtml(l.bookingUrl)}" target="_blank" rel="noopener noreferrer" style="font-size:12px;color:#9a5a39">Book a session ↗</a>` : ''}
+        <div style="font-size:12px;color:#5E5560">${escapeHtml(l.city)}</div>
+        ${l.bookingUrl && l.bookingUrl !== 'N/A' ? `<a href="${escapeHtml(l.bookingUrl)}" target="_blank" rel="noopener noreferrer" style="font-size:12px;color:#9A031E">Book a session ↗</a>` : ''}
       </div>`;
       marker.setPopup(new maplibregl.Popup({ offset: 24 }).setHTML(popupHtml));
       currentMarkers.push(marker);
