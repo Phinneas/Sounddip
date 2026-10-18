@@ -10,3 +10,11 @@ dist/
 .dev.vars*
 !.dev.vars.example
 .gstack/
+
+# raw source downloads cached by scripts/fetch-images.mjs between runs;
+# the committed output is public/img/cities/*.webp
+.image-cache/
+
+# local Qwen Code agent state (tool permission allowlist); machine-local, not
+# project config
+.qwen/

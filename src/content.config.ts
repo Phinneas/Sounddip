@@ -7,7 +7,7 @@ const blog = defineCollection({
     description: z.string(),
     pubDate: z.coerce.date(),
     updatedDate: z.coerce.date().optional(),
-    author: z.string().default('Sound Dip'),
+    author: z.string().default('Chester Beard'),
     tags: z.array(z.string()).default([]),
     faq: z.array(z.object({
       question: z.string(),

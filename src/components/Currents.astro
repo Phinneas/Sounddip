@@ -1,14 +1,17 @@
 ---
-// Currents — newsletter signup, wired to the real NourishedJourneys Substack.
-const SUBSTACK_URL = 'https://nourishedjourneys.substack.com/';
+// Currents — Sound Dip newsletter signup. The button points at our own
+// /newsletter/ path, which 302s to the shared Substack (see public/_redirects).
+// Keeping the third-party URL out of the markup means no other brand's name
+// ever appears in sounddip.com HTML.
+const NEWSLETTER_URL = '/newsletter/';
 ---
 
 <section class="currents">
-  <div class="currents-eyebrow">NourishedJourneys</div>
+  <div class="currents-eyebrow">Sound Dip</div>
   <h2>A weekly tide of new <em>sessions</em>, by post.</h2>
-  <p>One email a week from the NourishedJourneys newsletter — featured sessions, new practitioners, and one essay on the practice. No noise.</p>
-  <a class="currents-btn" href={SUBSTACK_URL} target="_blank" rel="noopener noreferrer">
-    Subscribe on Substack <span aria-hidden="true">↗</span>
+  <p>One email a week from Sound Dip — featured sessions, newly verified practitioners, and one essay on the practice. No noise.</p>
+  <a class="currents-btn" href={NEWSLETTER_URL} target="_blank" rel="noopener noreferrer">
+    Subscribe to Sound Dip <span aria-hidden="true">↗</span>
   </a>
   <div class="currents-fineprint">No spam · Unsubscribe at any time</div>
 </section>

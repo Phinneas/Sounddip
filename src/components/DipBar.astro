@@ -2,7 +2,9 @@
 // DipBar — the segmented search widget
 // Functional: City selector + Modality filter, navigates to city page with query param.
 // City and modality options are generated from src/data (single source of truth).
-import { cities } from '../data/cities';
+// The selector lists published cities only — offering a city whose page is
+// noindexed sends the visitor to a page we have deliberately withdrawn.
+import { publishedCities } from '../data/cities';
 import { filterableModalities } from '../data/modalities';
 ---
 
@@ -14,7 +16,7 @@ import { filterableModalities } from '../data/modalities';
       <div class="dip-label">City</div>
       <div class="dip-value" id="dip-city-value">Select city <span class="chevron">⌄</span></div>
       <div class="dip-menu" id="dip-city-menu" hidden>
-        {cities.map((city) => (
+        {publishedCities.map((city) => (
           <div class="dip-option" data-value={city.slug}>{city.name}</div>
         ))}
       </div>

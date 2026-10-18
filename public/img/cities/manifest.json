@@ -1,0 +1,812 @@
+{
+  "new-york": {
+    "source": "https://images.pexels.com/photos/37756237/pexels-photo-37756237.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    "width": 1200,
+    "height": 1598,
+    "renditions": {
+      "640": {
+        "file": "/img/cities/new-york-640.webp",
+        "bytes": 41778
+      },
+      "1200": {
+        "file": "/img/cities/new-york-1200.webp",
+        "bytes": 105292
+      }
+    }
+  },
+  "los-angeles": {
+    "source": "https://images.pexels.com/photos/19012241/pexels-photo-19012241.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    "width": 1200,
+    "height": 1800,
+    "renditions": {
+      "640": {
+        "file": "/img/cities/los-angeles-640.webp",
+        "bytes": 54428
+      },
+      "1200": {
+        "file": "/img/cities/los-angeles-1200.webp",
+        "bytes": 143090
+      }
+    }
+  },
+  "san-francisco": {
+    "source": "https://images.pexels.com/photos/417054/pexels-photo-417054.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    "width": 1200,
+    "height": 600,
+    "renditions": {
+      "640": {
+        "file": "/img/cities/san-francisco-640.webp",
+        "bytes": 10036
+      },
+      "1200": {
+        "file": "/img/cities/san-francisco-1200.webp",
+        "bytes": 25468
+      }
+    }
+  },
+  "chicago": {
+    "source": "https://images.pexels.com/photos/1845980/pexels-photo-1845980.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    "width": 1200,
+    "height": 1800,
+    "renditions": {
+      "640": {
+        "file": "/img/cities/chicago-640.webp",
+        "bytes": 67168
+      },
+      "1200": {
+        "file": "/img/cities/chicago-1200.webp",
+        "bytes": 193294
+      }
+    }
+  },
+  "austin": {
+    "source": "https://images.pexels.com/photos/14911098/pexels-photo-14911098.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    "width": 1200,
+    "height": 960,
+    "renditions": {
+      "640": {
+        "file": "/img/cities/austin-640.webp",
+        "bytes": 65624
+      },
+      "1200": {
+        "file": "/img/cities/austin-1200.webp",
+        "bytes": 180982
+      }
+    }
+  },
+  "denver": {
+    "source": "https://images.pexels.com/photos/32714611/pexels-photo-32714611.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    "width": 1200,
+    "height": 800,
+    "renditions": {
+      "640": {
+        "file": "/img/cities/denver-640.webp",
+        "bytes": 49656
+      },
+      "1200": {
+        "file": "/img/cities/denver-1200.webp",
+        "bytes": 143136
+      }
+    }
+  },
+  "portland": {
+    "source": "https://images.pexels.com/photos/32595472/pexels-photo-32595472.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    "width": 1200,
+    "height": 800,
+    "renditions": {
+      "640": {
+        "file": "/img/cities/portland-640.webp",
+        "bytes": 28606
+      },
+      "1200": {
+        "file": "/img/cities/portland-1200.webp",
+        "bytes": 88558
+      }
+    }
+  },
+  "seattle": {
+    "source": "https://images.pexels.com/photos/8615712/pexels-photo-8615712.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    "width": 1200,
+    "height": 960,
+    "renditions": {
+      "640": {
+        "file": "/img/cities/seattle-640.webp",
+        "bytes": 17990
+      },
+      "1200": {
+        "file": "/img/cities/seattle-1200.webp",
+        "bytes": 52388
+      }
+    }
+  },
+  "joshua-tree": {
+    "source": "https://images.pexels.com/photos/33172426/pexels-photo-33172426.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    "width": 1200,
+    "height": 904,
+    "renditions": {
+      "640": {
+        "file": "/img/cities/joshua-tree-640.webp",
+        "bytes": 34594
+      },
+      "1200": {
+        "file": "/img/cities/joshua-tree-1200.webp",
+        "bytes": 98364
+      }
+    }
+  },
+  "boulder": {
+    "source": "https://images.pexels.com/photos/9503107/pexels-photo-9503107.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    "width": 1200,
+    "height": 800,
+    "renditions": {
+      "640": {
+        "file": "/img/cities/boulder-640.webp",
+        "bytes": 36772
+      },
+      "1200": {
+        "file": "/img/cities/boulder-1200.webp",
+        "bytes": 118838
+      }
+    }
+  },
+  "sedona": {
+    "source": "https://images.pexels.com/photos/31482380/pexels-photo-31482380.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    "width": 1200,
+    "height": 1600,
+    "renditions": {
+      "640": {
+        "file": "/img/cities/sedona-640.webp",
+        "bytes": 86204
+      },
+      "1200": {
+        "file": "/img/cities/sedona-1200.webp",
+        "bytes": 294708
+      }
+    }
+  },
+  "asheville": {
+    "source": "https://images.pexels.com/photos/16173617/pexels-photo-16173617.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    "width": 1200,
+    "height": 800,
+    "renditions": {
+      "640": {
+        "file": "/img/cities/asheville-640.webp",
+        "bytes": 42380
+      },
+      "1200": {
+        "file": "/img/cities/asheville-1200.webp",
+        "bytes": 118294
+      }
+    }
+  },
+  "miami": {
+    "source": "https://images.pexels.com/photos/33416031/pexels-photo-33416031.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    "width": 1200,
+    "height": 1680,
+    "renditions": {
+      "640": {
+        "file": "/img/cities/miami-640.webp",
+        "bytes": 50226
+      },
+      "1200": {
+        "file": "/img/cities/miami-1200.webp",
+        "bytes": 133986
+      }
+    }
+  },
+  "san-diego": {
+    "source": "https://images.pexels.com/photos/37026470/pexels-photo-37026470.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    "width": 1200,
+    "height": 590,
+    "renditions": {
+      "640": {
+        "file": "/img/cities/san-diego-640.webp",
+        "bytes": 17056
+      },
+      "1200": {
+        "file": "/img/cities/san-diego-1200.webp",
+        "bytes": 49690
+      }
+    }
+  },
+  "boston": {
+    "source": "https://images.pexels.com/photos/29913941/pexels-photo-29913941.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    "width": 1200,
+    "height": 1600,
+    "renditions": {
+      "640": {
+        "file": "/img/cities/boston-640.webp",
+        "bytes": 105386
+      },
+      "1200": {
+        "file": "/img/cities/boston-1200.webp",
+        "bytes": 236994
+      }
+    }
+  },
+  "santa-fe": {
+    "source": "https://images.pexels.com/photos/34041923/pexels-photo-34041923.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    "width": 1200,
+    "height": 1068,
+    "renditions": {
+      "640": {
+        "file": "/img/cities/santa-fe-640.webp",
+        "bytes": 44352
+      },
+      "1200": {
+        "file": "/img/cities/santa-fe-1200.webp",
+        "bytes": 125252
+      }
+    }
+  },
+  "minneapolis": {
+    "source": "https://images.pexels.com/photos/35691058/pexels-photo-35691058.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    "width": 1200,
+    "height": 900,
+    "renditions": {
+      "640": {
+        "file": "/img/cities/minneapolis-640.webp",
+        "bytes": 38690
+      },
+      "1200": {
+        "file": "/img/cities/minneapolis-1200.webp",
+        "bytes": 137676
+      }
+    }
+  },
+  "washington-dc": {
+    "source": "https://images.pexels.com/photos/32437731/pexels-photo-32437731.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    "width": 1200,
+    "height": 1800,
+    "renditions": {
+      "640": {
+        "file": "/img/cities/washington-dc-640.webp",
+        "bytes": 117888
+      },
+      "1200": {
+        "file": "/img/cities/washington-dc-1200.webp",
+        "bytes": 337110
+      }
+    }
+  },
+  "new-orleans": {
+    "source": "https://images.pexels.com/photos/18462345/pexels-photo-18462345.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    "width": 1200,
+    "height": 1812,
+    "renditions": {
+      "640": {
+        "file": "/img/cities/new-orleans-640.webp",
+        "bytes": 78162
+      },
+      "1200": {
+        "file": "/img/cities/new-orleans-1200.webp",
+        "bytes": 180674
+      }
+    }
+  },
+  "atlanta": {
+    "source": "https://images.pexels.com/photos/38073457/pexels-photo-38073457.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    "width": 1200,
+    "height": 800,
+    "renditions": {
+      "640": {
+        "file": "/img/cities/atlanta-640.webp",
+        "bytes": 54160
+      },
+      "1200": {
+        "file": "/img/cities/atlanta-1200.webp",
+        "bytes": 158168
+      }
+    }
+  },
+  "burlington": {
+    "source": "https://images.pexels.com/photos/17792683/pexels-photo-17792683.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    "width": 1200,
+    "height": 800,
+    "renditions": {
+      "640": {
+        "file": "/img/cities/burlington-640.webp",
+        "bytes": 49610
+      },
+      "1200": {
+        "file": "/img/cities/burlington-1200.webp",
+        "bytes": 132656
+      }
+    }
+  },
+  "dallas": {
+    "source": "https://images.pexels.com/photos/16011903/pexels-photo-16011903.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    "width": 1200,
+    "height": 1800,
+    "renditions": {
+      "640": {
+        "file": "/img/cities/dallas-640.webp",
+        "bytes": 42082
+      },
+      "1200": {
+        "file": "/img/cities/dallas-1200.webp",
+        "bytes": 128362
+      }
+    }
+  },
+  "houston": {
+    "source": "https://images.pexels.com/photos/7489890/pexels-photo-7489890.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    "width": 1200,
+    "height": 801,
+    "renditions": {
+      "640": {
+        "file": "/img/cities/houston-640.webp",
+        "bytes": 47640
+      },
+      "1200": {
+        "file": "/img/cities/houston-1200.webp",
+        "bytes": 148766
+      }
+    }
+  },
+  "philadelphia": {
+    "source": "https://images.pexels.com/photos/37023169/pexels-photo-37023169.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    "width": 1200,
+    "height": 798,
+    "renditions": {
+      "640": {
+        "file": "/img/cities/philadelphia-640.webp",
+        "bytes": 29374
+      },
+      "1200": {
+        "file": "/img/cities/philadelphia-1200.webp",
+        "bytes": 82102
+      }
+    }
+  },
+  "phoenix": {
+    "source": "https://images.pexels.com/photos/18194032/pexels-photo-18194032.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    "width": 1200,
+    "height": 800,
+    "renditions": {
+      "640": {
+        "file": "/img/cities/phoenix-640.webp",
+        "bytes": 82668
+      },
+      "1200": {
+        "file": "/img/cities/phoenix-1200.webp",
+        "bytes": 252734
+      }
+    }
+  },
+  "riverside": {
+    "source": "https://images.pexels.com/photos/14935388/pexels-photo-14935388.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    "width": 1200,
+    "height": 783,
+    "renditions": {
+      "640": {
+        "file": "/img/cities/riverside-640.webp",
+        "bytes": 40438
+      },
+      "1200": {
+        "file": "/img/cities/riverside-1200.webp",
+        "bytes": 112826
+      }
+    }
+  },
+  "detroit": {
+    "source": "https://images.pexels.com/photos/37350114/pexels-photo-37350114.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    "width": 1200,
+    "height": 1600,
+    "renditions": {
+      "640": {
+        "file": "/img/cities/detroit-640.webp",
+        "bytes": 60108
+      },
+      "1200": {
+        "file": "/img/cities/detroit-1200.webp",
+        "bytes": 194440
+      }
+    }
+  },
+  "tampa": {
+    "source": "https://images.pexels.com/photos/34550701/pexels-photo-34550701.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    "width": 1200,
+    "height": 1594,
+    "renditions": {
+      "640": {
+        "file": "/img/cities/tampa-640.webp",
+        "bytes": 87310
+      },
+      "1200": {
+        "file": "/img/cities/tampa-1200.webp",
+        "bytes": 259968
+      }
+    }
+  },
+  "st-louis": {
+    "source": "https://images.pexels.com/photos/30195587/pexels-photo-30195587.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    "width": 1200,
+    "height": 1844,
+    "renditions": {
+      "640": {
+        "file": "/img/cities/st-louis-640.webp",
+        "bytes": 21472
+      },
+      "1200": {
+        "file": "/img/cities/st-louis-1200.webp",
+        "bytes": 60258
+      }
+    }
+  },
+  "baltimore": {
+    "source": "https://images.pexels.com/photos/13994002/pexels-photo-13994002.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    "width": 1200,
+    "height": 1800,
+    "renditions": {
+      "640": {
+        "file": "/img/cities/baltimore-640.webp",
+        "bytes": 61200
+      },
+      "1200": {
+        "file": "/img/cities/baltimore-1200.webp",
+        "bytes": 167280
+      }
+    }
+  },
+  "orlando": {
+    "source": "https://images.pexels.com/photos/31361485/pexels-photo-31361485.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    "width": 1200,
+    "height": 801,
+    "renditions": {
+      "640": {
+        "file": "/img/cities/orlando-640.webp",
+        "bytes": 47832
+      },
+      "1200": {
+        "file": "/img/cities/orlando-1200.webp",
+        "bytes": 121626
+      }
+    }
+  },
+  "charlotte": {
+    "source": "https://images.pexels.com/photos/302600/pexels-photo-302600.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    "width": 1200,
+    "height": 801,
+    "renditions": {
+      "640": {
+        "file": "/img/cities/charlotte-640.webp",
+        "bytes": 32112
+      },
+      "1200": {
+        "file": "/img/cities/charlotte-1200.webp",
+        "bytes": 85098
+      }
+    }
+  },
+  "san-antonio": {
+    "source": "https://images.pexels.com/photos/36131855/pexels-photo-36131855.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    "width": 1200,
+    "height": 800,
+    "renditions": {
+      "640": {
+        "file": "/img/cities/san-antonio-640.webp",
+        "bytes": 44986
+      },
+      "1200": {
+        "file": "/img/cities/san-antonio-1200.webp",
+        "bytes": 131724
+      }
+    }
+  },
+  "sacramento": {
+    "source": "https://images.pexels.com/photos/34276127/pexels-photo-34276127.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    "width": 1200,
+    "height": 849,
+    "renditions": {
+      "640": {
+        "file": "/img/cities/sacramento-640.webp",
+        "bytes": 25176
+      },
+      "1200": {
+        "file": "/img/cities/sacramento-1200.webp",
+        "bytes": 64192
+      }
+    }
+  },
+  "las-vegas": {
+    "source": "https://images.pexels.com/photos/33431235/pexels-photo-33431235.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    "width": 1200,
+    "height": 800,
+    "renditions": {
+      "640": {
+        "file": "/img/cities/las-vegas-640.webp",
+        "bytes": 89474
+      },
+      "1200": {
+        "file": "/img/cities/las-vegas-1200.webp",
+        "bytes": 273280
+      }
+    }
+  },
+  "cincinnati": {
+    "source": "https://images.pexels.com/photos/33303157/pexels-photo-33303157.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    "width": 1200,
+    "height": 800,
+    "renditions": {
+      "640": {
+        "file": "/img/cities/cincinnati-640.webp",
+        "bytes": 39206
+      },
+      "1200": {
+        "file": "/img/cities/cincinnati-1200.webp",
+        "bytes": 108316
+      }
+    }
+  },
+  "kansas-city": {
+    "source": "https://images.pexels.com/photos/37215914/pexels-photo-37215914.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    "width": 1200,
+    "height": 802,
+    "renditions": {
+      "640": {
+        "file": "/img/cities/kansas-city-640.webp",
+        "bytes": 52946
+      },
+      "1200": {
+        "file": "/img/cities/kansas-city-1200.webp",
+        "bytes": 144382
+      }
+    }
+  },
+  "columbus": {
+    "source": "https://images.pexels.com/photos/26777308/pexels-photo-26777308.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    "width": 1200,
+    "height": 1071,
+    "renditions": {
+      "640": {
+        "file": "/img/cities/columbus-640.webp",
+        "bytes": 90656
+      },
+      "1200": {
+        "file": "/img/cities/columbus-1200.webp",
+        "bytes": 264456
+      }
+    }
+  },
+  "indianapolis": {
+    "source": "https://images.pexels.com/photos/13342471/pexels-photo-13342471.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    "width": 1200,
+    "height": 1800,
+    "renditions": {
+      "640": {
+        "file": "/img/cities/indianapolis-640.webp",
+        "bytes": 90682
+      },
+      "1200": {
+        "file": "/img/cities/indianapolis-1200.webp",
+        "bytes": 266184
+      }
+    }
+  },
+  "san-jose": {
+    "source": "https://images.pexels.com/photos/18854593/pexels-photo-18854593.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    "width": 1200,
+    "height": 800,
+    "renditions": {
+      "640": {
+        "file": "/img/cities/san-jose-640.webp",
+        "bytes": 25816
+      },
+      "1200": {
+        "file": "/img/cities/san-jose-1200.webp",
+        "bytes": 75236
+      }
+    }
+  },
+  "nashville": {
+    "source": "https://images.pexels.com/photos/31112656/pexels-photo-31112656.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    "width": 1200,
+    "height": 1798,
+    "renditions": {
+      "640": {
+        "file": "/img/cities/nashville-640.webp",
+        "bytes": 92662
+      },
+      "1200": {
+        "file": "/img/cities/nashville-1200.webp",
+        "bytes": 256198
+      }
+    }
+  },
+  "virginia-beach": {
+    "source": "https://images.pexels.com/photos/17668268/pexels-photo-17668268.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    "width": 1200,
+    "height": 1973,
+    "renditions": {
+      "640": {
+        "file": "/img/cities/virginia-beach-640.webp",
+        "bytes": 127150
+      },
+      "1200": {
+        "file": "/img/cities/virginia-beach-1200.webp",
+        "bytes": 348998
+      }
+    }
+  },
+  "providence": {
+    "source": "https://images.pexels.com/photos/19016678/pexels-photo-19016678.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    "width": 1200,
+    "height": 800,
+    "renditions": {
+      "640": {
+        "file": "/img/cities/providence-640.webp",
+        "bytes": 71372
+      },
+      "1200": {
+        "file": "/img/cities/providence-1200.webp",
+        "bytes": 226150
+      }
+    }
+  },
+  "milwaukee": {
+    "source": "https://images.pexels.com/photos/32266876/pexels-photo-32266876.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    "width": 1200,
+    "height": 1800,
+    "renditions": {
+      "640": {
+        "file": "/img/cities/milwaukee-640.webp",
+        "bytes": 47922
+      },
+      "1200": {
+        "file": "/img/cities/milwaukee-1200.webp",
+        "bytes": 124454
+      }
+    }
+  },
+  "jacksonville": {
+    "source": "https://images.pexels.com/photos/34935299/pexels-photo-34935299.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    "width": 1200,
+    "height": 1594,
+    "renditions": {
+      "640": {
+        "file": "/img/cities/jacksonville-640.webp",
+        "bytes": 82712
+      },
+      "1200": {
+        "file": "/img/cities/jacksonville-1200.webp",
+        "bytes": 276568
+      }
+    }
+  },
+  "memphis": {
+    "source": "https://images.pexels.com/photos/34878087/pexels-photo-34878087.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    "width": 1200,
+    "height": 1800,
+    "renditions": {
+      "640": {
+        "file": "/img/cities/memphis-640.webp",
+        "bytes": 94162
+      },
+      "1200": {
+        "file": "/img/cities/memphis-1200.webp",
+        "bytes": 264310
+      }
+    }
+  },
+  "oklahoma-city": {
+    "source": "https://images.pexels.com/photos/19665042/pexels-photo-19665042.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    "width": 1200,
+    "height": 1799,
+    "renditions": {
+      "640": {
+        "file": "/img/cities/oklahoma-city-640.webp",
+        "bytes": 64516
+      },
+      "1200": {
+        "file": "/img/cities/oklahoma-city-1200.webp",
+        "bytes": 200640
+      }
+    }
+  },
+  "hartford": {
+    "source": "https://images.pexels.com/photos/35262940/pexels-photo-35262940.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    "width": 1200,
+    "height": 1600,
+    "renditions": {
+      "640": {
+        "file": "/img/cities/hartford-640.webp",
+        "bytes": 74360
+      },
+      "1200": {
+        "file": "/img/cities/hartford-1200.webp",
+        "bytes": 204550
+      }
+    }
+  },
+  "richmond": {
+    "source": "https://images.pexels.com/photos/34586179/pexels-photo-34586179.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    "width": 1200,
+    "height": 675,
+    "renditions": {
+      "640": {
+        "file": "/img/cities/richmond-640.webp",
+        "bytes": 42872
+      },
+      "1200": {
+        "file": "/img/cities/richmond-1200.webp",
+        "bytes": 121520
+      }
+    }
+  },
+  "buffalo": {
+    "source": "https://images.pexels.com/photos/33326999/pexels-photo-33326999.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    "width": 1200,
+    "height": 1800,
+    "renditions": {
+      "640": {
+        "file": "/img/cities/buffalo-640.webp",
+        "bytes": 75958
+      },
+      "1200": {
+        "file": "/img/cities/buffalo-1200.webp",
+        "bytes": 318352
+      }
+    }
+  },
+  "raleigh": {
+    "source": "https://images.pexels.com/photos/30316256/pexels-photo-30316256.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    "width": 1200,
+    "height": 799,
+    "renditions": {
+      "640": {
+        "file": "/img/cities/raleigh-640.webp",
+        "bytes": 43810
+      },
+      "1200": {
+        "file": "/img/cities/raleigh-1200.webp",
+        "bytes": 129350
+      }
+    }
+  },
+  "birmingham": {
+    "source": "https://images.pexels.com/photos/34692841/pexels-photo-34692841.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    "width": 1200,
+    "height": 675,
+    "renditions": {
+      "640": {
+        "file": "/img/cities/birmingham-640.webp",
+        "bytes": 29612
+      },
+      "1200": {
+        "file": "/img/cities/birmingham-1200.webp",
+        "bytes": 89268
+      }
+    }
+  },
+  "salt-lake-city": {
+    "source": "https://images.pexels.com/photos/38558066/pexels-photo-38558066.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    "width": 1200,
+    "height": 798,
+    "renditions": {
+      "640": {
+        "file": "/img/cities/salt-lake-city-640.webp",
+        "bytes": 26226
+      },
+      "1200": {
+        "file": "/img/cities/salt-lake-city-1200.webp",
+        "bytes": 79188
+      }
+    }
+  },
+  "louisville": {
+    "source": "https://images.pexels.com/photos/28948623/pexels-photo-28948623.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    "width": 1200,
+    "height": 800,
+    "renditions": {
+      "640": {
+        "file": "/img/cities/louisville-640.webp",
+        "bytes": 33768
+      },
+      "1200": {
+        "file": "/img/cities/louisville-1200.webp",
+        "bytes": 73210
+      }
+    }
+  }
+}

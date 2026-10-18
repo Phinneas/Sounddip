@@ -28,16 +28,21 @@ const { nycSessionCount } = Astro.props;
       </div>
     </div>
 
-    <!-- RIGHT: Photo -->
+    <!-- RIGHT: Photo. Self-hosted: this previously hotlinked a JPEG from
+         sound-bath.com's WordPress uploads, an unlicensed third-party image on
+         the first screen an AdSense reviewer sees. -->
     <div class="hero-photo-wrap">
       <img
-        src="https://sound-bath.com/wp-content/uploads/2025/11/The-Gong-Room-Joshua-Tree-1.jpeg"
-        alt="The Gong Room in Joshua Tree"
+        src="/img/hero-1200.webp"
+        srcset="/img/hero-640.webp 640w, /img/hero-1200.webp 1200w"
+        sizes="(max-width: 1024px) 100vw, 45vw"
+        alt="A practitioner lying on a mat surrounded by brass and crystal singing bowls in a sunlit room"
         loading="eager"
+        decoding="async"
       />
       <div class="hero-caption">
-        <span class="place">The Gong Room</span>
-        <span>Joshua Tree, May</span>
+        <span class="place">A sound bath in session</span>
+        <span>sounddip.com</span>
       </div>
     </div>
 

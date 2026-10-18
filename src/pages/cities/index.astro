@@ -2,10 +2,14 @@
 import Layout from '../../layouts/Layout.astro';
 import Topbar from '../../components/Topbar.astro';
 import Footer from '../../components/Footer.astro';
-import { cities } from '../../data/cities';
+import { publishedCities } from '../../data/cities';
 
-// Sorted alphabetically for a clean directory index.
-const sorted = [...cities].sort((a, b) => a.name.localeCompare(b.name));
+// Published cities only, sorted alphabetically for a clean directory index.
+// Cities below the inventory threshold still build and still resolve at their
+// own URL (noindexed), but they are deliberately not listed here — an index
+// page is the strongest internal-link signal on the site, and linking 35 thin
+// pages from it would undo the deindexing.
+const sorted = [...publishedCities].sort((a, b) => a.name.localeCompare(b.name));
 ---
 
 <Layout
@@ -19,7 +23,7 @@ const sorted = [...cities].sort((a, b) => a.name.localeCompare(b.name));
       <header class="cities-index-head">
         <div class="cities-index-num">iii.</div>
         <h1>All <em>cities.</em></h1>
-        <p class="cities-index-sub">Every city in the directory, from the deepest scenes to the ones just getting started.</p>
+        <p class="cities-index-sub">{sorted.length} cities with hand-reviewed sessions, from the deepest scenes to the ones just getting started.</p>
       </header>
 
       <div class="cities-index-list">

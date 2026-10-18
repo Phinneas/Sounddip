@@ -3,11 +3,22 @@ interface Props {
   title?: string;
   description?: string;
   canonical?: string;
+  /**
+   * Emits `noindex,nofollow`. Used for city pages that fall below the inventory
+   * threshold — they stay reachable and keep their editorial copy for relaunch,
+   * but drop out of the index.
+   *
+   * Never pair this with a robots.txt Disallow for the same path: Google cannot
+   * read a noindex meta tag on a page it is blocked from crawling, so the URL
+   * stays indexed with no signal attached.
+   */
+  noindex?: boolean;
 }
 const {
   title = 'Sound Dip — A directory of sound',
   description = 'Find sound bath sessions, verified practitioners, and the rooms that hold them.',
   canonical,
+  noindex = false,
 } = Astro.props;
 const siteUrl = 'https://sounddip.com';
 const canonicalURL = canonical ? `${siteUrl}${canonical}` : siteUrl;
@@ -19,6 +30,7 @@ const canonicalURL = canonical ? `${siteUrl}${canonical}` : siteUrl;
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="google-adsense-account" content="ca-pub-5424097145643842" />
   <meta name="description" content={description} />
+  {noindex && <meta name="robots" content="noindex,nofollow" />}
   <title>{title}</title>
   <link rel="canonical" href={canonicalURL} />
   <meta property="og:title" content={title} />

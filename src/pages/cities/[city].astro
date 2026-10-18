@@ -1,6 +1,7 @@
 ---
 import { getCityBySlug, cities } from '../../data/cities';
 import { filterableModalities } from '../../data/modalities';
+import { servesByCity } from '../../data/serves';
 import { getListingsForCity, getCityRecord, resolvePhotoUrl } from '../../data/cms';
 import Layout from '../../layouts/Layout.astro';
 import Topbar from '../../components/Topbar.astro';
@@ -39,7 +40,12 @@ const cityGuide = blogPosts.find((post) =>
 );
 
 const pageTitle = `Best Sound Baths in ${city.name} — Sound Dip`;
-const pageDescription = `${realSessionCount} verified sound bath sessions in ${city.name}. ${city.priceRange} per session. ${city.formats.slice(0, 3).join(', ')}.`;
+// Never put "0 verified sessions" in a meta description. Cities below the
+// inventory threshold describe coverage instead; they render noindexed anyway.
+const pageDescription =
+  realSessionCount > 0
+    ? `${realSessionCount} verified sound bath sessions in ${city.name} and the surrounding metro. ${city.priceRange} per session. ${city.formats.slice(0, 3).join(', ')}.`
+    : `Sound bath sessions in ${city.name} and the surrounding metro. ${city.priceRange} per session. ${city.formats.slice(0, 3).join(', ')}.`;
 const sceneParagraphs = city.scene.split('\n\n').filter(Boolean);
 
 // Sort by status (active before active-secondary). Visibility filtering is
@@ -55,7 +61,12 @@ const cityPublishedDate = cityRecord?.createdAt ? cityRecord.createdAt.split('T'
 const cityModifiedDate = cityRecord?.updatedAt ? cityRecord.updatedAt.split('T')[0] : null;
 ---
 
-<Layout title={pageTitle} description={pageDescription} canonical={`/cities/${city.slug}`}>
+<Layout
+  title={pageTitle}
+  description={pageDescription}
+  canonical={`/cities/${city.slug}`}
+  noindex={!city.published}
+>
   <!-- BreadcrumbList: Home > City -->
   <JsonLd data={{
     "@context": "https://schema.org",
@@ -78,22 +89,29 @@ const cityModifiedDate = cityRecord?.updatedAt ? cityRecord.updatedAt.split('T')
 
   <!-- ItemList: session/practitioner names with URLs. The `sd:` (sounddip)
        namespace carries the verification signal as a real crawlable property on
-       each item, sourced from the listing's listingStatus field. -->
+       each item, sourced from the listing's listingStatus field.
+
+       Emitted only when the CMS returned real listings. It previously fell back
+       to the hardcoded `city.venues` array, which asserted 3-4 aggregated venue
+       names as sessions on pages whose hero said "0 sessions tracked" — the
+       count and the markup contradicted each other on the same page. -->
+  {visibleListings.length > 0 && (
   <JsonLd data={{
     "@context": ["https://schema.org", { "sd": "https://sounddip.com/ns/" }],
     "@type": "ItemList",
     "name": `Sound Bath Sessions in ${city.name}`,
     "description": pageDescription,
-    "numberOfItems": visibleListings.length || city.venues.length,
-    "itemListElement": (visibleListings.length > 0 ? visibleListings : city.venues).map((item: any, i: number) => ({
+    "numberOfItems": visibleListings.length,
+    "itemListElement": visibleListings.map((item: any, i: number) => ({
       "@type": "ListItem",
       "position": i + 1,
       "name": item.name,
       ...(item.bookingUrl ? { "url": item.bookingUrl } : {}),
-      ...(item.note ? { "description": item.note } : item.sessionDescription ? { "description": item.sessionDescription } : {}),
+      ...(item.sessionDescription ? { "description": item.sessionDescription } : {}),
       ...(item.listingStatus === 'active' ? { "sd:verified-online": true } : {})
     }))
   }} />
+  )}
 
   <!-- Note: Event schema was previously emitted with startDate/endDate set to
        the build date. The Listing model has no real scheduled session date, so
@@ -126,9 +144,9 @@ const cityModifiedDate = cityRecord?.updatedAt ? cityRecord.updatedAt.split('T')
     "headline": `Your First Sound Bath in ${city.name}`,
     "description": city.beginner,
     "author": {
-      "@type": "Organization",
-      "name": "Sound Dip",
-      "url": "https://sounddip.com"
+      "@type": "Person",
+      "name": "Chester Beard",
+      "url": "https://sounddip.com/about"
     },
     "publisher": {
       "@type": "Organization",
@@ -142,6 +160,13 @@ const cityModifiedDate = cityRecord?.updatedAt ? cityRecord.updatedAt.split('T')
   <main>
     <Topbar />
     <CityHero city={city} sessionCount={realSessionCount} />
+
+    {city.published && servesByCity[city.slug]?.length > 0 && (
+      <div class="serves-band">
+        <span class="serves-label">Serving {city.name} and nearby</span>
+        <span class="serves-towns">{servesByCity[city.slug].join(' · ')}</span>
+      </div>
+    )}
 
     <!-- i. The scene -->
     <section class="section">
@@ -158,9 +183,20 @@ const cityModifiedDate = cityRecord?.updatedAt ? cityRecord.updatedAt.split('T')
           <p class="scene-para">{para}</p>
         ))}
       </div>
+      {city.published && cityRecord?.updatedAt && (
+        <p class="scene-byline">
+          Reviewed by <a href="/about">Chester Beard</a> · last checked{' '}
+          {new Date(cityRecord.updatedAt).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
+        </p>
+      )}
     </section>
 
-    <!-- ii. Where to go -->
+    <!-- ii. Where to go. Published cities only: the `venues` array in
+         cities.ts is aggregated research, not hand-reviewed inventory, so on a
+         city with no verified listings this section would headline unverified
+         names as "vetted, not aggregated". Unpublished pages keep the scene
+         copy and the beginner guide, and drop this. -->
+    {city.published && (
     <section class="section">
       <div class="section-head">
         <div class="section-num">ii.</div>
@@ -177,6 +213,7 @@ const cityModifiedDate = cityRecord?.updatedAt ? cityRecord.updatedAt.split('T')
         ))}
       </div>
     </section>
+    )}
 
     {visibleListings.length > 0 && (
     <section class="section">
@@ -266,6 +303,32 @@ const cityModifiedDate = cityRecord?.updatedAt ? cityRecord.updatedAt.split('T')
 <style>
   main { position: relative; z-index: 2; }
 
+  /* ── Coverage ("serves") band ── */
+  .serves-band {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 6vw 40px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: baseline;
+  }
+  .serves-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    white-space: nowrap;
+  }
+  .serves-towns {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 16px;
+    color: var(--ink-mid);
+    font-variation-settings: "opsz" 72;
+  }
+
   /* ── Scene ── */
   .scene-body {
     max-width: 760px;
@@ -279,6 +342,18 @@ const cityModifiedDate = cityRecord?.updatedAt ? cityRecord.updatedAt.split('T')
     line-height: 1.75;
     color: var(--ink-mid);
     font-variation-settings: "opsz" 72;
+  }
+  .scene-byline {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+  .scene-byline a {
+    color: var(--clay);
+    text-decoration: underline;
+    text-underline-offset: 2px;
   }
 
   /* ── Venues ── */

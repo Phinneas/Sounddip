@@ -21,9 +21,24 @@ interface Props {
 const { name, neighborhood, cityName, modalityTags, modalityDescription, duration, price, bookingUrl, practitionerBio, sessionDescription, listingStatus, photo, index } = Astro.props;
 const num = String(index + 1).padStart(2, '0');
 
+// 39 of the 146 visible listings still carry a scrape-era placeholder
+// neighborhood: a bare "Unknown", or "Unknown, <real place>" where the scraper
+// resolved the locality but not the neighborhood. Rendering "Unknown" as a
+// location reads as broken data on a directory whose entire pitch is that its
+// listings are checked, so strip the placeholder and keep any real remainder.
+// `version_*` values are Payload's own unpublished-version placeholders.
+function cleanNeighborhood(value?: string | null): string | null {
+  if (!value) return null;
+  const trimmed = value.trim();
+  if (!trimmed || /^version_/i.test(trimmed)) return null;
+  const withoutPrefix = trimmed.replace(/^unknown\s*,\s*/i, '').trim();
+  if (!withoutPrefix || /^unknown$/i.test(withoutPrefix)) return null;
+  return withoutPrefix;
+}
+
 // Locale line: neighborhood + city (homepage shows the city since cards span cities;
 // city pages don't pass cityName, so they render neighborhood only as before).
-const localeParts = [neighborhood, cityName].filter(Boolean);
+const localeParts = [cleanNeighborhood(neighborhood), cityName].filter(Boolean);
 const localeLine = localeParts.join(' · ');
 
 // Photo: real CMS photo when populated, else a neutral placeholder (the

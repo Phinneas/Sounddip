@@ -61,6 +61,23 @@ function isVisible(l: CmsListing): boolean {
   return VISIBLE_STATUSES.includes(l.listingStatus);
 }
 
+/**
+ * Like fetchJson, but turns a failed request into a build error.
+ *
+ * fetchJson returns null for both "CMS unreachable" and "non-2xx", and every
+ * caller used to treat that as "no listings". A CMS outage during a build would
+ * therefore silently emit all 54 city pages with zero listings and still exit 0
+ * — which is exactly how a thin-content site gets shipped during a review.
+ * Anything that decides what a page contains must fail loudly instead.
+ */
+async function fetchJsonStrict(url: string, timeoutMs = 15000): Promise<any> {
+  const data = await fetchJson(url, timeoutMs);
+  if (data === null) {
+    throw new Error(`[cms] request failed: ${url} — refusing to build with unknown listing data`);
+  }
+  return data;
+}
+
 // Resolve the populated city object (depth=1) or null. Used by homepage cards to
 // show the city name alongside the neighborhood.
 export function listingCityName(l: CmsListing): string | null {
@@ -72,18 +89,40 @@ export function listingCityName(l: CmsListing): string | null {
 // [city].astro. depth=1 so the `photo` upload (and city) are populated, enabling
 // ListingCard to render a real photo when one exists. Visibility filtering is
 // applied here so callers always get only publicly-showable listings.
+//
+// Paginated: this previously made one limit=100 request with no page walk, so a
+// city crossing 100 listings would silently truncate. Los Angeles is the largest
+// market at 18 visible listings today, but it also has the most suppressed
+// scrapes, so it is the one most likely to grow past the cap.
 export async function getListingsForCity(slug: string): Promise<CmsListing[]> {
-  const cityData = await fetchJson(
+  const cityData = await fetchJsonStrict(
     `${CMS_API}/api/cities?where[slug][equals]=${encodeURIComponent(slug)}&limit=1`,
     10000,
   );
   const cityId = cityData?.docs?.[0]?.id;
-  if (!cityId) return [];
-  const data = await fetchJson(
-    `${CMS_API}/api/listings?where[city][equals]=${cityId}&limit=100&depth=1`,
-    15000,
-  );
-  return (data?.docs || []).filter(isVisible);
+  if (!cityId) {
+    // A slug in cities.ts with no CMS record yet. Genuinely empty, as opposed to
+    // unknown — warn rather than throw so a new city can be added to cities.ts
+    // before its CMS record exists.
+    console.warn(`[cms] no city record for "${slug}" — rendering 0 listings`);
+    return [];
+  }
+
+  const all: CmsListing[] = [];
+  let page = 1;
+  let hasNext = true;
+  while (hasNext && page <= 20) {
+    const data = await fetchJsonStrict(
+      `${CMS_API}/api/listings?where[city][equals]=${cityId}&limit=100&page=${page}&depth=1`,
+      15000,
+    );
+    const docs = data?.docs || [];
+    if (docs.length === 0) break;
+    all.push(...docs);
+    hasNext = !!data?.hasNextPage;
+    page++;
+  }
+  return all.filter(isVisible);
 }
 
 // A single city record by slug (for real createdAt/updatedAt timestamps used
@@ -132,7 +171,7 @@ export async function getAllVisibleListings(): Promise<CmsListing[]> {
   // hand-reviewed active listings on later pages, so a single page would miss
   // the real content. Walk every page, then apply the visibility filter.
   while (hasNext && page <= 20) {
-    const data = await fetchJson(
+    const data = await fetchJsonStrict(
       `${CMS_API}/api/listings?limit=500&page=${page}&depth=1`,
       20000,
     );
@@ -141,6 +180,12 @@ export async function getAllVisibleListings(): Promise<CmsListing[]> {
     all.push(...docs);
     hasNext = !!data?.hasNextPage;
     page++;
+  }
+  if (all.length === 0) {
+    throw new Error(
+      '[cms] listings collection returned no documents at all — refusing to build ' +
+        'an empty homepage and empty modality pages',
+    );
   }
   return all.filter(isVisible);
 }

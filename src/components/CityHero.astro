@@ -20,6 +20,11 @@ const { city, sessionCount = 0 } = Astro.props;
       <a href="/cities" class="city-breadcrumb">← All cities</a>
       <div class="city-hero-region">{city.region}</div>
       <h1 class="city-hero-name">{city.name}</h1>
+      {city.published && (
+        <p class="city-hero-metro">
+          Sound baths in {city.name} and the surrounding metro, within ~50 miles.
+        </p>
+      )}
       <p class="city-hero-tagline">{city.tagline}</p>
       <div class="city-hero-stats">
         <div class="stat">
@@ -41,7 +46,14 @@ const { city, sessionCount = 0 } = Astro.props;
 
     <!-- RIGHT: image -->
     <div class="city-hero-photo-wrap">
-      <img src={city.img} alt={city.imgAlt} loading="lazy" />
+      <img
+        src={city.img}
+        srcset={city.imgSrcSet}
+        sizes="(max-width: 1024px) 100vw, 480px"
+        alt={city.imgAlt}
+        loading="lazy"
+        decoding="async"
+      />
       <div class="city-hero-caption">
         <span class="place">{city.name}, {city.region}</span>
         <span>sounddip.com</span>
@@ -111,6 +123,19 @@ const { city, sessionCount = 0 } = Astro.props;
     text-transform: lowercase;
     color: var(--ink);
     margin-bottom: 32px;
+  }
+
+  /* Metro coverage line — states the ~50 mile catchment on published pages */
+  .city-hero-metro {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    max-width: 480px;
+    line-height: 1.6;
+    margin-top: -18px;
+    margin-bottom: 24px;
   }
 
   /* Tagline */

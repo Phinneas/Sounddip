@@ -2,6 +2,7 @@
 import Layout from '../layouts/Layout.astro';
 import Topbar from '../components/Topbar.astro';
 import Footer from '../components/Footer.astro';
+import JsonLd from '../components/JsonLd.astro';
 ---
 
 <Layout
@@ -32,12 +33,54 @@ import Footer from '../components/Footer.astro';
         <p>Practitioners can also add or correct their own listings, and they go through a short verification step before they appear.</p>
 
         <h2 id="who">Who runs this</h2>
-        <p>Sound Dip is run by a small editorial team with a working knowledge of sound healing and a low tolerance for the wellness-industry fluff that makes this practice hard to take seriously. We write about what the evidence actually shows, and we keep the tone calm and specific.</p>
+        <div class="author">
+          <img
+            src="/img/team/chester-beard.webp"
+            width="533"
+            height="800"
+            alt="Chester Beard, editor of Sound Dip"
+            loading="lazy"
+            decoding="async"
+          />
+          <div>
+            <div class="author-name">Chester Beard</div>
+            <div class="author-role">Editor · Sound Dip · Puget Sound</div>
+          </div>
+        </div>
+        <p>I'm Chester Beard. I live in the Puget Sound region and I've spent most of my career as a technical writer and brand storyteller — which is a long way of saying I get paid to explain complicated things clearly.</p>
+        <p>I grew up in an Episcopal household. The tradition was there from the start. So were the questions. I began looking into other spiritual paths early, and I never really stopped. Kierkegaard was an early influence: faith is not something you inherit — you have to live it yourself or it isn't yours. That idea stuck with me. Then came Hesse's <em>Siddhartha</em>, Sartre's existentialism, a meditation cushion, a yoga mat, and eventually my first sound bath.</p>
+        <p>I didn't expect much. I left surprised.</p>
+        <p>Here's the problem I kept running into afterward. Finding the next one was awful. Directory sites listing events that happened two years ago. Aggregators scraping each other. Descriptions that clearly came from someone who has never sat through a session. I'd spend an evening scrolling and end up with nothing I trusted.</p>
+        <p>So I built this site.</p>
+        <p>The rule here is the one those very different writers taught me: don't take it on someone else's word. Try it and see. Every listing is verified by a human — me. Venue confirmed, schedule checked, booking link tested. If I haven't confirmed it, it doesn't go up. If a session doesn't work the way others describe it, I say so.</p>
+        <p><strong>Vetted, not aggregated. That's the whole pitch.</strong></p>
+        <p>When I'm not vetting listings, I do conservation work with groups like the Sierra Club and The Nature Conservancy, and I write about the Salish Sea region.</p>
 
-        <h2>Contact</h2>
-        <p>Questions, corrections, or a session you think belongs here? Email us at <a href="mailto:hello@sounddip.com">hello@sounddip.com</a>. We read everything and reply when we can.</p>
+        <h2 id="contact">Contact</h2>
+        <p>Questions, corrections, or a session you think belongs here? Email me at <a href="mailto:hello@sounddip.com">hello@sounddip.com</a>. I read everything and reply when I can.</p>
       </section>
     </article>
+
+    <JsonLd data={{
+      "@context": "https://schema.org",
+      "@type": "Person",
+      "name": "Chester Beard",
+      "jobTitle": "Editor",
+      "image": "https://sounddip.com/img/team/chester-beard.webp",
+      "email": "mailto:hello@sounddip.com",
+      "homeLocation": { "@type": "Place", "name": "Puget Sound region, Washington" },
+      "worksFor": { "@type": "Organization", "name": "Sound Dip", "url": "https://sounddip.com/" }
+    }} />
+
+    <JsonLd data={{
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "Sound Dip",
+      "url": "https://sounddip.com/",
+      "email": "hello@sounddip.com",
+      "slogan": "Vetted, not aggregated.",
+      "founder": { "@type": "Person", "name": "Chester Beard" }
+    }} />
     <Footer />
   </main>
 </Layout>
@@ -98,8 +141,41 @@ import Footer from '../components/Footer.astro';
   }
   .prose a:hover { color: var(--clay-d); }
 
+  /* Named editor — the E-E-A-T fix. A real person, a real photo, on the page. */
+  .author {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    margin: 8px 0 36px;
+  }
+  .author img {
+    width: 128px;
+    height: 192px;
+    object-fit: cover;
+    object-position: 50% 20%;
+    border-radius: 4px;
+    filter: saturate(0.92);
+    flex-shrink: 0;
+  }
+  .author-name {
+    font-family: var(--serif);
+    font-size: 30px;
+    font-weight: 400;
+    letter-spacing: -0.5px;
+    color: var(--ink);
+    margin-bottom: 6px;
+  }
+  .author-role {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+
   @media (max-width: 640px) {
     .static-page { padding: 100px 6vw 60px; }
     .prose { font-size: 17px; }
+    .author { flex-direction: column; align-items: flex-start; gap: 20px; }
   }
 </style>

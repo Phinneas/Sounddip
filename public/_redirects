@@ -1,0 +1,9 @@
+# Sound Dip — edge redirects (Cloudflare Workers static assets).
+#
+# The newsletter button points at our own /newsletter/ path rather than the
+# third-party Substack URL, so no other brand's name appears anywhere in
+# sounddip.com markup. 302 (not 301) so the destination stays cheap to change.
+# utm_source tags subscribers coming from this site, per the shared-list plan.
+
+/newsletter/  https://substack.com/@nourishedjourneys?utm_source=sounddip  302
+/newsletter   https://substack.com/@nourishedjourneys?utm_source=sounddip  302

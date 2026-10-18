@@ -1,4 +1,4 @@
-export interface City {
+interface CityInput {
   slug: string;
   name: string;
   region: string;
@@ -9,11 +9,121 @@ export interface City {
   scene: string;
   venues: { name: string; note: string }[];
   beginner: string;
-  img: string;
+  /**
+   * Upstream Pexels URL this city's hero image was downloaded from. Kept as
+   * provenance and as the input list for scripts/fetch-images.mjs — never
+   * render it. Hotlinking a third-party CDN is exactly what that script exists
+   * to remove; render `img` / `imgSrcSet` instead.
+   */
+  imgSource: string;
   imgAlt: string;
 }
 
-export const cities: City[] = [
+export interface City extends CityInput {
+  /** Self-hosted WebP, written into public/img/cities/ by scripts/fetch-images.mjs. */
+  img: string;
+  /** 640w and 1200w renditions of the same image, for a `srcset` attribute. */
+  imgSrcSet: string;
+  /**
+   * Whether this city page is published to search engines. Unpublished cities
+   * still build and still render — they carry `noindex,nofollow` and are kept
+   * out of the sitemap, the city index, the DipBar selector and the homepage
+   * city grid, so their editorial copy survives for relaunch once inventory
+   * grows. Flipping a slug into PUBLISHED_SLUGS is the whole relaunch step.
+   */
+  published: boolean;
+  /**
+   * Approximate city center, used as the anchor for the "surrounding metro,
+   * within ~50 miles" coverage claim. See the caveat on CITY_CENTERS before
+   * building any distance logic on these.
+   */
+  lat: number | null;
+  lng: number | null;
+}
+
+/**
+ * Cities that stay indexed, as of the 2026-10 AdSense compliance pass.
+ *
+ * Rule: a city page is published when the CMS holds >= 6 hand-reviewed listings
+ * for it (listingStatus `active` or `active-secondary`), or >= 4 when the city
+ * also carries original editorial `scene` copy — which every entry in this file
+ * does. Counts below are visible listings at the time of the pass, out of 146
+ * site-wide; the other 937 CMS listings are suppressed `auto-verified` scrapes
+ * with no original copy and deliberately do not count toward the threshold.
+ *
+ * The remaining 35 cities are unpublished: burlington (2 listings) and 34 with
+ * zero. Note that this is an editorial-production backlog, not a sourcing one —
+ * every unpublished city already has >= 7 suppressed CMS listings waiting on
+ * original write-ups. burlington is the single genuine dead end, with only 2
+ * listings in the CMS at any status.
+ *
+ * asheville sits at 5 and is kept published on the second clause because 17 of
+ * 20 blog posts link to it and it has a dedicated guide; deindexing it would
+ * break 21 internal links.
+ */
+const PUBLISHED_SLUGS: readonly string[] = [
+  'los-angeles',     // 18
+  'new-york',        // 15
+  'chicago',         // 10
+  'austin',          //  9
+  'san-francisco',   //  9
+  'miami',           //  8
+  'sedona',          //  8
+  'portland',        //  7
+  'seattle',         //  7
+  'boulder',         //  6
+  'denver',          //  6
+  'minneapolis',     //  6
+  'san-diego',       //  6
+  'washington-dc',   //  6
+  'asheville',       //  5
+  'joshua-tree',     //  5
+  'new-orleans',     //  5
+  'boston',          //  4
+  'santa-fe',        //  4
+];
+
+/**
+ * City centers for the published cities, as [lat, lng].
+ *
+ * CAVEAT — do not build real distance logic on these yet. They are medians of
+ * the coordinates in public/listings.geo.json, and that file is produced by
+ * scripts/geocode-listings.mjs, which geocodes "neighborhood, city" via
+ * Nominatim and falls back to the city centroid. Several cities collapse to a
+ * single distinct coordinate (new-orleans 5 listings -> 1, santa-fe 4 -> 1,
+ * denver 6 -> 2), so these values are city centroids in practice rather than
+ * surveyed centers or venue locations.
+ *
+ * They are recorded here so the "~50 miles" coverage claim has a stated anchor
+ * and so future metro work has a starting point. A genuine 50-mile capture
+ * radius needs venue-level addresses in the CMS first: only 9 of the 146
+ * visible listings have one, and 9 more carry literal `version_address`
+ * placeholders. Under exclusive nearest-city assignment no listing changes
+ * city, so this table has no effect on published counts today.
+ */
+const CITY_CENTERS: Record<string, [number, number]> = {
+  'los-angeles':   [34.053691, -118.274107],
+  'new-york':      [40.712728, -73.976624],
+  'chicago':       [41.878875, -87.639823],
+  'austin':        [30.271129, -97.743700],
+  'san-francisco': [37.787936, -122.407520],
+  'miami':         [25.783674, -80.192515],
+  'sedona':        [34.871098, -111.762456],
+  'portland':      [45.507274, -122.661625],
+  'seattle':       [47.603832, -122.349986],
+  'boulder':       [40.002241, -105.260052],
+  'denver':        [39.739236, -104.984862],
+  'minneapolis':   [44.977300, -93.260043],
+  'san-diego':     [32.721973, -117.180108],
+  'washington-dc': [38.897106, -77.039555],
+  'asheville':     [35.595363, -82.550841],
+  'joshua-tree':   [34.123375, -116.312866],
+  'new-orleans':   [29.956142, -90.073393],
+  'boston':        [42.370112, -71.065247],
+  'santa-fe':      [35.687610, -105.938456],
+};
+
+const cityData: CityInput[] = [
   {
     slug: "new-york",
     name: "New York City",
@@ -30,7 +140,7 @@ export const cities: City[] = [
       { name: "Williamsburg and Greenpoint studios", note: "High practitioner density, wide price range, mix of independent and studio-affiliated." },
     ],
     beginner: "Start with Sage + Sound — they have good entry-level framing, multiple locations, and the drop-in format removes commitment. If you want something more memorable for a first experience, Humming Puppy's format is distinctive enough to be worth the extra cost.",
-    img: "https://images.pexels.com/photos/37756237/pexels-photo-37756237.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    imgSource: "https://images.pexels.com/photos/37756237/pexels-photo-37756237.jpeg?auto=compress&cs=tinysrgb&w=1200",
     imgAlt: "Empire State Building in New York City",
   },
   {
@@ -49,7 +159,7 @@ export const cities: City[] = [
       { name: "Pasadena Sound Therapy", note: "Wider instrument range than most — frame drums, handpan, chimes alongside crystal bowls. Worth the drive from central LA." },
     ],
     beginner: "The Soundbath Center in Eagle Rock is the right first stop in LA — it's the most established space in the city, the sessions are well-run, and the format is consistent. Don't start with a private ceremony or a desert retreat until you know you want to go deeper. Yogi Dave's Sunday-evening session in Tarzana is the most accessible price point in the city at $20 advance.",
-    img: "https://images.pexels.com/photos/19012241/pexels-photo-19012241.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    imgSource: "https://images.pexels.com/photos/19012241/pexels-photo-19012241.jpeg?auto=compress&cs=tinysrgb&w=1200",
     imgAlt: "Hollywood Sign in Los Angeles",
   },
   {
@@ -67,7 +177,7 @@ export const cities: City[] = [
       { name: "Mind Body Sound Healing Collective", note: "Berkeley/Orinda/SF. Neuroscience-informed, not purely spiritual. Worth the BART ride if you want something evidence-adjacent." },
     ],
     beginner: "Check The Living Church SF's Eventbrite first — they have the most frequent schedule and the format is approachable. If you want a single memorable experience and don't mind paying hotel prices, the 1 Hotel's Saturday session is polished and low-anxiety. Avoid the East Bay listings for your first time unless you already live there — the scene is real but it's a separate orbit.",
-    img: "https://images.pexels.com/photos/417054/pexels-photo-417054.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    imgSource: "https://images.pexels.com/photos/417054/pexels-photo-417054.jpeg?auto=compress&cs=tinysrgb&w=1200",
     imgAlt: "Golden Gate Bridge in San Francisco",
   },
   {
@@ -85,7 +195,7 @@ export const cities: City[] = [
       { name: "Oak Park", note: "Quieter suburban location of Ahimsa — worth considering if you want a smaller group." },
     ],
     beginner: "Ahimsa's public sessions are the right starting point. They're taught by trained practitioners, they explain the format beforehand, and the Wicker Park location is accessible. Expect a longer session than you might in other cities — 90 minutes is common — and plan to stay horizontal for all of it.",
-    img: "https://images.pexels.com/photos/1845980/pexels-photo-1845980.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    imgSource: "https://images.pexels.com/photos/1845980/pexels-photo-1845980.jpeg?auto=compress&cs=tinysrgb&w=1200",
     imgAlt: "Cloud Gate in Chicago",
   },
   {
@@ -103,7 +213,7 @@ export const cities: City[] = [
       { name: "Private home sessions", note: "A meaningful portion of Austin's practitioners work by appointment only — worth asking around." },
     ],
     beginner: "Start with Meditation Bar on a weeknight — the sessions run 60 minutes, the room is well-designed for sound, and the instructors explain what's happening before you lie down. Bring a mat and something warm. Austin studios run cold.",
-    img: "https://images.pexels.com/photos/14911098/pexels-photo-14911098.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    imgSource: "https://images.pexels.com/photos/14911098/pexels-photo-14911098.jpeg?auto=compress&cs=tinysrgb&w=1200",
     imgAlt: "Texas State Capitol in Austin",
   },
   {
@@ -121,7 +231,7 @@ export const cities: City[] = [
       { name: "Capitol Hill Denver", note: "Several established yoga studios with rotating sound practitioners." },
     ],
     beginner: "Start in Denver proper rather than driving to Boulder — the RiNo studios have well-run group sessions at accessible price points. Once you've been to two or three sessions and know you want to go deeper, a Boulder retreat or workshop with a credentialed teacher is a natural next step.",
-    img: "https://images.pexels.com/photos/32714611/pexels-photo-32714611.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    imgSource: "https://images.pexels.com/photos/32714611/pexels-photo-32714611.jpeg?auto=compress&cs=tinysrgb&w=1200",
     imgAlt: "Daniels & Fisher Tower in Denver",
   },
   {
@@ -139,7 +249,7 @@ export const cities: City[] = [
       { name: "Pearl District", note: "Premium end of the market — private sessions and smaller group formats." },
     ],
     beginner: "Portland is a good city to start in if price is a concern — sliding-scale and community sessions are genuinely common, and the practitioners who offer them are not running lesser sessions. Check community bulletin boards in SE Portland yoga studios, or look for donation-based events posted to local wellness Facebook groups.",
-    img: "https://images.pexels.com/photos/32595472/pexels-photo-32595472.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    imgSource: "https://images.pexels.com/photos/32595472/pexels-photo-32595472.jpeg?auto=compress&cs=tinysrgb&w=1200",
     imgAlt: "Fremont Bridge in Portland",
   },
   {
@@ -157,7 +267,7 @@ export const cities: City[] = [
       { name: "Outdoor and forest sessions", note: "Worth watching for — several practitioners run seasonal outdoor sessions in parks and forest settings around the city." },
     ],
     beginner: "Ask at any established yoga studio in Capitol Hill whether they have a sound session on the schedule, or look for upcoming events in Fremont. Seattle's scene is small enough that word of mouth from a single studio gets you into the community quickly.",
-    img: "https://images.pexels.com/photos/8615712/pexels-photo-8615712.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    imgSource: "https://images.pexels.com/photos/8615712/pexels-photo-8615712.jpeg?auto=compress&cs=tinysrgb&w=1200",
     imgAlt: "Space Needle in Seattle",
   },
   {
@@ -175,7 +285,7 @@ export const cities: City[] = [
       { name: "WakeUpDreamer", note: "Joshua Tree and Palm Springs. Private desert sound baths. Corporate and group formats available." },
     ],
     beginner: "Start with the Integratron — it's the reason you're here. Book a public sound bath session (60 minutes, crystal bowls in the dome) at least two weeks out. If you want something more intimate and are willing to drive to Yucca Valley, The Gong Room's gong-forward format is a strong second experience. Don't try to do both on the same day — the desert heat and the session depth don't pair well with rushing.",
-    img: "https://images.pexels.com/photos/33172426/pexels-photo-33172426.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    imgSource: "https://images.pexels.com/photos/33172426/pexels-photo-33172426.jpeg?auto=compress&cs=tinysrgb&w=1200",
     imgAlt: "Joshua trees in Joshua Tree",
   },
   {
@@ -193,7 +303,7 @@ export const cities: City[] = [
       { name: "Sound & Energy Healing Center", note: "Louisville (8 miles south). Donation-based Himalayan singing bowl sessions. Most accessible price point in the metro." },
     ],
     beginner: "If you want the Boulder experience people talk about, book a StarHouse gong event — the venue itself is worth the trip. If you want something quieter and cheaper, the Sound & Energy Healing Center in Louisville runs donation-based sessions in a suburban living-room setting that's as low-pressure as sound healing gets.",
-    img: "https://images.pexels.com/photos/9503107/pexels-photo-9503107.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    imgSource: "https://images.pexels.com/photos/9503107/pexels-photo-9503107.jpeg?auto=compress&cs=tinysrgb&w=1200",
     imgAlt: "The Flatirons in Boulder",
   },
   {
@@ -211,7 +321,7 @@ export const cities: City[] = [
       { name: "SpiritFlow Sedona", note: "Vortex hike + sound healing combo — the Sedona-specific format. Groups up to 7. Red rock land, not a studio." },
     ],
     beginner: "If it's your first time in Sedona and you want the sound bath experience that justifies the drive, SpiritFlow's vortex-hike-and-sound combo is the one that doesn't exist anywhere else. If you want something more conventional and less expensive, Sacred Rememberings runs a solid weekly crystal bowl session. Skip the luxury resort offerings for your first time — they're polished but they're not why people come to Sedona for sound.",
-    img: "https://images.pexels.com/photos/31482380/pexels-photo-31482380.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    imgSource: "https://images.pexels.com/photos/31482380/pexels-photo-31482380.jpeg?auto=compress&cs=tinysrgb&w=1200",
     imgAlt: "Cathedral Rock in Sedona",
   },
   {
@@ -229,7 +339,7 @@ export const cities: City[] = [
       { name: "NC Arboretum garden sessions", note: "Outdoor sound baths in botanical garden settings — Asheville Wellness Tours runs these seasonally." },
     ],
     beginner: "Somatic Sounds on South Slope is the easiest first session in Asheville — dedicated studio, consistent schedule, reasonable price. If you want something that feels more like the city itself, wait for an outdoor Arboretum garden session and bring a blanket. The didgeridoo session is worth trying once you've been to a standard crystal bowl session and want to hear something genuinely different.",
-    img: "https://images.pexels.com/photos/16173617/pexels-photo-16173617.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    imgSource: "https://images.pexels.com/photos/16173617/pexels-photo-16173617.jpeg?auto=compress&cs=tinysrgb&w=1200",
     imgAlt: "Biltmore Estate in Asheville",
   },
   {
@@ -247,7 +357,7 @@ export const cities: City[] = [
       { name: "Design District (Jungle Plaza)", note: "District-hosted public sound bath programming — community-oriented, not hotel-priced." },
     ],
     beginner: "Miami Sound Healing's free monthly session is the zero-commitment entry point — you can't beat free, and the format is designed for newcomers. If you want the Miami-specific experience, book a floating sound bath at the EDITION. It's a hotel product, but it's also something you literally cannot do in any other city on this list.",
-    img: "https://images.pexels.com/photos/33416031/pexels-photo-33416031.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    imgSource: "https://images.pexels.com/photos/33416031/pexels-photo-33416031.jpeg?auto=compress&cs=tinysrgb&w=1200",
     imgAlt: "Breakwater Hotel in Miami",
   },
   {
@@ -265,7 +375,7 @@ export const cities: City[] = [
       { name: "Woven in Time (Pioneer Park)", note: "Outdoor sessions in Mission Hills. Weather-dependent but San Diego's weather cooperates most of the year." },
     ],
     beginner: "Start with the free monthly session at YogaSix Point Loma — it removes every barrier. If you want something more structured, Integrated Wellness in La Jolla has the deepest credentials in the city. Save the hotel floating baths for a second or third visit; they're pleasant but they won't teach you much about what sound healing actually is.",
-    img: "https://images.pexels.com/photos/37026470/pexels-photo-37026470.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    imgSource: "https://images.pexels.com/photos/37026470/pexels-photo-37026470.jpeg?auto=compress&cs=tinysrgb&w=1200",
     imgAlt: "Coronado Bridge in San Diego",
   },
   {
@@ -283,7 +393,7 @@ export const cities: City[] = [
       { name: "Haus of Glitter (Cambridge)", note: "Multicultural Arts Center venue. Community-arts framing rather than wellness-industry framing." },
     ],
     beginner: "The Mount Auburn Cemetery sunset sound bath is the right first experience in Boston — the setting is beautiful, the price is accessible, and the format is straightforward. If you want something more unconventional, the Firebrand Cannabis session is the most Boston-in-2026 experience available. Skip it if you're sensitive to smoke or don't want the combined experience.",
-    img: "https://images.pexels.com/photos/29913941/pexels-photo-29913941.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    imgSource: "https://images.pexels.com/photos/29913941/pexels-photo-29913941.jpeg?auto=compress&cs=tinysrgb&w=1200",
     imgAlt: "Massachusetts State House in Boston",
   },
   {
@@ -301,7 +411,7 @@ export const cities: City[] = [
       { name: "Awaken Radiance Wellness", note: "Crystal singing bowls, chimes, nature sounds. Individual, group, and corporate formats." },
     ],
     beginner: "Go to the free cathedral sound bath first — there is no lower-barrier experience in any city on this list. After that, Perfect Fifths' Sound Bath Friday series is the most consistent paid option. Santa Fe's scene is small and community-oriented; you'll likely meet the same people at both events, which is part of the appeal.",
-    img: "https://images.pexels.com/photos/34041923/pexels-photo-34041923.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    imgSource: "https://images.pexels.com/photos/34041923/pexels-photo-34041923.jpeg?auto=compress&cs=tinysrgb&w=1200",
     imgAlt: "Cathedral Basilica of St. Francis of Assisi in Santa Fe",
   },
   {
@@ -319,7 +429,7 @@ export const cities: City[] = [
       { name: "Jordan Lawrence (St. Paul Yoga Center)", note: "Recurring Saturdays, starts at $10. The most affordable listing in the entire directory." },
     ],
     beginner: "Jordan Lawrence's Saturday session at St. Paul Yoga Center at $10 is the cheapest entry point in the country — start there. If you want something closer to downtown Minneapolis, Soul Body Finesse has the deepest calendar and the most consistent schedule. The Bell Museum session is worth attending once just for the venue, but it's less frequent.",
-    img: "https://images.pexels.com/photos/35691058/pexels-photo-35691058.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    imgSource: "https://images.pexels.com/photos/35691058/pexels-photo-35691058.jpeg?auto=compress&cs=tinysrgb&w=1200",
     imgAlt: "Spoonbridge and Cherry in Minneapolis",
   },
   {
@@ -337,7 +447,7 @@ export const cities: City[] = [
       { name: "The Watergate — Argentta Spa", note: "Foggy Bottom. 'The Still Hour' floating sound bath, Thursdays at 6pm. Hotel-polished, low-friction booking." },
     ],
     beginner: "Vanessa Ferragut's Sunday session at WE MAKE DC is the right first stop — $15, Reiki + sound, Dupont Circle location, community-oriented. If you want the DC-specific experience, the Watergate's Thursday floating sound bath is polished and memorable. Skip the clinical and hotel-only offerings for your first time unless those settings specifically appeal to you.",
-    img: "https://images.pexels.com/photos/32437731/pexels-photo-32437731.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    imgSource: "https://images.pexels.com/photos/32437731/pexels-photo-32437731.jpeg?auto=compress&cs=tinysrgb&w=1200",
     imgAlt: "United States Capitol in Washington",
   },
   {
@@ -355,7 +465,7 @@ export const cities: City[] = [
       { name: "The Full Moon Collective", note: "Outdoor park sessions at Breakwater Park. Self-soothing yoga + meditation + sound bath." },
     ],
     beginner: "Check whether the Jazz + Sound Healing event at Burgundy St has a current date — if it does, that's the one. It's the only experience in the entire directory you literally cannot get in any other city. If it's not running, High Heal Doula's 3rd Sunday series at The Mind Body is the most consistent community option. New Orleans is a small scene but the price points are among the lowest in the directory.",
-    img: "https://images.pexels.com/photos/18462345/pexels-photo-18462345.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    imgSource: "https://images.pexels.com/photos/18462345/pexels-photo-18462345.jpeg?auto=compress&cs=tinysrgb&w=1200",
     imgAlt: "St. Louis Cathedral in New Orleans",
   },
   {
@@ -373,7 +483,7 @@ export const cities: City[] = [
       { name: "evolation yoga atlanta", note: "High-volume yoga studio with sound sessions. 742 reviews, 4.9 rating." },
     ],
     beginner: "Start with a weekend session at Sanchez Sanctuary or Ranesa House of Wellness — both are established, well-reviewed, and approachable for first-timers. If you want a yoga-plus-sound format, evolation yoga's Midtown location runs regular sessions.",
-    img: "https://images.pexels.com/photos/38073457/pexels-photo-38073457.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    imgSource: "https://images.pexels.com/photos/38073457/pexels-photo-38073457.jpeg?auto=compress&cs=tinysrgb&w=1200",
     imgAlt: "Georgia State Capitol in Atlanta",
   },
   {
@@ -391,7 +501,7 @@ export const cities: City[] = [
       { name: "Sacred Strings (South Burlington)", note: "Cello-based sound bath layered over Reiki meditation. A modality not found anywhere else in the directory." },
     ],
     beginner: "Pyramid Wellness is the clear starting point — dedicated studio, designed for acoustics, consistent schedule. If you want the Burlington-specific experience, wait for a lakeside session on the Champlain waterfront. Bring layers regardless — Vermont weather shifts faster than any session schedule.",
-    img: "https://images.pexels.com/photos/17792683/pexels-photo-17792683.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    imgSource: "https://images.pexels.com/photos/17792683/pexels-photo-17792683.jpeg?auto=compress&cs=tinysrgb&w=1200",
     imgAlt: "University of Vermont in Burlington",
   },
   {
@@ -413,7 +523,7 @@ Don't sleep on the suburbs. While Dallas proper hosts most of the action, Richar
       { name: "Hannah's Healing House", note: "For a home-grown, deeply personal session, this West Dallas spot brings a gentle, community-focused energy." },
     ],
     beginner: "Book your first session with a dedicated studio like Sound Bath Dallas or Sanctum Med + Wellness — their structured formats are perfect for newcomers. If you're in the Design District, BuDhaGirl's collective offers a more boutique twist. Dallas traffic is real, so plan for drive time — and come with an open mind: many practitioners here blend sound with reiki or breathwork, so you're getting more than just bowls and gongs.",
-    img: "https://images.pexels.com/photos/16011903/pexels-photo-16011903.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    imgSource: "https://images.pexels.com/photos/16011903/pexels-photo-16011903.jpeg?auto=compress&cs=tinysrgb&w=1200",
     imgAlt: "Margaret Hunt Hill Bridge in Dallas",
   },
   {
@@ -435,7 +545,7 @@ Despite its modest size, the quality is real. Several practitioners, like Soul T
       { name: "Soul Tribes Yoga + Meditation", note: "A Spring Branch gem that pairs sound with yoga and meditation, offering a holistic approach." },
     ],
     beginner: "Start at Unwind Studio—it's the closest thing to a conventional sound bath and the practitioner there runs consistent, welcoming sessions. Reserve ahead, as space is limited, and bring a yoga mat and a blanket, because Houston's air conditioning is relentless. After that, try Indigo Light Path in Montrose for a more intimate, energy-based experience; the drive is worth it.",
-    img: "https://images.pexels.com/photos/7489890/pexels-photo-7489890.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    imgSource: "https://images.pexels.com/photos/7489890/pexels-photo-7489890.jpeg?auto=compress&cs=tinysrgb&w=1200",
     imgAlt: "Sam Houston Monument in Houston",
   },
   {
@@ -455,7 +565,7 @@ What Philly lacks in quantity, it makes up for in authenticity. The scene here f
       { name: "Mishana Yoga & Wellness", note: "Tucked inside the Falls Center, this studio hosts sound baths in a peaceful, historic setting." },
     ],
     beginner: "Start with a session at Eunmi's Sound Healing & Yoga in East Falls — it's a warm, welcoming space for first-timers. If you're in Center City, book an evening with Coach Shay at Inner Sanctuary Wellness, where the sound baths are designed to be accessible to all. Arrive early, wear comfortable clothes, and let the vibrations wash over you.",
-    img: "https://images.pexels.com/photos/37023169/pexels-photo-37023169.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    imgSource: "https://images.pexels.com/photos/37023169/pexels-photo-37023169.jpeg?auto=compress&cs=tinysrgb&w=1200",
     imgAlt: "Philadelphia City Hall in Philadelphia",
   },
   {
@@ -477,7 +587,7 @@ What's striking is the diversity of offerings under the 'sound healing' umbrella
       { name: "Buddha Bella Healing Center", note: "An eclectic Phoenix gem with a holistic approach, ideal for those curious about sound in a multi-modality setting." },
     ],
     beginner: "Start with a group session at Breathe AZ Meditation and Sound Healing in Scottsdale—their studio is built for the experience, and the instructors guide you through what to expect. If you're on a budget or want a more intimate setting, look up mobile practitioners like BlooLotus Yoga, Sound & Meditation, who can create a private sound bath at home. Bring a mat, an open mind, and remember: the desert heat doesn't extend indoors, so dress in layers.",
-    img: "https://images.pexels.com/photos/18194032/pexels-photo-18194032.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    imgSource: "https://images.pexels.com/photos/18194032/pexels-photo-18194032.jpeg?auto=compress&cs=tinysrgb&w=1200",
     imgAlt: "Papago Park in Phoenix",
   },
   {
@@ -499,7 +609,7 @@ What's telling: of the 12 listings, only two are explicitly labeled reiki, and m
       { name: "Sahasrara Sound Healing and Vibrational Therapy", note: "A mobile practitioner who brings the sound to you—ideal for private groups or if you want the experience at home." },
     ],
     beginner: "Start with a group session at The Sacred Journey in Riverside—it's the most accessible entry point with multiple weekly offerings. Bring a mat and a cushion; the floor can be hard, and you'll want to be comfortable lying down. If you're in the Corona area, check out The Lotus Den (reiki-focused) or YOGADEN Health Spa, but call ahead—schedules can be irregular in this market.",
-    img: "https://images.pexels.com/photos/14935388/pexels-photo-14935388.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    imgSource: "https://images.pexels.com/photos/14935388/pexels-photo-14935388.jpeg?auto=compress&cs=tinysrgb&w=1200",
     imgAlt: "The Mission Inn in Riverside",
   },
   {
@@ -521,7 +631,7 @@ Practitioners here don't fit the coastal mold. They're more likely to be rooted 
       { name: "Mobile practitioners (Erin Julianna, Welcome Home Yoga, Rhythm Wellness Center, etc.)", note: "These are the heartbeat of Detroit's sound work — reach out to them directly for private sessions or pop-up events in your neighborhood." },
     ],
     beginner: "Start with a group session at Zenith or BLOOM — both are accessible and offer a gentle introduction to sound bathing. If they don't have anything on the calendar, contact Detroit Meditation & Yoga by Erin Julianna for a personalized entry point; she's known for blending sound with accessible meditation practices. Remember to bring a yoga mat and an open mind — Detroit's scene is intimate, so expect personal attention and a sense of community.",
-    img: "https://images.pexels.com/photos/37350114/pexels-photo-37350114.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    imgSource: "https://images.pexels.com/photos/37350114/pexels-photo-37350114.jpeg?auto=compress&cs=tinysrgb&w=1200",
     imgAlt: "Michigan Central Station in Detroit",
   },
   {
@@ -543,7 +653,7 @@ What's missing is a central hub. No venue hosts multiple weekly sound sessions, 
       { name: "Milagros Wellness Sanctuary", note: "The most community-rooted option in Seminole Heights, with a holistic wellness approach." },
     ],
     beginner: "Start with Kodawari Studios — it's the closest thing to a recognizable studio setting, and the private format means you get a session tailored to you. Don't expect a typical group class; book ahead and communicate exactly what you're looking for. If you're curious about a more treatment-based approach, Subtle Body Ritual's combination of sound and massage is a unique entry point.",
-    img: "https://images.pexels.com/photos/34550701/pexels-photo-34550701.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    imgSource: "https://images.pexels.com/photos/34550701/pexels-photo-34550701.jpeg?auto=compress&cs=tinysrgb&w=1200",
     imgAlt: "Tampa Theatre in Tampa",
   },
   {
@@ -565,7 +675,7 @@ While nearly all practitioners list their modality as 'other'—a hint that many
       { name: "The Sound Sanctuary", note: "A dedicated suburban space in Lake St Louis that proves sound healing has taken root beyond the city limits." },
     ],
     beginner: "Start with a visit to The Sound Sanctuary or The Sound Spa for a welcoming, dedicated space that's clearly designed for immersive sessions. If you're in the city proper, South City Sound offers a more integrated approach, perfect for those who appreciate a practical, no-frills entry point. And don't overlook Wellness with Ashaleah—a beginner-friendly Reiki session can be a gentle introduction to the world of vibrational healing.",
-    img: "https://images.pexels.com/photos/30195587/pexels-photo-30195587.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    imgSource: "https://images.pexels.com/photos/30195587/pexels-photo-30195587.jpeg?auto=compress&cs=tinysrgb&w=1200",
     imgAlt: "Gateway Arch in St. Louis",
   },
   {
@@ -587,7 +697,7 @@ Compare this to Denver's dense, professionalized network or Austin's secret-gard
       { name: "The Space Within Reiki and Crystal Shop", note: "Hampden's hidden gem for crystal and reiki enthusiasts—a rare find with a clear modality focus." },
     ],
     beginner: "If you're new to sound baths, start with a session at The Sedona House—they run regular group events in a comfortable, intimate setting that's ideal for first-timers. Bring a yoga mat and a blanket; Baltimore spaces can get cozy but drafty. If you're curious about the crystal side, The Space Within is a welcoming entry point, and their shop is perfect for asking questions before you book.",
-    img: "https://images.pexels.com/photos/13994002/pexels-photo-13994002.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    imgSource: "https://images.pexels.com/photos/13994002/pexels-photo-13994002.jpeg?auto=compress&cs=tinysrgb&w=1200",
     imgAlt: "Pratt Street Power Plant in Baltimore",
   },
   {
@@ -609,7 +719,7 @@ Notably, Winter Park's Energetics with Ashley is the only listed practitioner ex
       { name: "The Salt Room Orlando Day Spa", note: "A relaxing salt cave environment where sound baths are offered as a complementary therapy." },
     ],
     beginner: "Start with a session at SYZYGY to experience sound healing in its most intentional form—check their schedule on Vagaro and book ahead, as space is limited. If you're curious about the spa atmosphere, The Salt Room Orlando offers a more casual introduction. For a more holistic approach that includes Reiki, look into Energetics with Ashley in Winter Park—just confirm the location when booking.",
-    img: "https://images.pexels.com/photos/31361485/pexels-photo-31361485.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    imgSource: "https://images.pexels.com/photos/31361485/pexels-photo-31361485.jpeg?auto=compress&cs=tinysrgb&w=1200",
     imgAlt: "Lake Eola Park in Orlando",
   },
   {
@@ -631,7 +741,7 @@ This is not a scene for drop-in tourists. Many practitioners work by appointment
       { name: "A Secret Garden", note: "A hidden gem in an unexpected strip mall—don't judge by the exterior; inside it's a warm, intimate space." },
     ],
     beginner: "Start with a group session at Khali Yoga Center or Casa Gaia Studio—both have public schedules and welcoming vibes. If you're craving something more bespoke, reach out to Moon Wolf directly; they often host sound immersions that fill up fast. Come with an open mind and a yoga mat, and don't be shy about asking questions beforehand.",
-    img: "https://images.pexels.com/photos/302600/pexels-photo-302600.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    imgSource: "https://images.pexels.com/photos/302600/pexels-photo-302600.jpeg?auto=compress&cs=tinysrgb&w=1200",
     imgAlt: "NASCAR Hall of Fame in Charlotte",
   },
   {
@@ -653,7 +763,7 @@ What's notably absent is a strong connection to the city's rich musical heritage
       { name: "House of RhythOM", note: "Rhythm enthusiasts should start here — this is one of the few places that seems to lean into percussion." },
     ],
     beginner: "Start with Transcend Health Spa on the north side — it's the most established space and you'll get a sense of what a polished sound bath can be. Try a session with Happy Body Vibrations if you're curious about the tactile side of sound healing. And if you're willing to drive, check out House of RhythOM for a different, more rhythmic take on the practice.",
-    img: "https://images.pexels.com/photos/36131855/pexels-photo-36131855.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    imgSource: "https://images.pexels.com/photos/36131855/pexels-photo-36131855.jpeg?auto=compress&cs=tinysrgb&w=1200",
     imgAlt: "The Alamo in San Antonio",
   },
   {
@@ -675,7 +785,7 @@ Compared to the Bay Area’s glut of options, Sacramento’s scene is refreshing
       { name: "Root and Resonance Collective", note: "A collective approach—one address, multiple facilitators, each with a distinct sonic palette." },
     ],
     beginner: "Start at Sound Mind Studios on a weekend morning—their intro sessions are welcoming and well-structured. Bring a mat and a blanket; studios here can be cool, and you’ll want to be cozy. If you’re curious about a more intimate setting, book a private session with Healing Meow (they come to you).",
-    img: "https://images.pexels.com/photos/34276127/pexels-photo-34276127.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    imgSource: "https://images.pexels.com/photos/34276127/pexels-photo-34276127.jpeg?auto=compress&cs=tinysrgb&w=1200",
     imgAlt: "California State Capitol in Sacramento",
   },
   {
@@ -697,7 +807,7 @@ This is a scene of pioneers, not settlers. The numbers are small, but the passio
       { name: "Rooted Lounge", note: "The downtown choice, nestled in the arts district, perfect for a pre- or post-show sound session with an eclectic vibe." },
     ],
     beginner: "Start with a session at Sacred Space Las Vegas or Be Well Studio—they have established studios where the acoustics and ambiance are dialed in. For a more intimate experience, book a mobile session with Eternally Rooted and have the bowls come to your living room. Las Vegas is spread out, so choose a practitioner close to you; don't drive across town for your first taste.",
-    img: "https://images.pexels.com/photos/33431235/pexels-photo-33431235.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    imgSource: "https://images.pexels.com/photos/33431235/pexels-photo-33431235.jpeg?auto=compress&cs=tinysrgb&w=1200",
     imgAlt: "Bellagio in Las Vegas",
   },
   {
@@ -721,7 +831,7 @@ All six list "other" as their modality — a telling sign. Sound baths here blen
       { name: "Soothe By Sound LLC", note: "Mobile service — the wild card that can meet you at home, which is perfect for a city that spreads out this much." },
     ],
     beginner: "Start with Mindful Modern Living — the location is central and the studio looks polished enough for a first-timer. If you're feeling more adventurous, book a mobile session with Soothe By Sound and let the sound come to you. Either way, bring a mat, wear layers, and expect a small, personal group — this isn't the anonymous drop-in world of Austin or Denver.",
-    img: "https://images.pexels.com/photos/33303157/pexels-photo-33303157.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    imgSource: "https://images.pexels.com/photos/33303157/pexels-photo-33303157.jpeg?auto=compress&cs=tinysrgb&w=1200",
     imgAlt: "Roebling Suspension Bridge in Cincinnati",
   },
   {
@@ -741,7 +851,7 @@ The Crossroads is the epicenter, with venues like The Muse KC and Sweatheory KC 
       { name: "Inner Space Yoga", note: "A Troost Avenue staple where sound baths are woven into a playful, inclusive yoga culture." },
     ],
     beginner: "Start with a session at The Muse KC—its Tuesday night sound baths are a beloved local secret, and the lo-fi vibe makes it easy to relax. If you're in the suburbs, Very Well KC offers beginner-friendly introductions every Saturday morning. For a more tailored experience, book a private mobile session with Aurras Sound Therapy to ease into the practice in your own space.",
-    img: "https://images.pexels.com/photos/37215914/pexels-photo-37215914.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    imgSource: "https://images.pexels.com/photos/37215914/pexels-photo-37215914.jpeg?auto=compress&cs=tinysrgb&w=1200",
     imgAlt: "Union Station in Kansas City",
   },
   {
@@ -763,7 +873,7 @@ What's missing is a single dominant institution like Austin's Meditation Bar or 
       { name: "Tranquility Salt Cave LLC", note: "Unique salt cave setting that pairs sound healing with halotherapy for a distinctly relaxing experience." },
     ],
     beginner: "Start with The Sound Room at Polaris — their group sessions are well-structured, and the staff is good at orienting first-timers. If you want a more unique vibe, try Ebb & Float downtown for a smaller, more personal session. Call ahead to check schedules and bring a mat and a light blanket — studios tend to run cool.",
-    img: "https://images.pexels.com/photos/26777308/pexels-photo-26777308.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    imgSource: "https://images.pexels.com/photos/26777308/pexels-photo-26777308.jpeg?auto=compress&cs=tinysrgb&w=1200",
     imgAlt: "Franklin Park Conservatory in Columbus",
   },
   {
@@ -783,7 +893,7 @@ What Indianapolis lacks in quantity, it makes up for in heart. Irvington Wellnes
       { name: "The Playful Soul", note: "Another north-side option, combining a playful ethos with serious wellness—check the schedule for group sound offerings." },
     ],
     beginner: "Start with a group class at The Playful Soul or Healing Moments with FREE—they're the most likely to welcome newcomers and explain the basics. Since many practitioners are mobile, don't hesitate to reach out for a private session: it's a low-pressure way to experience sound healing for the first time, and you'll get a more tailored experience.",
-    img: "https://images.pexels.com/photos/13342471/pexels-photo-13342471.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    imgSource: "https://images.pexels.com/photos/13342471/pexels-photo-13342471.jpeg?auto=compress&cs=tinysrgb&w=1200",
     imgAlt: "Soldiers and Sailors Monument in Indianapolis",
   },
   {
@@ -805,7 +915,7 @@ While the scene is small, it's not amateur. The presence of a dedicated studio i
       { name: "New Light Sound Healing Studio", note: "A Milpitas gem that proves the scene isn't contained to San Jose proper." },
     ],
     beginner: "Start with A Healing Place on Blossom Hill Road — it's a proper studio with a full schedule, and the practitioners are used to newcomers. If you're near downtown, Connect and Awaken offers a convenient drop-in experience. Bring a yoga mat and an open mind; the sessions here are more introspective and less performance-oriented than in LA, so expect a deeper dive into your own inner silence.",
-    img: "https://images.pexels.com/photos/18854593/pexels-photo-18854593.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    imgSource: "https://images.pexels.com/photos/18854593/pexels-photo-18854593.jpeg?auto=compress&cs=tinysrgb&w=1200",
     imgAlt: "San Jose State University Tower Hall in San Jose",
   },
   {
@@ -827,7 +937,7 @@ What's telling is the absence of large yoga franchises or wellness centers domin
       { name: "Blue Heron Energetic Studio", note: "Operating out of Mad Records – the most unpretentious, kick-back-and-feel-it spot in town." },
     ],
     beginner: "Start with a group session at HAUM – it's the most traditional and accessible. If you're curious about a more personalized approach, book a private session with Laura Mayo or Roze Sound, who works mobile and can tailor the experience to you. Don't be shy about asking each practitioner about their style – Nashville's small scene means you can really find your fit.",
-    img: "https://images.pexels.com/photos/31112656/pexels-photo-31112656.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    imgSource: "https://images.pexels.com/photos/31112656/pexels-photo-31112656.jpeg?auto=compress&cs=tinysrgb&w=1200",
     imgAlt: "AT&T Building in Nashville",
   },
   {
@@ -849,7 +959,7 @@ This is a first-wave moment. The directory is sparse, the editorial coverage is 
       { name: "Arctic Avenue cluster", note: "Home to both Reiki Wellness & Meditation Center and Integrated Healing Systems, making it the city's densest pocket of healing arts." },
     ],
     beginner: "Start at Healing Arts Center, which has the most developed schedule and a professional setting that will help you understand the format. From there, try a session with a smaller practitioner like Julie Ramsdell or at Surrender to the Flow to sample a more personal approach. For your first time, bring a mat and a blanket — studios run cool, and the sound work is best experienced warm.",
-    img: "https://images.pexels.com/photos/17668268/pexels-photo-17668268.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    imgSource: "https://images.pexels.com/photos/17668268/pexels-photo-17668268.jpeg?auto=compress&cs=tinysrgb&w=1200",
     imgAlt: "Cape Henry Lighthouse in Virginia Beach",
   },
   {
@@ -871,7 +981,7 @@ Don't expect the volume of choices you'd find in LA or Denver—here, you'll fin
       { name: "Jala Studio Yoga & Art", note: "A creative, yoga-forward space that hosts sound sessions in Pawtucket." },
     ],
     beginner: "Start with Sacred Sounds in Pawtucket—they have a real studio and a clear focus on sound. If you prefer a more spa-like vibe, book a session at The Bodhi Spa. Bring a mat and a blanket; Rhode Island studios tend to run cool, and you'll be lying still for a while.",
-    img: "https://images.pexels.com/photos/19016678/pexels-photo-19016678.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    imgSource: "https://images.pexels.com/photos/19016678/pexels-photo-19016678.jpeg?auto=compress&cs=tinysrgb&w=1200",
     imgAlt: "Rhode Island State House in Providence",
   },
   {
@@ -893,7 +1003,7 @@ Compared to Austin's first-mover energy or Denver's institutional depth, Milwauk
       { name: "MKE MindBody Wellness", note: "A well-branded spot on Howell Avenue that seems to cater to the South Side's growing wellness crowd." },
     ],
     beginner: "Start with Syinthesis Sound Healing Center in Glendale — it looks like the most established, with a dedicated space and a clear web presence. Book a private session or ask about group offerings, as many practitioners here work by appointment. Bring your own mat and blanket, and expect a more intimate, one-on-one experience than you'd find in a big-city group class.",
-    img: "https://images.pexels.com/photos/32266876/pexels-photo-32266876.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    imgSource: "https://images.pexels.com/photos/32266876/pexels-photo-32266876.jpeg?auto=compress&cs=tinysrgb&w=1200",
     imgAlt: "Milwaukee Art Museum in Milwaukee",
   },
   {
@@ -915,7 +1025,7 @@ Compared to Austin or Denver, Jacksonville is still in its early days, but the q
       { name: "Safe and Sound Wellness", note: "A bit south in St. Augustine, worth the drive for a smaller, more intimate sound experience." },
     ],
     beginner: "Start at Soundbath Jax in Atlantic Beach for a classic group session — it's the most established, and the coastal setting adds to the experience. If you're in the Riverside area, book a private or small-group session at Be Still Wellness & Aesthetics or Soluna Yoga + Spa, where you can combine your sound bath with a spa treatment. Don't be shy about calling ahead to ask about the format; Jacksonville's practitioners are welcoming to newcomers and happy to guide you.",
-    img: "https://images.pexels.com/photos/34935299/pexels-photo-34935299.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    imgSource: "https://images.pexels.com/photos/34935299/pexels-photo-34935299.jpeg?auto=compress&cs=tinysrgb&w=1200",
     imgAlt: "Main Street Bridge in Jacksonville",
   },
   {
@@ -937,7 +1047,7 @@ This is a pioneer market. Anyone showing up consistently in Memphis can become t
       { name: "Ease Wellness and Sundara Wellness Center", note: "The Peabody Ave cluster where you can compare two different wellness approaches in one walkable stretch." },
     ],
     beginner: "For your first sound bath in Memphis, skip the touristy extremes and head straight to Ease Wellness on Peabody Ave — it's centrally located and has that welcoming, no-judgment vibe. If you're looking for a more spiritual or metaphysical twist, The Circle in Bartlett offers a safe space for exploration. Either way, arrive 10 minutes early, bring a mat or blanket, and be ready to rest — Memphis sessions tend to be small enough that the practitioner can really tailor the experience.",
-    img: "https://images.pexels.com/photos/34878087/pexels-photo-34878087.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    imgSource: "https://images.pexels.com/photos/34878087/pexels-photo-34878087.jpeg?auto=compress&cs=tinysrgb&w=1200",
     imgAlt: "Beale Street in Memphis",
   },
   {
@@ -959,7 +1069,7 @@ What's missing? There's no dedicated sound bath studio, no community calendar, n
       { name: "The Yoga Spa", note: "In Edmond, where sound meets yoga — a great introduction if you're already a yogi." },
     ],
     beginner: "Start with a group session at Radiant Healing Arts Center or A Meditative State — both have clear websites and consistent formats. Bring a mat and an open mind; expect more 'meditation' and 'energy' language than 'sound bath.' If you're closer to the south side, Haven of Wholeness is a solid choice. Don't be shy to ask practitioners about their approach — they're happy to explain.",
-    img: "https://images.pexels.com/photos/19665042/pexels-photo-19665042.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    imgSource: "https://images.pexels.com/photos/19665042/pexels-photo-19665042.jpeg?auto=compress&cs=tinysrgb&w=1200",
     imgAlt: "Devon Tower in Oklahoma City",
   },
   {
@@ -979,7 +1089,7 @@ The two practitioners who stand out here are Ed Cleveland Reiki & Sound Therapy 
       { name: "beem® Light Sauna West Hartford", note: "A high-tech wellness spot where sound meets light therapy—a sign of things to come." },
     ],
     beginner: "Start with a private session at The Conduit Sound or a group class at Afterglow Studio Hartford—both are welcoming to newcomers. Ed Cleveland's training center is ideal if you want a deeper educational approach, but call ahead to book a one-on-one session apt for your first experience.",
-    img: "https://images.pexels.com/photos/35262940/pexels-photo-35262940.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    imgSource: "https://images.pexels.com/photos/35262940/pexels-photo-35262940.jpeg?auto=compress&cs=tinysrgb&w=1200",
     imgAlt: "Connecticut State Capitol in Hartford",
   },
   {
@@ -1001,7 +1111,7 @@ Other cities have density and polish; Richmond has curiosity and room to grow. T
       { name: "Sankara Wholistic Wellness", note: "A wholistic wellness spot in Church Hill, deeply community-focused, with an easy online booking system." },
     ],
     beginner: "Start with a group session at Prism Saunas and Sound — they're the most publicly visible, with a format that's likely accessible to newcomers. If you're looking for a more contemplative, retreat-like setting, The Innerwork Center offers a grounded introduction. And don't overlook The Bell Garden — though mobile, they might offer the most flexible, private way to test the waters.",
-    img: "https://images.pexels.com/photos/34586179/pexels-photo-34586179.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    imgSource: "https://images.pexels.com/photos/34586179/pexels-photo-34586179.jpeg?auto=compress&cs=tinysrgb&w=1200",
     imgAlt: "Virginia State Capitol in Richmond",
   },
   {
@@ -1023,7 +1133,7 @@ Compare this to Austin or Denver, and you'll find a scene that's refreshingly un
       { name: "Ambient Sound Healing", note: "North Tonawanda's outpost — a bit of a drive, but worth it for a more intimate, small-town sound experience." },
     ],
     beginner: "Start at Indigo Danu Healing on Main Street. Their sessions are beginner-friendly, and the practitioners explain the process before you lie down. Bring a mat and comfortable layers, as Buffalo's older buildings can be drafty. If you're on the north side, the Recovery Lab is a solid alternative with a more contemporary vibe.",
-    img: "https://images.pexels.com/photos/33326999/pexels-photo-33326999.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    imgSource: "https://images.pexels.com/photos/33326999/pexels-photo-33326999.jpeg?auto=compress&cs=tinysrgb&w=1200",
     imgAlt: "Buffalo City Hall in Buffalo",
   },
   {
@@ -1043,7 +1153,7 @@ The geographic sprawl reflects the Triangle's decentralized energy. In Raleigh p
       { name: "Sound Bath Party", note: "A mobile practitioner that brings the sound bath experience to your living room or event — perfect for beginners wanting a private intro." },
     ],
     beginner: "Start with a group class at Elevated Energy Healing or Current Wellness — their public sessions are designed for newcomers, and the practitioners are accustomed to guiding first-timers. If you're curious but hesitant, book a private session with Sound Bath Party for a one-on-one explanation of what to expect. Dress in layers, as studios like Dose Yoga and the salt cave can run cool, and arrive a few minutes early to settle in.",
-    img: "https://images.pexels.com/photos/30316256/pexels-photo-30316256.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    imgSource: "https://images.pexels.com/photos/30316256/pexels-photo-30316256.jpeg?auto=compress&cs=tinysrgb&w=1200",
     imgAlt: "North Carolina State Capitol in Raleigh",
   },
   {
@@ -1065,7 +1175,7 @@ Compare this to Nashville or Atlanta, where sound baths are as common as hot yog
       { name: "SweatHouz Cahaba Heights", note: "A contrast therapy studio that's branching into sound — check their schedule for classes." },
     ],
     beginner: "Start at The Ōha Bodywork and Wellness — book a sound session with Magic City Meditations. They're the most established and can guide you through the basics. Or, if you prefer a studio vibe, try WELL in Mountain Brook. And don't overlook theblkyogi; a private session at home is the gentlest way to begin. Expect to pay $30-$50 for a private session in this market.",
-    img: "https://images.pexels.com/photos/34692841/pexels-photo-34692841.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    imgSource: "https://images.pexels.com/photos/34692841/pexels-photo-34692841.jpeg?auto=compress&cs=tinysrgb&w=1200",
     imgAlt: "Vulcan Statue in Birmingham",
   },
   {
@@ -1087,7 +1197,7 @@ Anyone coming from Denver or Austin will notice the difference immediately. Ther
       { name: "Utah Energy Healing Center", note: "The Bountiful hub with multiple practitioners and a dedicated sound healing center — your best bet for variety." },
     ],
     beginner: "Start with a group session at Maloca Sound & Wellness on a weekend afternoon — the space is dedicated to sound, and the practitioner has real experience with immersive bowls. If you're curious about the crystal side, book a cave session at Synchronicities in Sandy, but call ahead since the schedule can be sparse. Don't drive too far: given how scattered the scene is, pick one session in your neighborhood first and use it to get a baseline for what you like.",
-    img: "https://images.pexels.com/photos/38558066/pexels-photo-38558066.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    imgSource: "https://images.pexels.com/photos/38558066/pexels-photo-38558066.jpeg?auto=compress&cs=tinysrgb&w=1200",
     imgAlt: "Salt Lake Temple in Salt Lake City",
   },
   {
@@ -1105,14 +1215,33 @@ The data reveals a city of solo practitioners and small businesses working out o
 What's missing is a central, repeatable sound bath event. No single practitioner has a weekly listing that dominates; instead, you have salt cave sessions, yoga studio add-ons, and occasional workshops. This is a scene you have to piece together, but the pieces are there. The opportunity is for someone to create a consistent, dedicated sound bath offering — and for sound bath aficionados from bigger cities, it means you'll have to do a little digging.`,
     venues: [
       { name: "Louisville Salt Cave", note: "The most prominent venue — a salt cave hosting sound sessions; check their schedule for event dates." },
-      { name: "CIELO Breathwork Studio", note: "The ded-icated breathwork space in Middletown — a great entry point for somatic work that pairs well with sound." },
+      { name: "CIELO Breathwork Studio", note: "The dedicated breathwork space in Middletown — a great entry point for somatic work that pairs well with sound." },
       { name: "The Inner Warrior Yoga", note: "A solid yoga studio in Distillery Commons that occasionally hosts sound elements — worth following." },
     ],
     beginner: "Start with a salt cave session at Louisville Salt Cave or Bodhi Salt Center — the cave atmosphere enhances the experience and the sessions are beginner-friendly. If you're near Middletown, try a class at CIELO Breathwork Studio to dip into the somatic side. Call ahead to confirm times, as many listings are not updated weekly.",
-    img: "https://images.pexels.com/photos/28948623/pexels-photo-28948623.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    imgSource: "https://images.pexels.com/photos/28948623/pexels-photo-28948623.jpeg?auto=compress&cs=tinysrgb&w=1200",
     imgAlt: "The Brown Hotel in Louisville",
   },
 ];
+
+export const cities: City[] = cityData.map((city) => {
+  const center = CITY_CENTERS[city.slug];
+  return {
+    ...city,
+    img: `/img/cities/${city.slug}-1200.webp`,
+    imgSrcSet: `/img/cities/${city.slug}-640.webp 640w, /img/cities/${city.slug}-1200.webp 1200w`,
+    published: PUBLISHED_SLUGS.includes(city.slug),
+    lat: center ? center[0] : null,
+    lng: center ? center[1] : null,
+  };
+});
+
+/**
+ * The only cities that may be linked from navigation, the footer, the sitemap
+ * and any city selector. Iterating `cities` directly in a nav surface will
+ * leak unpublished pages back into the crawl graph.
+ */
+export const publishedCities: City[] = cities.filter((c) => c.published);
 
 export function getCityBySlug(slug: string): City | undefined {
   return cities.find((c) => c.slug === slug);

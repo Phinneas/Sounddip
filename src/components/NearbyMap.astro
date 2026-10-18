@@ -204,6 +204,44 @@ const { lede = 'Enter your ZIP code to see verified sound bath sessions within d
     color: var(--ink-soft);
     font-variation-settings: "opsz" 72;
   }
+  :global(.nearby-fallback) {
+    display: block;
+    padding: 32px;
+    border: 1px solid var(--rule);
+    border-radius: 12px;
+    background: var(--tint-violet);
+    text-decoration: none;
+    transition: border-color 0.2s;
+  }
+  :global(.nearby-fallback:hover) { border-color: var(--crimson); }
+  :global(.nearby-fallback-kicker) {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-bottom: 8px;
+  }
+  :global(.nearby-fallback-title) {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: 26px;
+    color: var(--ink);
+    margin-bottom: 8px;
+    font-variation-settings: "opsz" 72;
+  }
+  :global(.nearby-fallback-meta) {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--ink-mid);
+    margin-bottom: 16px;
+  }
+  :global(.nearby-fallback-cta) {
+    font-family: var(--sans);
+    font-weight: 500;
+    font-size: 14px;
+    color: var(--crimson);
+  }
 
   :global(.nearby-marker) {
     width: 22px;
@@ -350,13 +388,26 @@ const { lede = 'Enter your ZIP code to see verified sound bath sessions within d
     });
   }
 
+  // Same placeholder cleanup as ListingCard.astro, duplicated because that one
+  // guards the CMS path (server-rendered) and this guards listings.geo.json
+  // (client-rendered). 39 of 146 visible listings carry a scrape-era
+  // neighborhood of "Unknown" or "Unknown, <real place>".
+  function cleanNeighborhood(value) {
+    if (!value) return null;
+    const trimmed = String(value).trim();
+    if (!trimmed || /^version_/i.test(trimmed)) return null;
+    const withoutPrefix = trimmed.replace(/^unknown\s*,\s*/i, '').trim();
+    if (!withoutPrefix || /^unknown$/i.test(withoutPrefix)) return null;
+    return withoutPrefix;
+  }
+
   function renderResults(nearby) {
     if (!nearby.length) {
       resultsEl.innerHTML = '<p class="nearby-empty">No sessions found in this radius. Try a wider search.</p>';
       return;
     }
     resultsEl.innerHTML = nearby.map((l) => {
-      const loc = [l.neighborhood, l.city].filter(Boolean).join(' · ');
+      const loc = [cleanNeighborhood(l.neighborhood), l.city].filter(Boolean).join(' · ');
       const meta = [l.price, l.duration].filter((v) => v && v !== 'Not published').join(' · ');
       return `
         <div class="nearby-card">
@@ -372,16 +423,59 @@ const { lede = 'Enter your ZIP code to see verified sound bath sessions within d
     }).join('');
   }
 
+  // Nearest covered city (by centroid distance) when the radius search is empty.
+  // This is what stops an Everett visitor from being told "nothing exists" — it
+  // points them at Seattle, the nearest metro that actually has listings.
+  function nearestCityFallback(coords) {
+    const byCity = new Map();
+    for (const l of listings) {
+      const slug = l.citySlug || l.city;
+      if (!byCity.has(slug)) {
+        byCity.set(slug, { city: l.city, citySlug: slug, listings: [], minDist: Infinity });
+      }
+      const c = byCity.get(slug);
+      c.listings.push(l);
+      const d = milesBetween(coords, l);
+      if (d < c.minDist) c.minDist = d;
+    }
+    return [...byCity.values()].sort((a, b) => a.minDist - b.minDist)[0] || null;
+  }
+
+  function renderFallback(nearest, dist) {
+    const count = nearest.listings.length;
+    resultsEl.innerHTML = `
+      <a class="nearby-fallback" href="/cities/${escapeHtml(nearest.citySlug)}/">
+        <div class="nearby-fallback-kicker">No sessions within ${radius} miles</div>
+        <div class="nearby-fallback-title">Nearest: ${escapeHtml(nearest.city)}</div>
+        <div class="nearby-fallback-meta">~${dist} mi away · ${count} session${count === 1 ? '' : 's'}</div>
+        <div class="nearby-fallback-cta">View ${escapeHtml(nearest.city)} sessions →</div>
+      </a>`;
+  }
+
   async function doSearch() {
     const zip = zipInput.value.trim();
     if (!/^\d{5}$/.test(zip)) { setStatus('Enter a 5-digit ZIP code.'); return; }
     setStatus('Searching…');
     const coords = await geocodeZip(zip);
     if (!coords) { setStatus('Could not find that ZIP code. Try another.'); return; }
-    const nearby = listings
-      .map((l) => ({ ...l, distance: milesBetween(coords, l) }))
+    const withDistance = listings.map((l) => ({ ...l, distance: milesBetween(coords, l) }));
+    const nearby = withDistance
       .filter((l) => l.distance <= radius)
       .sort((a, b) => a.distance - b.distance);
+
+    if (nearby.length === 0 && withDistance.length > 0) {
+      const nearest = nearestCityFallback(coords);
+      if (nearest) {
+        renderFallback(nearest, Math.round(nearest.minDist));
+        updateMap(nearest.listings);
+        if (map) {
+          map.flyTo({ center: [nearest.listings[0].lng, nearest.listings[0].lat], zoom: 8, essential: true });
+        }
+        setStatus(`No sessions within ${radius} miles of ${coords.place}.`);
+        return;
+      }
+    }
+
     renderResults(nearby);
     updateMap(nearby);
     if (map) {
@@ -391,7 +485,7 @@ const { lede = 'Enter your ZIP code to see verified sound bath sessions within d
     const n = nearby.length;
     setStatus(n
       ? `${n} session${n === 1 ? '' : 's'} within ${radius} miles of ${coords.place}.`
-      : `No sessions within ${radius} miles of ${coords.place}. Try a wider radius.`);
+      : `No sessions within ${radius} miles of ${coords.place}.`);
   }
 
   form.addEventListener('submit', (e) => { e.preventDefault(); doSearch(); });
