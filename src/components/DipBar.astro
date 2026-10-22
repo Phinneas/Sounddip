@@ -5,10 +5,20 @@
 // The selector lists published cities only — offering a city whose page is
 // noindexed sends the visitor to a page we have deliberately withdrawn.
 import { publishedCities } from '../data/cities';
-import { filterableModalities } from '../data/modalities';
+import { filterableModalities, modalityLabel } from '../data/modalities';
+
+interface Props {
+  // Preselect a modality (e.g. "floating") so an embedded widget opens filtered.
+  presetModality?: string;
+  // Drop the hero padding/max-width when embedded inside a narrower container
+  // (e.g. a blog post body) instead of the homepage hero.
+  compact?: boolean;
+}
+const { presetModality = '', compact = false } = Astro.props;
+const presetLabel = presetModality ? modalityLabel(presetModality) : null;
 ---
 
-<div class="dip-bar-wrap" id="dip-bar">
+<div class="dip-bar-wrap{compact ? ' compact' : ''}" id="dip-bar">
   <form class="dip-bar" id="dip-bar-form">
 
     <!-- City dropdown -->
@@ -25,7 +35,7 @@ import { filterableModalities } from '../data/modalities';
     <!-- Modality dropdown -->
     <div class="dip-field" id="dip-modality-field" tabindex="0" role="combobox" aria-expanded="false" aria-label="Select modality">
       <div class="dip-label">Modality</div>
-      <div class="dip-value placeholder" id="dip-modality-value">Any <span class="chevron">⌄</span></div>
+      <div class="dip-value{!presetLabel ? ' placeholder' : ''}" id="dip-modality-value">{presetLabel ?? 'Any'} <span class="chevron">⌄</span></div>
       <div class="dip-menu" id="dip-modality-menu" hidden>
         <div class="dip-option" data-value="any">Any modality</div>
         {filterableModalities.map((m) => (
@@ -47,6 +57,10 @@ import { filterableModalities } from '../data/modalities';
     margin: 0 auto;
     padding: 56px 6vw 0;
     scroll-margin-top: 80px;
+  }
+  .dip-bar-wrap.compact {
+    max-width: 100%;
+    padding: 40px 0 0;
   }
   .dip-bar {
     background: var(--linen);
@@ -190,7 +204,7 @@ import { filterableModalities } from '../data/modalities';
   }
 </style>
 
-<script>
+<script define:vars={{ presetModality }}>
   // ── DipBar dropdown logic ──
 
   const cityField = document.getElementById('dip-city-field')!;
@@ -202,7 +216,7 @@ import { filterableModalities } from '../data/modalities';
   const form = document.getElementById('dip-bar-form')!;
 
   let selectedCity = '';
-  let selectedModality = 'any';
+  let selectedModality = presetModality || 'any';
 
   // ── Dropdown toggle logic ──
 
@@ -279,6 +293,13 @@ import { filterableModalities } from '../data/modalities';
       modalityField.setAttribute('aria-expanded', 'false');
     });
   });
+
+  // Preselect the preset modality so the dropdown reflects the initial value
+  // (used by embedded widgets that open pre-filtered, e.g. "floating").
+  if (selectedModality !== 'any') {
+    const presetOption = modalityMenu.querySelector(`.dip-option[data-value="${selectedModality}"]`);
+    presetOption?.classList.add('selected');
+  }
 
   // ── Keyboard nav ──
 
