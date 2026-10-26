@@ -7,8 +7,9 @@
     "prebuild": "node scripts/build-sitemap.mjs",
     "build": "astro build",
     "preview": "npm run build && wrangler dev",
-    "deploy": "npm run build && wrangler deploy",
-    "cf-typegen": "wrangler types"
+    "deploy": "npm run build && wrangler deploy && node scripts/purge-cache.mjs",
+    "cf-typegen": "wrangler types",
+    "purge": "node scripts/purge-cache.mjs"
   },
   "dependencies": {
     "@astrojs/cloudflare": "11",
