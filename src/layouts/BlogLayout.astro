@@ -16,9 +16,10 @@ interface Props {
   updatedDate?: Date;
   author: string;
   faq?: FaqItem[];
+  listItems?: { name: string; url?: string }[];
 }
 
-const { title, description, pubDate, updatedDate, author, faq } = Astro.props;
+const { title, description, pubDate, updatedDate, author, faq, listItems } = Astro.props;
 const siteUrl = 'https://www.sounddip.com';
 const canonicalURL = new URL(Astro.url.pathname, siteUrl).href;
 const fmtDate = (d: Date) =>
@@ -48,6 +49,20 @@ const fmtDate = (d: Date) =>
         "@type": "Answer",
         "text": item.answer,
       },
+    })),
+  }} />
+)}
+
+{listItems && listItems.length > 0 && (
+  <JsonLd data={{
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "name": title,
+    "itemListElement": listItems.map((item, i) => ({
+      "@type": "ListItem",
+      "position": i + 1,
+      "name": item.name,
+      ...(item.url ? { "url": new URL(item.url, siteUrl).href } : {}),
     })),
   }} />
 )}

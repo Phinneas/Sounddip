@@ -13,6 +13,10 @@ const blog = defineCollection({
       question: z.string(),
       answer: z.string(),
     })).optional(),
+    listItems: z.array(z.object({
+      name: z.string(),
+      url: z.string().optional(),
+    })).optional(),
   }),
 });
 
