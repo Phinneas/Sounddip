@@ -23,6 +23,24 @@ const PREFIXES = [
 
 const API = 'https://api.cloudflare.com/client/v4';
 
+// Load .env if present so `npm run purge` works without an exported shell var.
+// Values already in the environment win, so a real export always takes precedence.
+try {
+  const { readFileSync } = await import('node:fs');
+  const { fileURLToPath } = await import('node:url');
+  const { dirname, join } = await import('node:path');
+  const envPath = join(dirname(dirname(fileURLToPath(import.meta.url))), '.env');
+  for (const line of readFileSync(envPath, 'utf8').split('\n')) {
+    const m = line.match(/^\s*([A-Za-z_][A-Za-z0-9_]*)\s*=\s*(.*)\s*$/);
+    if (!m) continue;
+    const key = m[1];
+    let value = m[2].replace(/^["']|["']$/g, '');
+    if (process.env[key] === undefined) process.env[key] = value;
+  }
+} catch {
+  // no .env — rely on the real environment
+}
+
 function fail(message) {
   console.error(`\n✖ cache purge failed: ${message}\n`);
   process.exit(1);
