@@ -29,7 +29,7 @@ export const submitVerifyEndpoint: Endpoint = {
 
     // Generate verification token
     const token = generateToken()
-    const verifyUrl = `https://sounddip.com/verify?token=${token}&slug=${slug}`
+    const verifyUrl = `https://www.sounddip.com/verify?token=${token}&slug=${slug}`
 
     try {
       // Find the listing and append token to sourcingNotes

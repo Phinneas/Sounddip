@@ -21,7 +21,7 @@ import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, '..');
-const SITE = 'https://sounddip.com';
+const SITE = 'https://www.sounddip.com';
 const OUT = path.join(ROOT, 'public', 'sitemap.xml');
 
 // Non-generated pages. Explicit rather than globbed from src/pages so that

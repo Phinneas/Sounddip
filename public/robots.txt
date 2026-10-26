@@ -23,4 +23,4 @@ Allow: /
 User-agent: Bingbot
 Allow: /
 
-Sitemap: https://sounddip.com/sitemap.xml
+Sitemap: https://www.sounddip.com/sitemap.xml

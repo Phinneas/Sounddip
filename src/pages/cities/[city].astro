@@ -76,13 +76,13 @@ const cityModifiedDate = cityRecord?.updatedAt ? cityRecord.updatedAt.split('T')
         "@type": "ListItem",
         "position": 1,
         "name": "Home",
-        "item": "https://sounddip.com"
+        "item": "https://www.sounddip.com"
       },
       {
         "@type": "ListItem",
         "position": 2,
         "name": city.name,
-        "item": `https://sounddip.com/cities/${city.slug}`
+        "item": `https://www.sounddip.com/cities/${city.slug}`
       }
     ]
   }} />
@@ -97,7 +97,7 @@ const cityModifiedDate = cityRecord?.updatedAt ? cityRecord.updatedAt.split('T')
        count and the markup contradicted each other on the same page. -->
   {visibleListings.length > 0 && (
   <JsonLd data={{
-    "@context": ["https://schema.org", { "sd": "https://sounddip.com/ns/" }],
+    "@context": ["https://schema.org", { "sd": "https://www.sounddip.com/ns/" }],
     "@type": "ItemList",
     "name": `Sound Bath Sessions in ${city.name}`,
     "description": pageDescription,
@@ -146,14 +146,14 @@ const cityModifiedDate = cityRecord?.updatedAt ? cityRecord.updatedAt.split('T')
     "author": {
       "@type": "Person",
       "name": "Chester Beard",
-      "url": "https://sounddip.com/about"
+      "url": "https://www.sounddip.com/about"
     },
     "publisher": {
       "@type": "Organization",
       "name": "Sound Dip",
-      "url": "https://sounddip.com"
+      "url": "https://www.sounddip.com"
     },
-    "url": `https://sounddip.com/cities/${city.slug}`,
+    "url": `https://www.sounddip.com/cities/${city.slug}`,
     ...(cityPublishedDate ? { "datePublished": cityPublishedDate } : {}),
     ...(cityModifiedDate ? { "dateModified": cityModifiedDate } : {})
   }} />
