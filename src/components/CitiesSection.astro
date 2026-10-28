@@ -54,7 +54,7 @@ const overflow = overflowOrder.filter((c) => publishedSlugs.has(c.slug));
     {featured.map((c) => {
       const city = cityBySlug[c.slug];
       return (
-        <a class="city" href={`/cities/${c.slug}`}>
+        <a class="city" href={`/cities/${c.slug}/`}>
           <img
             src={city?.img}
             srcset={city?.imgSrcSet}
@@ -75,7 +75,7 @@ const overflow = overflowOrder.filter((c) => publishedSlugs.has(c.slug));
   <div class="cities-overflow">
     <span class="cities-overflow-label">Also in</span>
     {overflow.map((c) => (
-      <a class="city-pill" href={`/cities/${c.slug}`}>
+      <a class="city-pill" href={`/cities/${c.slug}/`}>
         {c.name}
       </a>
     ))}

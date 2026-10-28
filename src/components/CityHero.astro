@@ -17,7 +17,7 @@ const { city, sessionCount = 0 } = Astro.props;
 
     <!-- LEFT: text -->
     <div class="city-hero-text">
-      <a href="/cities" class="city-breadcrumb">← All cities</a>
+      <a href="/cities/" class="city-breadcrumb">← All cities</a>
       <div class="city-hero-region">{city.region}</div>
       <h1 class="city-hero-name">{city.name}</h1>
       {city.published && (

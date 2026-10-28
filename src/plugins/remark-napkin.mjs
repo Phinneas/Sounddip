@@ -17,6 +17,30 @@ async function fetchWithRetry(url, options, maxRetries = 6) {
   return fetch(url, options);
 }
 
+// Turn a Napkin prompt into readable alt text. The prompt opens with an
+// instruction line ("Create a mind map:") that is meant for the Napkin API,
+// not for readers, crawlers or AI extractors, so it is dropped here. An
+// explicit alt can be set on the fence instead: ```napkin alt="..."
+// The image hash is still computed from the full prompt, so cached PNGs
+// in public/diagrams keep their filenames.
+function napkinAlt(text, meta) {
+  const explicit = meta && meta.match(/alt="([^"]*)"/);
+  if (explicit) return explicit[1];
+
+  const lines = text.split('\n').map((l) => l.trim()).filter(Boolean);
+  let kind = 'Diagram';
+  const head = lines[0] && lines[0].match(/^create an? ([a-z ]+?):?\s*$/i);
+  if (head) {
+    kind = head[1].charAt(0).toUpperCase() + head[1].slice(1);
+    lines.shift();
+  }
+
+  const body = lines
+    .map((l) => l.replace(/^[-*]\s+/, '').replace(/\s*->\s*/g, ' → ').replace(/[.:;]\s*$/, ''))
+    .join('. ');
+  return `${kind}: ${body}`;
+}
+
 export function remarkNapkin(options = {}) {
   return async (tree) => {
     const nodesToProcess = [];
@@ -138,7 +162,7 @@ export function remarkNapkin(options = {}) {
       // Replace the code block with a static <img>
       parent.children[index] = {
         type: 'html',
-        value: `<img src="/diagrams/${filename}" alt="${text.replace(/"/g, '&quot;').replace(/\n/g, ' ')}" class="w-full h-auto rounded-3xl my-10" loading="lazy" />`
+        value: `<img src="/diagrams/${filename}" alt="${napkinAlt(text, node.meta).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;')}" class="w-full h-auto rounded-3xl my-10" loading="lazy" />`
       };
     }
   };

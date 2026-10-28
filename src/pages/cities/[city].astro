@@ -185,7 +185,7 @@ const cityModifiedDate = cityRecord?.updatedAt ? cityRecord.updatedAt.split('T')
       </div>
       {city.published && cityRecord?.updatedAt && (
         <p class="scene-byline">
-          Reviewed by <a href="/about">Chester Beard</a> · last checked{' '}
+          Reviewed by <a href="/about/">Chester Beard</a> · last checked{' '}
           {new Date(cityRecord.updatedAt).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
         </p>
       )}
@@ -257,7 +257,7 @@ const cityModifiedDate = cityRecord?.updatedAt ? cityRecord.updatedAt.split('T')
           </div>
         ))}
       </div>
-      <a href="/submit" class="submit-cta">Run a sound bath in {city.name}? <em>Add your practice.</em></a>
+      <a href="/submit/" class="submit-cta">Run a sound bath in {city.name}? <em>Add your practice.</em></a>
     </section>
     )}
 
