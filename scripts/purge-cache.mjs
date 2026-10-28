@@ -15,10 +15,11 @@
  * Runs automatically as a `postdeploy` hook — see package.json.
  */
 
+// Cloudflare's purge API wants host+path with no URI scheme.
 const PREFIXES = [
-  'https://www.sounddip.com/blog/',
-  'https://www.sounddip.com/sitemap.xml',
-  'https://www.sounddip.com/robots.txt',
+  'www.sounddip.com/blog/',
+  'www.sounddip.com/sitemap.xml',
+  'www.sounddip.com/robots.txt',
 ];
 
 const API = 'https://api.cloudflare.com/client/v4';
