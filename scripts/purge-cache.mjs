@@ -47,16 +47,22 @@ function fail(message) {
   process.exit(1);
 }
 
-const token = process.env.CLOUDFLARE_API_TOKEN;
+// Read from PURGE_CACHE_API_TOKEN, deliberately NOT CLOUDFLARE_API_TOKEN.
+// Wrangler also loads this project's .env, and it prefers CLOUDFLARE_API_TOKEN
+// over its own OAuth login — so a cache-purge-only token under that name would
+// hijack `wrangler deploy` and fail it for lack of Workers permissions.
+const token = process.env.PURGE_CACHE_API_TOKEN;
 if (!token) {
   fail(
-    'CLOUDFLARE_API_TOKEN is not set.\n\n' +
+    'PURGE_CACHE_API_TOKEN is not set.\n\n' +
       '  The Wrangler OAuth token cannot purge cache (no zone scope).\n' +
       '  Create an API token at dash.cloudflare.com/profile/api-tokens with:\n' +
       '    Permissions → Zone → Cache Purge → Edit\n' +
       '    Zone Resources → Include → sounddip.com\n' +
       '  Then put it in .env or your shell profile:\n' +
-      '    CLOUDFLARE_API_TOKEN=<token>\n'
+      '    PURGE_CACHE_API_TOKEN=<token>\n' +
+      '  (Not CLOUDFLARE_API_TOKEN — Wrangler reads .env too and would\n' +
+      '   try to use it for deploys, which a purge-only token cannot do.)\n'
   );
 }
 
