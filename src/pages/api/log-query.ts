@@ -33,18 +33,23 @@ export async function POST({ request, locals }: { request: Request; locals: any 
     return new Response('bad payload', { status: 400 });
   }
 
-  await env.QUERY_LOG.prepare(
-    'INSERT INTO query_log (zip, radius, result_count, result_type, fallback_city, fallback_slug) VALUES (?, ?, ?, ?, ?, ?)'
-  )
-    .bind(
-      zip,
-      radius,
-      Math.max(0, Math.min(999, Math.round(resultCount))),
-      resultType,
-      body.fallbackCity ?? null,
-      body.fallbackSlug ?? null,
+  try {
+    await env.QUERY_LOG.prepare(
+      'INSERT INTO query_log (zip, radius, result_count, result_type, fallback_city, fallback_slug) VALUES (?, ?, ?, ?, ?, ?)'
     )
-    .run();
+      .bind(
+        zip,
+        radius,
+        Math.max(0, Math.min(999, Math.round(resultCount))),
+        resultType,
+        body.fallbackCity ?? null,
+        body.fallbackSlug ?? null,
+      )
+      .run();
+  } catch (err: any) {
+    console.error('D1 write failed:', err);
+    return new Response(JSON.stringify({ error: String(err?.message ?? err), binding: !!env.QUERY_LOG, envKeys: Object.keys(env ?? {}) }), { status: 500, headers: { 'Content-Type': 'application/json' } });
+  }
 
   return new Response(null, { status: 204 });
 }
