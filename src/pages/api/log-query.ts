@@ -48,7 +48,7 @@ export async function POST({ request, locals }: { request: Request; locals: any 
       .run();
   } catch (err: any) {
     console.error('D1 write failed:', err);
-    return new Response(JSON.stringify({ error: String(err?.message ?? err), binding: !!env.QUERY_LOG, envKeys: Object.keys(env ?? {}) }), { status: 500, headers: { 'Content-Type': 'application/json' } });
+    return new Response('server error', { status: 500 });
   }
 
   return new Response(null, { status: 204 });
