@@ -13,5 +13,12 @@
   "assets": {
     "binding": "ASSETS",
     "directory": "dist"
-  }
+  },
+  "d1_databases": [
+    {
+      "binding": "QUERY_LOG",
+      "database_name": "sounddip-query-logs",
+      "database_id": "b9151a7f-b1e0-4063-8089-636a80b1eec7"
+    }
+  ]
 }

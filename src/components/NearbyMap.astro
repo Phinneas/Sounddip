@@ -423,6 +423,15 @@ const { lede = 'Enter your ZIP code to see verified sound bath sessions within d
     }).join('');
   }
 
+  function logQuery(payload) {
+    fetch('/api/log-query/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+      keepalive: true,
+    }).catch(() => {});   // logging must never break search
+  }
+
   // Nearest covered city (by centroid distance) when the radius search is empty.
   // This is what stops an Everett visitor from being told "nothing exists" — it
   // points them at Seattle, the nearest metro that actually has listings.
@@ -457,7 +466,7 @@ const { lede = 'Enter your ZIP code to see verified sound bath sessions within d
     if (!/^\d{5}$/.test(zip)) { setStatus('Enter a 5-digit ZIP code.'); return; }
     setStatus('Searching…');
     const coords = await geocodeZip(zip);
-    if (!coords) { setStatus('Could not find that ZIP code. Try another.'); return; }
+    if (!coords) { setStatus('Could not find that ZIP code. Try another.'); logQuery({ zip, radius, resultCount: 0, resultType: 'invalid' }); return; }
     const withDistance = listings.map((l) => ({ ...l, distance: milesBetween(coords, l) }));
     const nearby = withDistance
       .filter((l) => l.distance <= radius)
@@ -467,6 +476,7 @@ const { lede = 'Enter your ZIP code to see verified sound bath sessions within d
       const nearest = nearestCityFallback(coords);
       if (nearest) {
         renderFallback(nearest, Math.round(nearest.minDist));
+        logQuery({ zip, radius, resultCount: 0, resultType: 'fallback', fallbackCity: nearest.city, fallbackSlug: nearest.citySlug });
         updateMap(nearest.listings);
         if (map) {
           map.flyTo({ center: [nearest.listings[0].lng, nearest.listings[0].lat], zoom: 8, essential: true });
@@ -477,6 +487,7 @@ const { lede = 'Enter your ZIP code to see verified sound bath sessions within d
     }
 
     renderResults(nearby);
+    logQuery({ zip, radius, resultCount: nearby.length, resultType: 'results' });
     updateMap(nearby);
     if (map) {
       const zoom = radius === 25 ? 8 : radius === 50 ? 7 : 6;
