@@ -25,18 +25,19 @@ const SITE = 'https://www.sounddip.com';
 const OUT = path.join(ROOT, 'public', 'sitemap.xml');
 
 // Non-generated pages. Explicit rather than globbed from src/pages so that
-// adding a page never silently puts it in the sitemap.
+// adding a page never silently puts it in the sitemap. /verify/ (a token-only
+// landing page, noindexed) and /articles/ (a 301 to /blog/) are deliberately
+// left out: a sitemap should list only indexable, final URLs.
 const STATIC_PATHS = [
   '/',
   '/cities/',
   '/find-your-dip/',
   '/submit/',
-  '/verify/',
   '/about/',
   '/privacy/',
   '/terms/',
-  '/articles/',
   '/guide/first-time/',
+  '/glossary/',
   '/blog/',
 ];
 

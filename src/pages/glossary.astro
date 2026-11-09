@@ -1,0 +1,178 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Topbar from '../components/Topbar.astro';
+import Footer from '../components/Footer.astro';
+import JsonLd from '../components/JsonLd.astro';
+import { glossary, glossaryGroups } from '../data/glossary';
+
+const siteUrl = 'https://www.sounddip.com';
+const pageUrl = `${siteUrl}/glossary/`;
+
+const byGroup = glossaryGroups.map((g) => ({
+  ...g,
+  entries: glossary.filter((e) => e.group === g.name),
+}));
+
+const alphabetical = [...glossary].sort((a, b) => a.term.localeCompare(b.term));
+
+const definedTermSet = {
+  '@context': 'https://schema.org',
+  '@type': 'DefinedTermSet',
+  '@id': `${pageUrl}#glossary`,
+  name: 'Sound Bath Glossary',
+  description:
+    'Definitions of sound bath formats, instruments, credentials, and safety terms, each linked to a deeper guide or a cited source.',
+  url: pageUrl,
+  hasDefinedTerm: glossary.map((e) => ({
+    '@type': 'DefinedTerm',
+    '@id': `${pageUrl}#${e.slug}`,
+    name: e.term,
+    description: e.definition,
+    url: `${pageUrl}#${e.slug}`,
+    inDefinedTermSet: `${pageUrl}#glossary`,
+  })),
+};
+
+const breadcrumbs = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Sound Dip', item: `${siteUrl}/` },
+    { '@type': 'ListItem', position: 2, name: 'Glossary', item: pageUrl },
+  ],
+};
+---
+
+<Layout
+  title="Sound Bath Glossary: 36 Terms, Defined and Sourced"
+  description="Plain definitions of sound bath formats, instruments, credentials, and safety terms. Every term links to a deeper Sound Dip guide or a cited source."
+  canonical="/glossary/"
+>
+  <JsonLd data={definedTermSet} />
+  <JsonLd data={breadcrumbs} />
+  <main>
+    <Topbar />
+    <article class="static-page glossary">
+      <header class="static-head">
+        <div class="static-num">§</div>
+        <h1>Sound bath <em>glossary.</em></h1>
+      </header>
+
+      <section class="prose">
+        <p class="lede">A sound bath is a session where you lie down and listen while a practitioner plays sustained-tone instruments like singing bowls and gongs. The words around it get confusing fast. This page defines {glossary.length} of them in plain language.</p>
+        <p>Every term links to a deeper guide on Sound Dip or, where I haven't written one yet, to a cited outside source. Where listings exist, you'll also find a city to book one.</p>
+      </section>
+
+      <nav class="g-nav" aria-label="Glossary sections">
+        <p class="g-nav-label">Jump to a section</p>
+        <ul class="g-groups">
+          {byGroup.map((g) => (
+            <li><a href={`#${g.slug}`}>{g.name}</a></li>
+          ))}
+        </ul>
+        <details class="g-index">
+          <summary>All terms, A to Z</summary>
+          <ul>
+            {alphabetical.map((e) => (
+              <li><a href={`#${e.slug}`}>{e.term}</a></li>
+            ))}
+          </ul>
+        </details>
+      </nav>
+
+      {byGroup.map((g) => (
+        <section class="g-section" id={g.slug} aria-labelledby={`${g.slug}-h`}>
+          <h2 id={`${g.slug}-h`}>{g.name}</h2>
+          <dl>
+            {g.entries.map((e) => (
+              <div class="g-entry" id={e.slug}>
+                <dt><a class="g-anchor" href={`#${e.slug}`}>{e.term}</a></dt>
+                <dd>
+                  <p class="g-def">{e.definition}</p>
+                  <p class="g-ctx">{e.context}</p>
+                  <ul class="g-links">
+                    {e.readMore && e.readMore.length > 0 && (
+                      <li>
+                        <span class="g-k">Read more</span>
+                        {e.readMore.map((l, i) => (
+                          <>{i > 0 && ', '}<a href={l.href}>{l.label}</a></>
+                        ))}
+                      </li>
+                    )}
+                    {e.source && (
+                      <li>
+                        <span class="g-k">Source</span>
+                        <a href={e.source.href} rel="noopener" target="_blank">{e.source.label}</a>
+                      </li>
+                    )}
+                    {e.findOne && e.findOne.length > 0 && (
+                      <li>
+                        <span class="g-k">Find one</span>
+                        {e.findOne.map((l, i) => (
+                          <>{i > 0 && ', '}<a href={l.href}>{l.label}</a></>
+                        ))}
+                      </li>
+                    )}
+                  </ul>
+                </dd>
+              </div>
+            ))}
+          </dl>
+        </section>
+      ))}
+
+      <section class="prose">
+        <p class="prose-cta">New to all of this? Start with <a href="/guide/first-time/">your first sound bath</a>, or <a href="/find-your-dip/">answer five questions</a> to find a session that fits.</p>
+      </section>
+    </article>
+    <Footer />
+  </main>
+</Layout>
+
+<style>
+  .static-page { max-width: 760px; margin: 0 auto; padding: 140px 6vw 80px; }
+  .static-head { margin-bottom: 48px; }
+  .static-num { font-family: var(--serif); font-style: italic; font-weight: 300; font-size: 48px; color: var(--clay); line-height: 0.8; margin-bottom: 24px; }
+  .static-head h1 { font-family: var(--serif); font-weight: 300; font-size: clamp(44px, 6vw, 72px); line-height: 0.95; letter-spacing: -2px; color: var(--ink); margin: 0; font-variation-settings: "opsz" 144; }
+  .static-head h1 em { font-style: italic; color: var(--clay); }
+  .prose { font-family: var(--serif); font-size: 19px; line-height: 1.7; color: var(--ink); font-variation-settings: "opsz" 72; }
+  .prose p { margin-bottom: 24px; color: var(--ink-mid); }
+  .prose .lede { color: var(--ink); }
+  .prose a { color: var(--clay); text-decoration: underline; text-underline-offset: 2px; }
+  .prose a:hover { color: var(--clay-d); }
+  .prose-cta { font-style: italic; color: var(--ink) !important; margin-top: 56px; }
+
+  .g-nav { border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); padding: 24px 0; margin: 8px 0 24px; }
+  .g-nav-label { font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-mid); margin: 0 0 12px; }
+  .g-groups { list-style: none; padding: 0; margin: 0 0 16px; display: flex; flex-wrap: wrap; gap: 8px 20px; }
+  .g-groups a, .g-index a { color: var(--clay); text-decoration: none; }
+  .g-groups a:hover, .g-index a:hover { text-decoration: underline; text-underline-offset: 2px; }
+  .g-index summary { cursor: pointer; color: var(--ink); font-size: 15px; }
+  .g-index ul { list-style: none; padding: 12px 0 0; margin: 0; columns: 2; column-gap: 24px; font-size: 15px; line-height: 1.9; }
+
+  .g-section { scroll-margin-top: 96px; }
+  .g-section h2 { font-family: var(--serif); font-weight: 400; font-size: 32px; line-height: 1.2; color: var(--ink); margin: 64px 0 8px; letter-spacing: -0.5px; font-variation-settings: "opsz" 144; }
+  .g-section dl { margin: 0; }
+  .g-entry { scroll-margin-top: 96px; padding: 28px 0; border-bottom: 1px solid var(--rule); }
+  .g-entry:target { background: color-mix(in srgb, var(--clay) 6%, transparent); }
+  .g-entry dt { font-family: var(--serif); font-size: 24px; font-weight: 400; line-height: 1.25; margin: 0 0 10px; font-variation-settings: "opsz" 144; }
+  .g-anchor { color: var(--ink); text-decoration: none; }
+  .g-anchor:hover { color: var(--clay); }
+  .g-entry dd { margin: 0; }
+  .g-def { font-family: var(--serif); font-size: 19px; line-height: 1.6; color: var(--ink); margin: 0 0 12px; font-variation-settings: "opsz" 72; }
+  .g-ctx { font-size: 16px; line-height: 1.7; color: var(--ink-mid); margin: 0 0 14px; }
+  .g-links { list-style: none; padding: 0; margin: 0; font-size: 15px; line-height: 1.7; color: var(--ink-mid); }
+  .g-links li { margin-bottom: 4px; }
+  .g-k { display: inline-block; min-width: 84px; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-mid); margin-right: 8px; }
+  .g-links a { color: var(--clay); text-decoration: underline; text-underline-offset: 2px; }
+  .g-links a:hover { color: var(--clay-d); }
+
+  @media (max-width: 640px) {
+    .static-page { padding: 100px 16px 60px; }
+    .prose { font-size: 17px; }
+    .g-index ul { columns: 1; }
+    .g-entry dt { font-size: 22px; }
+    .g-def { font-size: 17px; }
+    .g-k { display: block; min-width: 0; margin: 4px 0 0; }
+  }
+</style>

@@ -151,7 +151,7 @@ function buildWriterPrompt(job) {
   parts.push('- /blog/sound-healing-for-anxiety/ — "Sound Healing for Anxiety: What the Science Actually Says"');
   parts.push('- /blog/what-is-a-sound-bath/ — "What Is a Sound Bath? The Complete Guide" (if it exists)');
   parts.push('- /blog/sound-bath-benefits/ — "Sound Bath Benefits: What the Research Actually Shows" (if it exists)');
-  parts.push('- /blog/are-sound-baths-safe/ — "Are Sound Baths Safe?" (if it exists)');
+  parts.push('- /blog/sound-bath-negative-effects/ — "Sound Bath Negative Effects" (safety, contraindications, emotional reactions)');
   parts.push('- /cities/los-angeles/ — Los Angeles city page');
   parts.push('- /cities/new-york-city/ — New York City page');
   parts.push('- /cities/asheville/ — Asheville page');
